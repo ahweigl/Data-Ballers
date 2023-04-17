@@ -1,0 +1,101 @@
+item_number,item_description,available_sizes,date_last_restock,date_next_restock,supplier_state,supplier_street,supplier_city,supplier_zip,creator_id,supplier_id,total_in_stock
+1,Xkemuflruxvztp,2XL,12/18/2022,2/8/2023,North Carolina,Acker,Charlotte,28256,70,13,5905582
+2,Hwqrmrblysauva,M,8/7/2022,10/8/2022,Tennessee,Troy,Memphis,38136,22,993,4816842
+3,Vssgktfzczdxgx,M,4/14/2023,6/12/2022,California,Hermina,San Francisco,94105,8,266,8706845
+4,Toivsrqsotyaih,XS,7/26/2022,11/22/2022,Texas,Warrior,San Antonio,78260,59,923,9301956
+5,Bcsvutuuyupbwp,3XL,4/11/2023,8/17/2022,District of Columbia,Delaware,Washington,20551,76,201,9840924
+6,Qpebbiugtdrdmq,XS,6/23/2022,9/22/2022,Kansas,Mariners Cove,Shawnee Mission,66225,18,27,9533187
+7,Ngybcdupcyhevd,3XL,5/23/2022,6/8/2022,New York,Longview,Elmira,14905,46,960,6822706
+8,Kvhbslsxgzpicm,3XL,7/22/2022,9/17/2022,District of Columbia,Express,Washington,20397,13,967,9103404
+9,Hmlqkadmfubixm,XS,1/2/2023,4/28/2022,Utah,Harper,Salt Lake City,84115,96,92,6947589
+10,Ctjmvpfbxcelub,2XL,6/13/2022,1/9/2023,Texas,Sutherland,Pasadena,77505,15,593,8437903
+11,Sxpqgzfhiqgzlh,2XL,9/1/2022,8/7/2022,Delaware,Scott,Newark,19725,28,966,1082446
+12,Aafjnfxaxuymiz,3XL,1/5/2023,11/14/2022,North Carolina,High Crossing,Raleigh,27605,85,592,1490121
+13,Xozfrqpwfcjsuu,L,12/9/2022,9/4/2022,Utah,Moland,Salt Lake City,84120,74,855,5178692
+14,Izhbwlsilctvgi,L,3/4/2023,7/1/2022,Louisiana,Pawling,Metairie,70005,7,568,5292492
+15,Dflwqfyhxtfvkn,2XL,5/3/2022,7/9/2022,Florida,La Follette,Jacksonville,32255,41,849,156150
+16,Iqkodebgsjwjqf,L,9/18/2022,11/14/2022,Alabama,Buell,Birmingham,35236,79,206,2385889
+17,Dzwhltjhvpchqm,XS,4/9/2023,5/15/2022,Missouri,Garrison,Kansas City,64109,14,479,2073146
+18,Yrofsabaaelewo,S,9/14/2022,6/2/2022,Alabama,Eliot,Birmingham,35285,28,81,9730966
+19,Rexvgnvwcryzqs,3XL,12/27/2022,5/2/2022,Illinois,Lerdahl,Springfield,62776,13,623,2435760
+20,Mdqasirlurocrj,2XL,9/11/2022,6/17/2022,California,Village Green,Anaheim,92805,31,830,3429109
+21,Znqhgvqjqnfaki,XL,5/29/2022,12/1/2022,Kentucky,Huxley,Louisville,40298,29,239,8506915
+22,Ghtmtqtrgvydvp,XL,3/1/2023,7/15/2022,California,Columbus,San Francisco,94110,71,986,7895986
+23,Arrxzrmhqgjnwy,XL,9/17/2022,2/13/2023,New York,Monterey,Brooklyn,11220,54,915,7840621
+24,Jfaaacxcyqfieq,2XL,12/22/2022,6/17/2022,Louisiana,Doe Crossing,Baton Rouge,70805,3,418,6122240
+25,Fdztwwaqpxgalx,M,3/16/2023,8/29/2022,California,Sheridan,Fresno,93726,31,719,2443104
+26,Bmpqvzmvnyirsc,L,8/22/2022,1/24/2023,Minnesota,Hansons,Maple Plain,55579,93,93,8437903
+27,Xvyjmojamnhxey,L,5/24/2022,1/13/2023,Texas,3rd,El Paso,79940,76,967,2651939
+28,Uidutbnzwfrizj,XL,5/5/2022,10/15/2022,North Carolina,Mccormick,Greensboro,27415,20,441,637526
+29,Ofinfhcrjfhyha,XS,7/19/2022,10/14/2022,Texas,Buhler,Fort Worth,76129,35,793,439517
+30,Dyufhhipcxkuny,2XL,4/22/2022,3/21/2023,Texas,Holmberg,Beaumont,77713,59,652,9809496
+31,Pyvfvnqgvajuoq,XS,12/14/2022,1/25/2023,New York,Mosinee,Brooklyn,11236,98,501,9809496
+32,Jylzjyxjdmiymt,XL,2/14/2023,1/25/2023,Texas,Ramsey,San Angelo,76905,5,656,3088033
+33,Eabgqjggvkynbu,L,2/21/2023,10/24/2022,Florida,Messerschmidt,Fort Lauderdale,33355,50,526,5623205
+34,Fyiovgiolywwst,L,8/13/2022,10/5/2022,Pennsylvania,Lunder,Erie,16510,8,494,9885691
+35,Dwxkuvwrlwkvcy,2XL,7/31/2022,11/26/2022,Texas,Mallard,Houston,77050,76,473,2778835
+36,Miekipehthmrfb,2XL,11/19/2022,8/12/2022,Kansas,Pleasure,Shawnee Mission,66210,88,463,9155747
+37,Xwlvqhpjhppamg,2XL,11/16/2022,6/21/2022,California,Beilfuss,Visalia,93291,92,857,3088033
+38,Qlezpcqbgdvtkw,3XL,1/19/2023,10/29/2022,California,Farmco,Los Angeles,90094,18,508,64712
+39,Lfcciajpmqgmkk,3XL,3/29/2023,2/13/2023,Michigan,Longview,Detroit,48267,50,794,5292492
+40,Djoyswwotyzkeu,XL,4/14/2023,1/16/2023,Idaho,Forster,Boise,83727,97,457,5488878
+41,Gjkpeyeezcsvtt,M,11/8/2022,3/12/2023,Alabama,Michigan,Huntsville,35895,100,731,295223
+42,Gymsnooeesoqhl,3XL,2/22/2023,8/10/2022,Texas,Brown,Austin,78749,86,491,2443104
+43,Oahlwyvswltewh,M,4/26/2022,11/29/2022,West Virginia,Carey,Huntington,25705,84,489,4326481
+44,Iwaubgugwcaxkh,2XL,7/16/2022,9/15/2022,North Carolina,Arapahoe,Charlotte,28256,94,345,3410385
+45,Skoszndnvefjmo,XL,1/31/2023,5/29/2022,Texas,Del Mar,Houston,77025,95,28,8221773
+46,Wtfabmhaytqdbn,L,1/10/2023,2/7/2023,Oklahoma,Texas,Norman,73071,59,940,6393944
+47,Pwlrguzsstqqux,3XL,6/2/2022,7/27/2022,Ohio,Sycamore,Dayton,45490,67,470,82320
+48,Ytarrvfdrntopp,XL,9/1/2022,12/12/2022,Louisiana,Burning Wood,Baton Rouge,70805,39,507,2786836
+49,Idnbinnxdmbkxo,S,2/9/2023,8/19/2022,Massachusetts,Anhalt,Boston,02104,71,867,5178692
+50,Fxjhfgflmcyuak,M,2/8/2023,7/10/2022,Texas,Brentwood,San Antonio,78240,38,539,2819789
+51,Tmyvkirfzckxux,M,10/5/2022,3/19/2023,Florida,Claremont,Pensacola,32511,88,911,7185154
+52,Qbyeugquxgvtlp,XL,10/7/2022,5/14/2022,New York,Reinke,New York City,10034,91,411,4816842
+53,Avtokmkclsdyhm,M,3/8/2023,1/2/2023,California,Oak,Fresno,93794,34,934,7014413
+54,Neenftuoeikeef,XL,12/5/2022,3/27/2023,Tennessee,Graedel,Chattanooga,37416,57,751,156150
+55,Gzrtbnswwkmgaj,M,3/19/2023,3/11/2023,Pennsylvania,Sunbrook,New Castle,16107,26,809,295223
+56,Coyznvbyztfzdk,L,2/13/2023,7/23/2022,Kentucky,Lunder,Louisville,40287,90,215,3030069
+57,Qwohkstdpgncqg,3XL,6/4/2022,11/14/2022,Indiana,Dunning,Fort Wayne,46867,52,302,8221773
+58,Saftqdghtjozke,XL,11/28/2022,5/15/2022,Texas,Packers,Houston,77025,69,416,6818803
+59,Rkzuerygfwfvoy,XS,10/11/2022,12/24/2022,Alabama,Colorado,Birmingham,35242,25,143,8714286
+60,Ugfjjaovlyhtnc,S,2/11/2023,11/11/2022,Kansas,Mcbride,Kansas City,66105,27,843,684031
+61,Wrvdbxydwzskla,L,6/1/2022,8/3/2022,Louisiana,North,New Orleans,70165,43,230,6090318
+62,Qdezjcoeolumjd,M,6/13/2022,9/5/2022,Idaho,Killdeer,Boise,83705,80,184,9885691
+63,Oabnbczetpqffo,M,6/21/2022,11/30/2022,California,Springs,Moreno Valley,92555,97,847,6947589
+64,Ktpnbgcfphcwva,XS,7/27/2022,7/6/2022,Florida,Maple Wood,Saint Petersburg,33742,90,117,6122240
+65,Cxbzqnnroawrnk,3XL,10/16/2022,8/11/2022,Iowa,Artisan,Des Moines,50320,81,792,9831804
+66,Jvsauypzurahpk,M,4/1/2023,3/2/2023,New York,Cambridge,Brooklyn,11220,37,614,8381419
+67,Heuowgzayegunx,2XL,12/28/2022,5/13/2022,Connecticut,Marquette,West Hartford,06127,77,451,7014413
+68,Sdxvcazlgwofrt,L,3/29/2023,7/29/2022,Texas,Derek,Beaumont,77713,87,709,3410385
+69,Dpllxxhawyxxha,S,6/12/2022,4/22/2022,New York,Riverside,Albany,12242,11,245,6122240
+70,Tctosnwxdocfbl,XS,6/21/2022,7/13/2022,Virginia,Sutteridge,Sterling,20167,76,130,8437903
+71,Pjbldpxzeyzyeq,S,9/28/2022,5/3/2022,Louisiana,Larry,New Orleans,70149,53,637,3956000
+72,Cabhtyfoajobyd,XL,5/24/2022,5/31/2022,Pennsylvania,8th,Lancaster,17605,80,482,5402698
+73,Juvqqhrlylbvpx,3XL,3/10/2023,12/29/2022,California,Sugar,Van Nuys,91406,6,789,7085796
+74,Afhlwgbrtryspq,3XL,2/16/2023,10/6/2022,West Virginia,Duke,Charleston,25305,25,893,8221773
+75,Eugpskomsbpukb,M,12/12/2022,10/17/2022,Florida,Huxley,Port Charlotte,33954,81,360,439517
+76,Dpydixfktkbqyl,3XL,6/9/2022,5/29/2022,Michigan,Bobwhite,Flint,48505,25,83,9122102
+77,Qhsvwdibvypuda,L,12/25/2022,10/27/2022,District of Columbia,Utah,Washington,20540,8,61,1166009
+78,Kdwoyjcxdyukmp,L,6/14/2022,10/10/2022,Colorado,Trailsway,Arvada,80005,91,41,3275664
+79,Oeaseockswvowm,2XL,3/27/2023,1/12/2023,Texas,1st,Houston,77288,53,866,64712
+80,Ppstybgxcnstfe,L,9/12/2022,11/9/2022,Florida,Shopko,Miami,33124,43,208,637526
+81,Nwrmuwbzbgrmlk,M,8/17/2022,6/21/2022,Virginia,Crownhardt,Roanoke,24040,92,6,6090318
+82,Hjrkuzetortcxb,2XL,1/2/2023,2/14/2023,Tennessee,Crowley,Johnson City,37605,66,643,2778835
+83,Trdszvwfipkvtu,XL,6/25/2022,4/3/2023,California,Sunnyside,Oceanside,92056,70,650,2096427
+84,Bglivcnwinkhyc,XS,5/2/2022,1/17/2023,Texas,Mayfield,Austin,78715,16,652,9734144
+85,Fclrzgqrlcjede,S,9/12/2022,6/21/2022,Texas,Swallow,Fort Worth,76134,99,849,6947589
+86,Rjeocbddmdwcyt,S,10/28/2022,6/13/2022,Ohio,Lunder,Cleveland,44197,24,712,7085796
+87,Xxyaxhbsankdgc,L,8/16/2022,12/19/2022,Oklahoma,Riverside,Tulsa,74170,52,678,2651939
+88,Fththxsdxwisdi,M,3/15/2023,6/27/2022,Louisiana,Emmet,New Orleans,70149,79,674,2385889
+89,Sumdyidylpgprg,L,2/5/2023,5/5/2022,Alabama,Graedel,Mobile,36616,33,862,9301956
+90,Jrpbnhhmeotyxf,M,9/28/2022,7/8/2022,Kentucky,Transport,Lexington,40510,64,21,7185154
+91,Ouxhkdrzomsewg,S,12/15/2022,5/10/2022,Illinois,Stuart,Springfield,62776,86,585,2786836
+92,Qkcfohrblbmjhk,XL,8/31/2022,6/22/2022,Florida,Porter,Vero Beach,32969,79,803,5738038
+93,Fmjbtmwqcvqoeo,2XL,10/16/2022,6/29/2022,Illinois,Milwaukee,Peoria,61605,89,68,4558469
+94,Juhdsfomicvjdh,L,11/12/2022,7/15/2022,North Carolina,Independence,Charlotte,28256,74,96,4816842
+95,Kqverwrzpxlvla,3XL,10/12/2022,2/21/2023,Texas,Merry,Houston,77050,55,890,295223
+96,Gegtlvfeovsgha,M,10/15/2022,3/11/2023,Utah,Anderson,Salt Lake City,84189,61,32,3410385
+97,Gpvrxnnxxuqzoo,XL,6/13/2022,2/22/2023,Maryland,Moose,Bethesda,20892,98,149,3088033
+98,Ozykwutduhywyw,L,9/29/2022,3/15/2023,Ohio,Novick,Cincinnati,45208,49,596,5983354
+99,Cnxlbmgjhjdspx,3XL,6/10/2022,1/31/2023,New Hampshire,Fulton,Manchester,03105,80,792,7606159
+100,Pdkpzhcwwvevzm,XL,1/10/2023,8/27/2022,California,Fuller,Los Angeles,90071,60,707,8437903

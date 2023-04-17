@@ -40,5 +40,19 @@
     "headers": [],
     "params": [],
     "tests": []
+  },
+  {
+    "_id": "e581baa5-8f64-4e97-8356-3292e672de01",
+    "colId": "754979bc-d3e5-410e-9291-d74a020ef2d4",
+    "containerId": "",
+    "name": "GetEpisode",
+    "url": "localhost:8001/l",
+    "method": "GET",
+    "sortNum": 10000,
+    "created": "2023-04-16T22:25:12.629Z",
+    "modified": "2023-04-16T22:25:16.174Z",
+    "headers": [],
+    "params": [],
+    "tests": []
   }
 ]
