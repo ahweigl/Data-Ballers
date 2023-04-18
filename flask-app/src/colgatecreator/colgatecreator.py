@@ -2,7 +2,6 @@ from flask import Blueprint, request, jsonify, make_response, current_app
 import json
 from src import db
 
-
 colgatecreator = Blueprint('colgatecreator', __name__)
 
 # POST new episode to the DB  
@@ -41,7 +40,6 @@ def add_new_episode():
     return 'Success!'
 
 # GET inventory information from the DB 
-# Get all customers from the DB
 @colgatecreator.route('/inventory', methods=['GET'])
 def get_inventory():
     cursor = db.get_db().cursor()
@@ -154,7 +152,7 @@ def get_merchandise():
     the_response.mimetype = 'application/json'
     return the_response
 
-# PUT new order into the DB 
+# PUT order into the DB (update an order)
 @colgatecreator.route('/orders/<order_number>', methods=['PUT']) 
 def update_order(order_number): 
     
@@ -173,7 +171,8 @@ def update_order(order_number):
     query+= str(order_number) + ', item_number = '
     query+= str(item_number) + ', price = '
     query+= str(price) + ', customer_name = "'
-    query+= customer_name
+    query+= customer_name  + '" where order_number = '
+    query+= str(order_number) 
     current_app.logger.info(query)
 
     # executing and committing the put statement 

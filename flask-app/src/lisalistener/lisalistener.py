@@ -40,32 +40,32 @@ def add_new_playlist():
 
     return 'Success!'
 
-# PUT episode info (update an episode)
-@lisalistener.route('/episodes/<episode_number>', methods=['PUT']) 
-def update_episode(episode_number): 
-    
+# PUT (update) episode info in a playlist 
+@lisalistener.route('/playlists/<episode_number>', methods=['PUT']) 
+def update_episode_in_playlist(episode_number): 
+
     # collecting data from the request object 
     the_data = request.json 
     current_app.logger.info(the_data) 
 
     # extracting the variables
-    episode_number = the_data['episode_number']
+    name = the_data['name']
+    likes = the_data['likes']
+    date_made = the_data['date_made']
     duration = the_data['duration']
-    listens = the_data['listens']
-    season_number = the_data['season_number']
-    episode_name = the_data['episode_name']
-    podcast_name = the_data['podcast_name']
+    episode_number = the_data['episode_number']
     playlist_name = the_data['playlist_name']
+    user_id = the_data['user_id']
 
     # constructing the query 
-    query = 'update Episodes set episode_number = ' 
-    query+= str(episode_number) + ', duration = '
-    query+= str(duration) + ', listens = '
-    query+= str(listens) + ', season_number = '
-    query+= str(season_number) + ', episode_name = "'
-    query+= episode_name + '", podcast_name = "'
-    query+= podcast_name + '", playlist_name = "'
-    query+= playlist_name + '" where episode_number = '
+    query = 'update Playlists set name = "' 
+    query+= name + '", likes = '
+    query+= str(likes) + ', date_made = "'
+    query+= date_made + '", duration = '
+    query+= str(duration) + ', episode_number = '
+    query+= str(episode_number) + ', playlist_name = "'
+    query+= playlist_name + '", user_id = '
+    query+= str(user_id) + ' where episode_number = '
     query+= str(episode_number) 
     current_app.logger.info(query)
 
@@ -143,29 +143,28 @@ def get_playlist(user_id):
     the_response.mimetype = 'application/json'
     return the_response
 
-# DELETE a playlist from the DB 
-@lisalistener.route('/playlists', methods=['DELETE']) 
-def delete_playlist(): 
+# DELETE a playlist from the DB with the given date made
+@lisalistener.route('/playlists/deleteplaylist/<date_made>', methods=['DELETE']) 
+def delete_playlist(date_made): 
     
     # collecting data from the request object 
     the_data = request.json 
     current_app.logger.info(the_data) 
 
     # extracting the variables
-    name = the_data['name']
+    date_made = the_data['date_made']
 
     # constructing the query 
-    query = 'delete from Playlists where name = ' 
-    query+= name + ')'
-
+    query = 'delete from Playlists where date_made = "' 
+    query+= date_made + '"'
     # executing and committing the put statement 
     cursor = db.get_db().cursor() 
     cursor.execute(query) 
-    db.get_db.commit() 
+    db.get_db().commit() 
 
     return 'Success!'
 
-# GET a podcasts's info with particular name from the DB
+# GET a podcasts's info with a particular creator id from the DB
 @lisalistener.route('/podcasts/<creator_id>', methods=['GET'])
 def get_podcast(creator_id):
     cursor = db.get_db().cursor()
