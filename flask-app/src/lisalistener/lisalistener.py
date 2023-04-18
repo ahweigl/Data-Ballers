@@ -41,7 +41,6 @@ def add_new_playlist():
     return 'Success!'
 
 # PUT episode info (update an episode)
-# TO DO 
 @lisalistener.route('/episodes/<episode_number>', methods=['PUT']) 
 def update_episode(episode_number): 
     
@@ -78,7 +77,6 @@ def update_episode(episode_number):
     return 'Success!'
 
 # DELETE episode from playlist 
-# TO DO 
 @lisalistener.route('/playlists/<episode_number>', methods=['DELETE']) 
 def delete_episode_from_playlist(episode_number): 
     
@@ -146,7 +144,6 @@ def get_playlist(user_id):
     return the_response
 
 # DELETE a playlist from the DB 
-# TO DO 
 @lisalistener.route('/playlists', methods=['DELETE']) 
 def delete_playlist(): 
     

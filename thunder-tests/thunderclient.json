@@ -360,7 +360,7 @@
     "_id": "5a56f7c2-142a-440c-8029-1dd8fce2d093",
     "colId": "754979bc-d3e5-410e-9291-d74a020ef2d4",
     "containerId": "",
-    "name": "DeleteEpisode",
+    "name": "DeleteEpisodeFromPlaylist",
     "url": "localhost:8001/l/playlists/68",
     "method": "DELETE",
     "sortNum": 80000,
@@ -398,7 +398,7 @@
     "_id": "f769457a-f97d-4ea4-8c99-55ae69456fc6",
     "colId": "754979bc-d3e5-410e-9291-d74a020ef2d4",
     "containerId": "",
-    "name": "DeleteEpisode2",
+    "name": "DeleteEpisodeFromPlaylist2",
     "url": "localhost:8001/l/playlists/44",
     "method": "DELETE",
     "sortNum": 90000,
@@ -409,6 +409,44 @@
     "body": {
       "type": "json",
       "raw": "{\n  \"episode_number\": 44\n}",
+      "form": []
+    },
+    "tests": []
+  },
+  {
+    "_id": "b17663d6-b3f6-430e-9ce5-c2884241c10e",
+    "colId": "5521d441-85f0-44b6-a332-06e20d42444f",
+    "containerId": "",
+    "name": "DeleteEpisodeFromCreator",
+    "url": "localhost:8001/c/podcasts/7",
+    "method": "DELETE",
+    "sortNum": 60000,
+    "created": "2023-04-18T17:28:25.039Z",
+    "modified": "2023-04-18T17:31:36.902Z",
+    "headers": [],
+    "params": [],
+    "body": {
+      "type": "json",
+      "raw": "{\n  \"creator_id\": 7\n}",
+      "form": []
+    },
+    "tests": []
+  },
+  {
+    "_id": "87886ced-ab75-490b-83a8-a93b6fa2ce5c",
+    "colId": "5521d441-85f0-44b6-a332-06e20d42444f",
+    "containerId": "",
+    "name": "DeleteEpisodeFromCreator2",
+    "url": "localhost:8001/c/podcasts/10",
+    "method": "DELETE",
+    "sortNum": 70000,
+    "created": "2023-04-18T17:31:47.334Z",
+    "modified": "2023-04-18T17:31:59.483Z",
+    "headers": [],
+    "params": [],
+    "body": {
+      "type": "json",
+      "raw": "{\n  \"creator_id\": 10\n}",
       "form": []
     },
     "tests": []

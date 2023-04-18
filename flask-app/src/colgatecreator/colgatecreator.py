@@ -56,21 +56,20 @@ def get_inventory():
     the_response.mimetype = 'application/json'
     return the_response
 
-# DELETE an episode from the DB 
-# TO DO
-@colgatecreator.route('/episodes/<episode_number>', methods=['DELETE']) 
-def delete_episode_from_playlist(episode_number): 
+# DELETE a podcast from the DB with the given creator id 
+@colgatecreator.route('/podcasts/<creator_id>', methods=['DELETE']) 
+def delete_podcast_from_creator(creator_id): 
     
     # collecting data from the request object 
     the_data = request.json 
     current_app.logger.info(the_data) 
 
     # extracting the variables
-    episode_number = the_data['episode_number']
+    creator_id = the_data['creator_id']
 
     # constructing the query 
-    query = 'delete from Episodes where episode_number = ' 
-    query+= str(episode_number) 
+    query = 'delete from Podcasts where creator_id = ' 
+    query+= str(creator_id) 
 
     # executing and committing the put statement 
     cursor = db.get_db().cursor() 
@@ -79,7 +78,6 @@ def delete_episode_from_playlist(episode_number):
 
     return 'Success!' 
 
-# GET statistics about a particular creator 
 # GET a creator's info with particular creator id from the DB
 @colgatecreator.route('/statistics/<creator_id>', methods=['GET'])
 def get_statistics(creator_id):
