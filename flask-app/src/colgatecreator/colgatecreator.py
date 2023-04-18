@@ -57,7 +57,27 @@ def get_inventory():
     return the_response
 
 # DELETE an episode from the DB 
-# TO DO 
+# TO DO
+@colgatecreator.route('/episodes/<episode_number>', methods=['DELETE']) 
+def delete_episode_from_playlist(episode_number): 
+    
+    # collecting data from the request object 
+    the_data = request.json 
+    current_app.logger.info(the_data) 
+
+    # extracting the variables
+    episode_number = the_data['episode_number']
+
+    # constructing the query 
+    query = 'delete from Episodes where episode_number = ' 
+    query+= str(episode_number) 
+
+    # executing and committing the put statement 
+    cursor = db.get_db().cursor() 
+    cursor.execute(query) 
+    db.get_db().commit() 
+
+    return 'Success!' 
 
 # GET statistics about a particular creator 
 # GET a creator's info with particular creator id from the DB

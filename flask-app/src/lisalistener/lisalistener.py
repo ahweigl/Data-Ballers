@@ -80,7 +80,7 @@ def update_episode(episode_number):
 # DELETE episode from playlist 
 # TO DO 
 @lisalistener.route('/playlists/<episode_number>', methods=['DELETE']) 
-def delete_episode(episode_number): 
+def delete_episode_from_playlist(episode_number): 
     
     # collecting data from the request object 
     the_data = request.json 
