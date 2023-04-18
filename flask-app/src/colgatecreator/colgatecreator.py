@@ -155,4 +155,30 @@ def get_merchandise():
     return the_response
 
 # PUT new order into the DB 
-# TO DO 
+@colgatecreator.route('/orders/<order_number>', methods=['PUT']) 
+def update_order(order_number): 
+    
+    # collecting data from the request object 
+    the_data = request.json 
+    current_app.logger.info(the_data) 
+
+    # extracting the variables
+    order_number = the_data['order_number']
+    item_number = the_data['item_number']
+    price = the_data['price']
+    customer_name = the_data['customer_name']
+
+    # constructing the query 
+    query = 'update Orders set order_number = ' 
+    query+= str(order_number) + ', item_number = '
+    query+= str(item_number) + ', price = '
+    query+= str(price) + ', customer_name = "'
+    query+= customer_name
+    current_app.logger.info(query)
+
+    # executing and committing the put statement 
+    cursor = db.get_db().cursor() 
+    cursor.execute(query) 
+    db.get_db().commit() 
+
+    return 'Success!'
