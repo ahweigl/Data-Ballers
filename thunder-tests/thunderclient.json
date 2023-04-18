@@ -102,11 +102,11 @@
     "colId": "754979bc-d3e5-410e-9291-d74a020ef2d4",
     "containerId": "",
     "name": "GetPodcastFromCreator2",
-    "url": "localhost:8001/l/podcasts/10",
+    "url": "localhost:8001/l/podcasts/13",
     "method": "GET",
     "sortNum": 50000,
     "created": "2023-04-18T14:22:43.305Z",
-    "modified": "2023-04-18T14:46:23.874Z",
+    "modified": "2023-04-18T21:09:20.711Z",
     "headers": [],
     "params": [],
     "tests": []
@@ -120,12 +120,12 @@
     "method": "POST",
     "sortNum": 50000,
     "created": "2023-04-18T14:23:52.860Z",
-    "modified": "2023-04-18T14:27:39.661Z",
+    "modified": "2023-04-18T21:09:34.524Z",
     "headers": [],
     "params": [],
     "body": {
       "type": "json",
-      "raw": "{\n  \"name\": \"Playlist123ABC\", \n  \"likes\": 123456, \n  \"date_made\": \"2021-07-16 14:52:42\",\n  \"duration\": 100, \n  \"episode_number\": 10, \n  \"playlist_name\": \"PlaylistABCFG\", \n  \"user_id\": 1\n}",
+      "raw": "{\n  \"playlist_name\": \"Playlist123ABC\", \n  \"likes\": 123456, \n  \"date_made\": \"2021-07-16 14:52:42\",\n  \"duration\": 100, \n  \"episode_number1\": 10, \n  \"playlist_name\": \"PlaylistABCFG\", \n  \"user_id\": 1\n}",
       "form": []
     },
     "tests": []
@@ -139,12 +139,12 @@
     "method": "POST",
     "sortNum": 60000,
     "created": "2023-04-18T14:54:41.941Z",
-    "modified": "2023-04-18T14:59:29.616Z",
+    "modified": "2023-04-18T21:09:40.572Z",
     "headers": [],
     "params": [],
     "body": {
       "type": "json",
-      "raw": "{\n  \"name\": \"PlaylistXYZ345\",\n  \"likes\": 987654,\n  \"date_made\": \"2022-08-15 14:52:42\",\n  \"duration\": 50,\n  \"episode_number\": 50,\n  \"playlist_name\": \"PlaylistXYZKW\",\n  \"user_id\": 2\n}",
+      "raw": "{\n  \"private_name\": \"PlaylistXYZ345\",\n  \"likes\": 987654,\n  \"date_made\": \"2022-08-15 14:52:42\",\n  \"duration\": 50,\n  \"episode_number1\": 50,\n  \"playlist_name\": \"PlaylistXYZKW\",\n  \"user_id\": 2\n}",
       "form": []
     },
     "tests": []
@@ -270,12 +270,12 @@
     "method": "POST",
     "sortNum": 40000,
     "created": "2023-04-18T15:25:55.774Z",
-    "modified": "2023-04-18T15:31:32.486Z",
+    "modified": "2023-04-18T21:12:46.001Z",
     "headers": [],
     "params": [],
     "body": {
       "type": "json",
-      "raw": "{\n  \"episode_number\": 101,\n  \"duration\": 100,\n  \"listens\": 12345,\n  \"season_number\": 1,\n  \"episode_name\": \"Episodeabcdef\",\n  \"podcast_name\": \"Podcast123\",\n  \"playlist_name\": \"Playlist123a\"\n}",
+      "raw": "{\n  \"episode_number\": 102,\n  \"duration\": 100,\n  \"listens\": 12345,\n  \"season_number\": 1,\n  \"episode_name\": \"Episodeabcdef\",\n  \"podcast_name\": \"Podcast123\",\n  \"playlist_name\": \"Playlist123a\"\n}",
       "form": []
     },
     "tests": []
@@ -289,12 +289,12 @@
     "method": "POST",
     "sortNum": 45000,
     "created": "2023-04-18T15:34:21.165Z",
-    "modified": "2023-04-18T18:14:25.815Z",
+    "modified": "2023-04-18T21:12:50.838Z",
     "headers": [],
     "params": [],
     "body": {
       "type": "json",
-      "raw": "{\n  \"episode_number\": 104,\n  \"duration\": 123,\n  \"listens\": 99999,\n  \"season_number\": 3,\n  \"episode_name\": \"Episodexyz\",\n  \"podcast_name\": \"Podcast123\",\n  \"playlist_name\": \"Playlist123a\"\n}",
+      "raw": "{\n  \"episode_number\": 105,\n  \"duration\": 123,\n  \"listens\": 99999,\n  \"season_number\": 3,\n  \"episode_name\": \"Episodexyz\",\n  \"podcast_name\": \"Podcast123\",\n  \"playlist_name\": \"Playlist123a\"\n}",
       "form": []
     },
     "tests": []
@@ -308,12 +308,12 @@
     "method": "POST",
     "sortNum": 60000,
     "created": "2023-04-18T15:40:44.907Z",
-    "modified": "2023-04-18T15:47:39.507Z",
+    "modified": "2023-04-18T21:12:57.752Z",
     "headers": [],
     "params": [],
     "body": {
       "type": "json",
-      "raw": "{\n  \"total_in_stock\": 1234,\n  \"item_number\": 29,\n  \"available_sizes\": \"L\",\n  \"date_last_restock\": \"2022-01-01 20:20:20\",\n  \"date_next_restock\": \"2022-03-01 20:20:20\"\n}",
+      "raw": "{\n  \"total_in_stock\": 12345,\n  \"item_number\": 29,\n  \"available_sizes\": \"L\",\n  \"date_last_restock\": \"2022-01-01 20:20:20\",\n  \"date_next_restock\": \"2022-03-01 20:20:20\"\n}",
       "form": []
     },
     "tests": []
@@ -327,12 +327,12 @@
     "method": "POST",
     "sortNum": 60000,
     "created": "2023-04-18T15:49:28.814Z",
-    "modified": "2023-04-18T18:14:40.984Z",
+    "modified": "2023-04-18T21:13:02.116Z",
     "headers": [],
     "params": [],
     "body": {
       "type": "json",
-      "raw": "{\n  \"total_in_stock\": 45678,\n  \"item_number\": 33,\n  \"available_sizes\": \"XD\",\n  \"date_last_restock\": \"2022-06-04 20:20:20\",\n  \"date_next_restock\": \"2022-07-01 20:20:20\"\n}",
+      "raw": "{\n  \"total_in_stock\": 456789,\n  \"item_number\": 33,\n  \"available_sizes\": \"XD\",\n  \"date_last_restock\": \"2022-06-04 20:20:20\",\n  \"date_next_restock\": \"2022-07-01 20:20:20\"\n}",
       "form": []
     },
     "tests": []
@@ -346,12 +346,12 @@
     "method": "PUT",
     "sortNum": 70000,
     "created": "2023-04-18T16:00:13.070Z",
-    "modified": "2023-04-18T18:29:31.057Z",
+    "modified": "2023-04-18T21:10:33.929Z",
     "headers": [],
     "params": [],
     "body": {
       "type": "json",
-      "raw": "{\n  \"name\": \"NewEpisode\",\n  \"likes\": 111,\n  \"date_made\": \"2022-10-09 07:30:44\",\n  \"duration\": 30,\n  \"episode_number\": 17,\n  \"playlist_name\": \"Playlistabc\",\n  \"user_id\": 1\n}",
+      "raw": "{\n  \"name\": \"NewEpisode\",\n  \"likes2\": 111,\n  \"date_made2\": \"2022-10-09 07:30:44\",\n  \"duration_2\": 30,\n  \"episode_number2\": 17,\n  \"playlist_name2\": \"Playlistabc\",\n  \"user_id2\": 1\n}",
       "form": []
     },
     "tests": []
@@ -365,12 +365,12 @@
     "method": "DELETE",
     "sortNum": 80000,
     "created": "2023-04-18T17:05:48.635Z",
-    "modified": "2023-04-18T17:11:46.825Z",
+    "modified": "2023-04-18T20:10:56.358Z",
     "headers": [],
     "params": [],
     "body": {
       "type": "json",
-      "raw": "{\n  \"episode_number\": 68\n}",
+      "raw": "{\n  \"episode_number3\": 68\n}",
       "form": []
     },
     "tests": []
@@ -384,12 +384,12 @@
     "method": "PUT",
     "sortNum": 75000,
     "created": "2023-04-18T17:11:50.282Z",
-    "modified": "2023-04-18T18:30:04.840Z",
+    "modified": "2023-04-18T21:11:05.437Z",
     "headers": [],
     "params": [],
     "body": {
       "type": "json",
-      "raw": "{\n  \"name\": \"NewEpisode\",\n  \"likes\": 111,\n  \"date_made\": \"2022-10-09 07:30:44\",\n  \"duration\": 30,\n  \"episode_number\": 19,\n  \"playlist_name\": \"Playlistabc\",\n  \"user_id\": 1\n}",
+      "raw": "{\n  \"name\": \"NewEpisode\",\n  \"likes2\": 111,\n  \"date_made2\": \"2022-10-09 07:30:44\",\n  \"duration_2\": 30,\n  \"episode_number2\": 19,\n  \"playlist_name2\": \"Playlistabc\",\n  \"user_id2\": 2\n}",
       "form": []
     },
     "tests": []
@@ -403,12 +403,12 @@
     "method": "DELETE",
     "sortNum": 90000,
     "created": "2023-04-18T17:12:13.466Z",
-    "modified": "2023-04-18T17:12:48.631Z",
+    "modified": "2023-04-18T20:10:42.095Z",
     "headers": [],
     "params": [],
     "body": {
       "type": "json",
-      "raw": "{\n  \"episode_number\": 44\n}",
+      "raw": "{\n  \"episode_number3\": 44\n}",
       "form": []
     },
     "tests": []
@@ -422,12 +422,12 @@
     "method": "DELETE",
     "sortNum": 60000,
     "created": "2023-04-18T17:28:25.039Z",
-    "modified": "2023-04-18T17:31:36.902Z",
+    "modified": "2023-04-18T21:13:10.923Z",
     "headers": [],
     "params": [],
     "body": {
       "type": "json",
-      "raw": "{\n  \"creator_id\": 7\n}",
+      "raw": "{\n  \"creator_id2\": 7\n}",
       "form": []
     },
     "tests": []
@@ -441,12 +441,12 @@
     "method": "DELETE",
     "sortNum": 65000,
     "created": "2023-04-18T17:31:47.334Z",
-    "modified": "2023-04-18T18:14:38.115Z",
+    "modified": "2023-04-18T21:13:14.520Z",
     "headers": [],
     "params": [],
     "body": {
       "type": "json",
-      "raw": "{\n  \"creator_id\": 10\n}",
+      "raw": "{\n  \"creator_id2\": 10\n}",
       "form": []
     },
     "tests": []
@@ -460,12 +460,12 @@
     "method": "DELETE",
     "sortNum": 100000,
     "created": "2023-04-18T18:10:34.433Z",
-    "modified": "2023-04-18T18:12:11.002Z",
+    "modified": "2023-04-18T20:10:33.621Z",
     "headers": [],
     "params": [],
     "body": {
       "type": "json",
-      "raw": "{\n  \"date_made\": \"2023-02-13 07:33:59\"\n}",
+      "raw": "{\n  \"date_made3\": \"2023-02-13 07:33:59\"\n}",
       "form": []
     },
     "tests": []
@@ -479,12 +479,12 @@
     "method": "DELETE",
     "sortNum": 110000,
     "created": "2023-04-18T18:11:15.868Z",
-    "modified": "2023-04-18T18:13:51.468Z",
+    "modified": "2023-04-18T20:10:48.315Z",
     "headers": [],
     "params": [],
     "body": {
       "type": "json",
-      "raw": "{\n  \"date_made\": \"2022-04-26 12:43:06\"\n}",
+      "raw": "{\n  \"date_made3\": \"2022-04-26 12:43:06\"\n}",
       "form": []
     },
     "tests": []
@@ -498,12 +498,12 @@
     "method": "PUT",
     "sortNum": 75000,
     "created": "2023-04-18T18:16:27.646Z",
-    "modified": "2023-04-18T18:20:40.719Z",
+    "modified": "2023-04-18T21:13:24.847Z",
     "headers": [],
     "params": [],
     "body": {
       "type": "json",
-      "raw": "{\n  \"order_number\": 23,\n  \"item_number\": 22,\n  \"price\": 15,\n  \"customer_name\": \"Natalie\"\n}",
+      "raw": "{\n  \"order_number\": 23,\n  \"item_numberCopy\": 22,\n  \"price\": 15,\n  \"customer_name\": \"Natalie\"\n}",
       "form": []
     },
     "tests": []

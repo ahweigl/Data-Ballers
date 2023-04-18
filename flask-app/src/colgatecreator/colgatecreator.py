@@ -63,7 +63,7 @@ def delete_podcast_from_creator(creator_id):
     current_app.logger.info(the_data) 
 
     # extracting the variables
-    creator_id = the_data['creator_id']
+    creator_id = the_data['creator_id2']
 
     # constructing the query 
     query = 'delete from Podcasts where creator_id = ' 
@@ -162,7 +162,7 @@ def update_order(order_number):
 
     # extracting the variables
     order_number = the_data['order_number']
-    item_number = the_data['item_number']
+    item_number = the_data['item_numberCopy']
     price = the_data['price']
     customer_name = the_data['customer_name']
 

@@ -2,7 +2,6 @@ from flask import Blueprint, request, jsonify, make_response, current_app
 import json
 from src import db
 
-
 lisalistener = Blueprint('listalistener', __name__)
 
 # POST new playlist to the DB 
@@ -14,22 +13,20 @@ def add_new_playlist():
     current_app.logger.info(the_data) 
 
     # extracting the variable 
-    name = the_data['name']
+    playlist_name = the_data['playlist_name']
     likes = the_data['likes']
     date_made = the_data['date_made']
     duration = the_data['duration']
-    episode_number = the_data['episode_number']
-    playlist_name = the_data['playlist_name']
+    episode_number = the_data['episode_number1']
     user_id = the_data['user_id']
 
     # constructing the query 
-    query = 'insert into Playlists (name,likes,date_made,duration,episode_number,playlist_name,user_id) values ("'
-    query+= name + '", '
+    query = 'insert into Playlists (playlist_name,likes,date_made,duration,episode_number,user_id) values ("'
+    query+= playlist_name + '", '
     query+= str(likes) + ', "'
     query+= date_made + '", '
     query+= str(duration) + ', '
-    query+= str(episode_number) + ', "'
-    query+= playlist_name + '", '
+    query+= str(episode_number) + ', '
     query+= str(user_id) + ')'
     current_app.logger.info(query)
 
@@ -49,22 +46,20 @@ def update_episode_in_playlist(episode_number):
     current_app.logger.info(the_data) 
 
     # extracting the variables
-    name = the_data['name']
-    likes = the_data['likes']
-    date_made = the_data['date_made']
-    duration = the_data['duration']
-    episode_number = the_data['episode_number']
-    playlist_name = the_data['playlist_name']
-    user_id = the_data['user_id']
+    playlist_name = the_data['playlist_name2']
+    likes = the_data['likes2']
+    date_made = the_data['date_made2']
+    duration = the_data['duration_2']
+    episode_number = the_data['episode_number2']
+    user_id = the_data['user_id2']
 
     # constructing the query 
-    query = 'update Playlists set name = "' 
-    query+= name + '", likes = '
+    query = 'update Playlists set playlist_name = "' 
+    query+= playlist_name + '", likes = '
     query+= str(likes) + ', date_made = "'
     query+= date_made + '", duration = '
     query+= str(duration) + ', episode_number = '
-    query+= str(episode_number) + ', playlist_name = "'
-    query+= playlist_name + '", user_id = '
+    query+= str(episode_number) + ', playlist_name = '
     query+= str(user_id) + ' where episode_number = '
     query+= str(episode_number) 
     current_app.logger.info(query)
@@ -85,13 +80,13 @@ def delete_episode_from_playlist(episode_number):
     current_app.logger.info(the_data) 
 
     # extracting the variables
-    episode_number = the_data['episode_number']
+    episode_number = the_data['episode_number3']
 
     # constructing the query 
     query = 'delete from Playlists where episode_number = ' 
     query+= str(episode_number) 
 
-    # executing and committing the put statement 
+    # executing and committing the delete statement 
     cursor = db.get_db().cursor() 
     cursor.execute(query) 
     db.get_db().commit() 
@@ -152,12 +147,12 @@ def delete_playlist(date_made):
     current_app.logger.info(the_data) 
 
     # extracting the variables
-    date_made = the_data['date_made']
+    date_made = the_data['date_made3']
 
     # constructing the query 
     query = 'delete from Playlists where date_made = "' 
     query+= date_made + '"'
-    # executing and committing the put statement 
+    # executing and committing the delete statement 
     cursor = db.get_db().cursor() 
     cursor.execute(query) 
     db.get_db().commit() 
