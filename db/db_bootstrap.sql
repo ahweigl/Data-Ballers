@@ -1,57 +1,10 @@
--- This file is to bootstrap a database for the CS3200 project. 
-
--- Create a new database.  You can change the name later.  You'll
--- need this name in the FLASK API file(s),  the AppSmith 
--- data source creation.
 create database Podify;
 
--- Via the Docker Compose file, a special user called webapp will 
--- be created in MySQL. We are going to grant that user 
--- all privilages to the new database we just created. 
--- TODO: If you changed the name of the database above, you need 
--- to change it here too.
 grant all privileges on Podify.* to 'webapp'@'%';
 flush privileges;
 
--- Move into the database we just created.
--- TODO: If you changed the name of the database above, you need to
--- change it here too. 
 use Podify;
 
--- Put your DDL 
---CREATE TABLE test_table (
---  name VARCHAR(20),
- -- color VARCHAR(10)
---);
-
-
--- Add sample data. 
---INSERT INTO test_table
- -- (name, color)
---VALUES
- -- ('dev', 'blue'),
-  --('pro', 'yellow'),
- -- ('junior', 'red');
---# Administrators table
-
-CREATE TABLE Administrators
-(
-    email_address varchar(50) NOT NULL,
-    phone_number varchar(20) NOT NULL,
-    first_name varchar(20) NOT NULL,
-    last_name varchar(20) NOT NULL,
-    admin_id int PRIMARY KEY,
-    CONSTRAINT fk_1
-        FOREIGN KEY (admin_id) REFERENCES Users(user_id)
-);
-
---# Insert data into Administrators table
-INSERT INTO Administrators
-    VALUES ('weigl.a@northeastern.edu', '123-456-7890', 'Angela', 'Weigl', '1');
-INSERT INTO Administrators
-    VALUES ('costa.n@northeastern.edu', '098-765-4321', 'Natalie', 'Costa', '2');
-
---# Genre table
 CREATE TABLE Genre
 (
     number_of_shows int,
@@ -60,60 +13,6 @@ CREATE TABLE Genre
     genre_name varchar(50) PRIMARY KEY
 );
 
---#Insert data into Genre table
-INSERT INTO Genre
-    VALUES (10, 20, 'very cool podcast', 'comedy');
-INSERT INTO Genre
-    VALUES (15, 25, 'very cool podcast the sequel', 'horror');
-
---# Podcasts table
-CREATE TABLE Podcasts
-(
-    release_date datetime
-        DEFAULT CURRENT_TIMESTAMP,
-    number_of_episodes int NOT NULL,
-    genre_name varchar(50),
-    episode_number int NOT NULL,
-    creator_id int NOT NULL,
-    name varchar(50) PRIMARY KEY,
-    CONSTRAINT fk_2
-        FOREIGN KEY (genre_name) REFERENCES Genre(genre_name),
-    CONSTRAINT fk_3
-        FOREIGN KEY (creator_id) REFERENCES Creators(creator_id),
-    CONSTRAINT fk_6
-        FOREIGN KEY (episode_number) REFERENCES Episodes(episode_number)
-);
-
---# Insert data into podcasts table
-INSERT INTO Podcasts
-    VALUES(CURRENT_TIMESTAMP, 10, 'comedy', 1, 1, 'very epic podcast');
-INSERT INTO Podcasts
-    VALUES(CURRENT_TIMESTAMP, 12, 'comedy', 1, 2, 'very epic podcast 2');
-
---# Playlists table
-CREATE TABLE Playlists
-(
-    likes int NOT NULL,
-    date_made datetime
-        DEFAULT CURRENT_TIMESTAMP,
-    duration int NOT NULL,
-    episode_number int NOT NULL,
-    playlist_name varchar(50) NOT NULL,
-    user_id int NOT NULL,
-    name varchar(50) PRIMARY KEY,
-    CONSTRAINT fk_4
-        FOREIGN KEY (episode_number) REFERENCES Episodes (episode_number),
-    CONSTRAINT fk_12
-        FOREIGN KEY (user_id) REFERENCES Users (user_id)
-);
-
---# Insert data into Playlists table
-INSERT INTO Playlists
-    VALUES (10, CURRENT_TIMESTAMP, 45, 1, 'playlist', 1, 'epic playlist');
-INSERT INTO Playlists
-    VALUES (18, CURRENT_TIMESTAMP, 50, 3, 'playlist', 1, 'epic playlist 3');
-
---# Episodes table
 CREATE TABLE Episodes
 (
     duration int NOT NULL,
@@ -125,59 +24,6 @@ CREATE TABLE Episodes
     episode_number int PRIMARY KEY
 );
 
---# Insert data into Episodes table
-INSERT INTO Episodes
-    VALUES (60, 1234, 1, 10, 'very cool podcast', 'epic playlist', 1);
-INSERT INTO Episodes
-    VALUES (99, 86343, 2, 12, 'very cool podcast the sequel', 'epic playlist', 3);
-
---# Users table
-CREATE TABLE Users
-(
-    username varchar(50) NOT NULL,
-    password varchar(50) NOT NULL,
-    date_made datetime
-        DEFAULT CURRENT_TIMESTAMP,
-    phone_number varchar(20) NOT NULL,
-    first_name varchar(50) NOT NULL,
-    last_name varchar(50) NOT NULL,
-    card_number int,
-    cvv int,
-    expiration_date varchar(50),
-    street varchar(50),
-    city varchar(50),
-    state varchar(50),
-    zip_code int,
-    user_id int PRIMARY KEY
-);
-
---# Insert data into Users table
-INSERT INTO Users
-    VALUES ('ahweigl', 'password', CURRENT_TIMESTAMP, '123-456-7890', 'Angela', 'Weigl', '123', '123', '06/2024',
-            'Street', 'City', 'Colorado', '80122', '1');
-INSERT INTO Users
-    VALUES ('nmcost', 'password', CURRENT_TIMESTAMP, '098-765-4321', 'Natalie', 'Costa', '123', '123', '08/2025',
-            'Street', 'City', 'Maryland', '12345', '2');
-
---# Statistics table
-CREATE TABLE Statistics
-(
-    total_listens int NOT NULL,
-    total_likes int NOT NULL,
-    total_followers int NOT NULL,
-    total_episodes int NOT NULL,
-    creator_id int PRIMARY KEY,
-     CONSTRAINT fk_7
-        FOREIGN KEY (creator_id) REFERENCES Creators (creator_id)
-);
-
---# Insert data into Statistics table
-INSERT INTO Statistics
-    VALUES (1000, 1234, 12440, 30, 1);
-INSERT INTO Statistics
-    VALUES (1456, 986, 435987, 38, 2);
-
---# Creators table
 CREATE TABLE Creators
 (
     username varchar(50) NOT NULL,
@@ -198,15 +44,98 @@ CREATE TABLE Creators
     creator_id int PRIMARY KEY
 );
 
---# Insert data into Creators table
-INSERT INTO Creators
-    VALUES('vickiwong', 'password', CURRENT_TIMESTAMP, '123-444-5555', 'wong.v@northeasternedu', 'Vicki',
-           'Wong', '111', '222', '04/2029', 'Streetname', 'Cityname', 'Statename', '12345', 1);
-INSERT INTO Creators
-    VALUES('rayv', 'password', CURRENT_TIMESTAMP, '888-888-8888', 'valenzuela.r@northeasternedu', 'Ray',
-           'Valenzuela', '222', '333', '02/2025', 'Streetname', 'Cityname', 'Statename', '12345', 2);
+CREATE TABLE Podcasts
+(
+    release_date datetime
+        DEFAULT CURRENT_TIMESTAMP,
+    number_of_episodes int NOT NULL,
+    genre_name varchar(50),
+    episode_number int NOT NULL,
+    creator_id int NOT NULL,
+    name varchar(50) PRIMARY KEY,
+    CONSTRAINT fk_2
+        FOREIGN KEY (genre_name) REFERENCES Genre(genre_name),
+    CONSTRAINT fk_3
+        FOREIGN KEY (creator_id) REFERENCES Creators(creator_id),
+    CONSTRAINT fk_6
+        FOREIGN KEY (episode_number) REFERENCES Episodes(episode_number)
+);
 
---# Merchandise table
+CREATE TABLE Users
+(
+    username varchar(50) NOT NULL,
+    password varchar(50) NOT NULL,
+    date_made datetime
+        DEFAULT CURRENT_TIMESTAMP,
+    phone_number varchar(20) NOT NULL,
+    first_name varchar(50) NOT NULL,
+    last_name varchar(50) NOT NULL,
+    card_number int,
+    cvv int,
+    expiration_date varchar(50),
+    street varchar(50),
+    city varchar(50),
+    state varchar(50),
+    zip_code int,
+    user_id int PRIMARY KEY
+);
+
+CREATE TABLE Administrators
+(
+    email_address varchar(50) NOT NULL,
+    phone_number varchar(20) NOT NULL,
+    first_name varchar(20) NOT NULL,
+    last_name varchar(20) NOT NULL,
+    admin_id int PRIMARY KEY,
+    CONSTRAINT fk_1
+        FOREIGN KEY (admin_id) REFERENCES Users(user_id)
+);
+
+CREATE TABLE Playlists
+(
+    likes int NOT NULL,
+    date_made datetime
+        DEFAULT CURRENT_TIMESTAMP,
+    duration int NOT NULL,
+    episode_number int NOT NULL,
+    playlist_name varchar(50) NOT NULL,
+    user_id int NOT NULL,
+    name varchar(50) PRIMARY KEY,
+    CONSTRAINT fk_4
+        FOREIGN KEY (episode_number) REFERENCES Episodes (episode_number),
+    CONSTRAINT fk_12
+        FOREIGN KEY (user_id) REFERENCES Users (user_id)
+);
+
+CREATE TABLE Statistics
+(
+    total_listens int NOT NULL,
+    total_likes int NOT NULL,
+    total_followers int NOT NULL,
+    total_episodes int NOT NULL,
+    creator_id int PRIMARY KEY,
+     CONSTRAINT fk_7
+        FOREIGN KEY (creator_id) REFERENCES Creators (creator_id)
+);
+
+CREATE TABLE Suppliers
+(
+    item_number int NOT NULL,
+    street varchar(50),
+    city varchar(50),
+    state varchar(50),
+    zip_code int,
+    supplier_id int PRIMARY KEY
+);
+
+CREATE TABLE Inventory (
+    item_number int NOT NULL,
+    available_sizes varchar(50) NOT NULL,
+    date_last_restock datetime NOT NULL,
+    date_next_restock datetime NOT NULL,
+    total_in_stock int PRIMARY KEY
+);
+
 CREATE TABLE Merchandise
 (
     creator_id int NOT NULL,
@@ -229,30 +158,6 @@ CREATE TABLE Merchandise
         FOREIGN KEY (supplier_id) REFERENCES Suppliers(supplier_id)
 );
 
---# Insert data into merchandise table
-INSERT INTO Merchandise
-    VALUES (1, 'cool shirt', 1000, 'XS, S, M, L', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 1, 'state', 'street',
-            'city', 12345, 1);
-INSERT INTO Merchandise
-    VALUES (2, 'cool pants', 1000, 'XS, S, M, L', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 1, 'state', 'street',
-            'city', 77777, 2);
-
---# Inventory table
-CREATE TABLE Inventory (
-    item_number int NOT NULL,
-    available_sizes varchar(50) NOT NULL,
-    date_last_restock datetime NOT NULL,
-    date_next_restock datetime NOT NULL,
-    total_in_stock int PRIMARY KEY
-);
-
---# Insert data into inventory table
-INSERT INTO Inventory
-    VALUES (1, 'XS, S, M', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 1000);
-INSERT INTO Inventory
-    VALUES (2, 'XS, S, M', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 200);
-
---# Orders table
 CREATE TABLE Orders
 (
     price int NOT NULL,
@@ -263,236 +168,55 @@ CREATE TABLE Orders
         FOREIGN KEY (item_number) REFERENCES Merchandise (item_number)
 );
 
---# Insert data into Orders
-INSERT INTO Orders
-    Values (25, 'customer', 1, 1);
-INSERT INTO Orders
-    Values (30, 'customer', 2, 2);
+INSERT INTO Genre (genre_name, number_of_shows, number_of_playlists, podcast_name) VALUES ('Comedy', '1647065', '7311280', 'Podcast455');
+INSERT INTO Genre (genre_name, number_of_shows, number_of_playlists, podcast_name) VALUES ('Drama', '6979473', '5068111', 'Podcast874');
+INSERT INTO Genre (genre_name, number_of_shows, number_of_playlists, podcast_name) VALUES ('Drama|Musical', '3927314', '2095518', 'Podcast612');
+INSERT INTO Genre (genre_name, number_of_shows, number_of_playlists, podcast_name) VALUES ('Action|Comedy|Thriller', '5018792', '3527873', 'Podcast649');
+INSERT INTO Genre (genre_name, number_of_shows, number_of_playlists, podcast_name) VALUES ('Comedy|Drama|Romance', '2746109', '302751', 'Podcast061');
+INSERT INTO Genre (genre_name, number_of_shows, number_of_playlists, podcast_name) VALUES ('Crime|Drama', '3018360', '9133721', 'Podcast834');
+INSERT INTO Genre (genre_name, number_of_shows, number_of_playlists, podcast_name) VALUES ('Drama|Mystery|Sci-Fi|Thriller', '600309', '9262767', 'Podcast760');
+INSERT INTO Genre (genre_name, number_of_shows, number_of_playlists, podcast_name) VALUES ('Comedy|Romance', '2126352', '9427059', 'Podcast853');
+INSERT INTO Genre (genre_name, number_of_shows, number_of_playlists, podcast_name) VALUES ('Drama|Romance', '7833139', '6035756', 'Podcast689');
+INSERT INTO Genre (genre_name, number_of_shows, number_of_playlists, podcast_name) VALUES ('Horror|Mystery|Thriller', '5171637', '2534518', 'Podcast866');
+INSERT INTO Genre (genre_name, number_of_shows, number_of_playlists, podcast_name) VALUES ('Drama|Mystery', '6485533', '918475', 'Podcast745');
+INSERT INTO Genre (genre_name, number_of_shows, number_of_playlists, podcast_name) VALUES ('Adventure', '5034508', '9972148', 'Podcast512');
+INSERT INTO Genre (genre_name, number_of_shows, number_of_playlists, podcast_name) VALUES ('Action|Drama', '4950531', '3609125', 'Podcast942');
+INSERT INTO Genre (genre_name, number_of_shows, number_of_playlists, podcast_name) VALUES ('Crime', '8844384', '1090388', 'Podcast873');
+INSERT INTO Genre (genre_name, number_of_shows, number_of_playlists, podcast_name) VALUES ('Crime|Drama|Film-Noir|Thriller', '920009', '231151', 'Podcast213');
+INSERT INTO Genre (genre_name, number_of_shows, number_of_playlists, podcast_name) VALUES ('Action|Sci-Fi|War', '1520960', '5706337', 'Podcast405');
+INSERT INTO Genre (genre_name, number_of_shows, number_of_playlists, podcast_name) VALUES ('Drama|Sci-Fi', '5109896', '231384', 'Podcast694');
+INSERT INTO Genre (genre_name, number_of_shows, number_of_playlists, podcast_name) VALUES ('Action|Adventure|Thriller|War', '5650253', '9059867', 'Podcast726');
+INSERT INTO Genre (genre_name, number_of_shows, number_of_playlists, podcast_name) VALUES ('Horror|Sci-Fi', '1414892', '4811124', 'Podcast857');
+INSERT INTO Genre (genre_name, number_of_shows, number_of_playlists, podcast_name) VALUES ('Drama|War', '1135642', '6121415', 'Podcast870');
+INSERT INTO Genre (genre_name, number_of_shows, number_of_playlists, podcast_name) VALUES ('Drama|Musical|Romance', '2598092', '1513928', 'Podcast370');
+INSERT INTO Genre (genre_name, number_of_shows, number_of_playlists, podcast_name) VALUES ('Adventure|Drama', '8119408', '8366515', 'Podcast430');
+INSERT INTO Genre (genre_name, number_of_shows, number_of_playlists, podcast_name) VALUES ('Adventure|Fantasy|Thriller', '1970955', '7399665', 'Podcast432');
+INSERT INTO Genre (genre_name, number_of_shows, number_of_playlists, podcast_name) VALUES ('Comedy|Drama', '1254265', '2284532', 'Podcast665');
+INSERT INTO Genre (genre_name, number_of_shows, number_of_playlists, podcast_name) VALUES ('Comedy|Crime', '6028243', '206507', 'Podcast200');
+INSERT INTO Genre (genre_name, number_of_shows, number_of_playlists, podcast_name) VALUES ('Mystery|Thriller', '9045733', '9427732', 'Podcast330');
+INSERT INTO Genre (genre_name, number_of_shows, number_of_playlists, podcast_name) VALUES ('Action|Comedy|Crime|Thriller', '4562857', '233855', 'Podcast261');
+INSERT INTO Genre (genre_name, number_of_shows, number_of_playlists, podcast_name) VALUES ('Drama|Romance|War', '60479', '4194558', 'Podcast482');
+INSERT INTO Genre (genre_name, number_of_shows, number_of_playlists, podcast_name) VALUES ('Documentary', '5184083', '632649', 'Podcast336');
+INSERT INTO Genre (genre_name, number_of_shows, number_of_playlists, podcast_name) VALUES ('Horror|Sci-Fi|Thriller', '6448816', '558637', 'Podcast529');
+INSERT INTO Genre (genre_name, number_of_shows, number_of_playlists, podcast_name) VALUES ('Drama|Horror|Romance', '770123', '1711897', 'Podcast428');
+INSERT INTO Genre (genre_name, number_of_shows, number_of_playlists, podcast_name) VALUES ('Mystery', '9887998', '9287187', 'Podcast414');
+INSERT INTO Genre (genre_name, number_of_shows, number_of_playlists, podcast_name) VALUES ('Action|Sci-Fi|Thriller', '6877897', '6945390', 'Podcast603');
+INSERT INTO Genre (genre_name, number_of_shows, number_of_playlists, podcast_name) VALUES ('Adventure|Animation|Children|Drama', '6341998', '6687263', 'Podcast447');
+INSERT INTO Genre (genre_name, number_of_shows, number_of_playlists, podcast_name) VALUES ('Animation|Children', '5326019', '1261302', 'Podcast537');
+INSERT INTO Genre (genre_name, number_of_shows, number_of_playlists, podcast_name) VALUES ('Action|Animation|Children|Sci-Fi', '6722557', '2695073', 'Podcast252');
+INSERT INTO Genre (genre_name, number_of_shows, number_of_playlists, podcast_name) VALUES ('Action|Horror|Sci-Fi|Thriller', '5468187', '2563107', 'Podcast849');
+INSERT INTO Genre (genre_name, number_of_shows, number_of_playlists, podcast_name) VALUES ('Animation|Children|Fantasy', '8165853', '7862783', 'Podcast819');
+INSERT INTO Genre (genre_name, number_of_shows, number_of_playlists, podcast_name) VALUES ('Crime|Drama|Romance|Thriller', '4114019', '5063636', 'Podcast839');
+INSERT INTO Genre (genre_name, number_of_shows, number_of_playlists, podcast_name) VALUES ('Drama|Mystery|Thriller', '4069438', '4051714', 'Podcast753');
+INSERT INTO Genre (genre_name, number_of_shows, number_of_playlists, podcast_name) VALUES ('Drama|Fantasy|Romance', '4179158', '6017496', 'Podcast663');
+INSERT INTO Genre (genre_name, number_of_shows, number_of_playlists, podcast_name) VALUES ('Adventure|Animation|Children|Drama|Fantasy', '6246867', '6453510', 'Podcast006');
+INSERT INTO Genre (genre_name, number_of_shows, number_of_playlists, podcast_name) VALUES ('Drama|Mystery|Romance', '6732912', '5941096', 'Podcast738');
+INSERT INTO Genre (genre_name, number_of_shows, number_of_playlists, podcast_name) VALUES ('Fantasy|Horror|Thriller', '2218840', '3552734', 'Podcast074');
+INSERT INTO Genre (genre_name, number_of_shows, number_of_playlists, podcast_name) VALUES ('Comedy|Sci-Fi', '4674588', '3603527', 'Podcast263');
+INSERT INTO Genre (genre_name, number_of_shows, number_of_playlists, podcast_name) VALUES ('Action|Animation|Comedy', '7947272', '6903945', 'Podcast796');
+INSERT INTO Genre (genre_name, number_of_shows, number_of_playlists, podcast_name) VALUES ('Thriller', '3102692', '8748379', 'Podcast279');
+INSERT INTO Genre (genre_name, number_of_shows, number_of_playlists, podcast_name) VALUES ('Crime|Drama|Mystery|Thriller', '3383654', '7731090', 'Podcast969');
 
---# Suppliers table
-CREATE TABLE Suppliers
-(
-    item_number int NOT NULL,
-    street varchar(50),
-    city varchar(50),
-    state varchar(50),
-    zip_code int,
-    supplier_id int PRIMARY KEY
-);
-
---# Insert data into Suppliers table
-INSERT INTO Suppliers
-    Values (1, 'street', 'city', 'state', 12345, 1);
-INSERT INTO Suppliers
-    Values (2, 'street', 'city', 'state', 99999, 2);
-
---# Data generated using Mockaroo
-
---# Administrators
-INSERT INTO Administrators (admin_id, email_address, phone_number, first_name, last_name) VALUES ('63', 'hgarrod0@nsw.gov.au', '271-722-4526', 'Heloise', 'Garrod');
-INSERT INTO Administrators (admin_id, email_address, phone_number, first_name, last_name) VALUES ('58', 'rerskine1@columbia.edu', '999-984-1235', 'Ruby', 'Erskine');
-INSERT INTO Administrators (admin_id, email_address, phone_number, first_name, last_name) VALUES ('13', 'kgoldsby2@pbs.org', '381-936-1810', 'Kesley', 'Goldsby');
-INSERT INTO Administrators (admin_id, email_address, phone_number, first_name, last_name) VALUES ('14', 'rmcvanamy3@smh.com.au', '880-349-4079', 'Raine', 'McVanamy');
-INSERT INTO Administrators (admin_id, email_address, phone_number, first_name, last_name) VALUES ('60', 'mnorthen4@mozilla.com', '815-217-5094', 'Malinde', 'Northen');
-INSERT INTO Administrators (admin_id, email_address, phone_number, first_name, last_name) VALUES ('7', 'kosmon5@wordpress.com', '853-326-8607', 'Kat', 'Osmon');
-INSERT INTO Administrators (admin_id, email_address, phone_number, first_name, last_name) VALUES ('48', 'hbellas6@ibm.com', '192-656-8316', 'Hyacinth', 'Bellas');
-INSERT INTO Administrators (admin_id, email_address, phone_number, first_name, last_name) VALUES ('3', 'gharriott7@friendfeed.com', '861-454-1562', 'Gilemette', 'Harriott');
-INSERT INTO Administrators (admin_id, email_address, phone_number, first_name, last_name) VALUES ('24', 'tlindenfeld8@example.com', '474-438-2409', 'Timothea', 'Lindenfeld');
-INSERT INTO Administrators (admin_id, email_address, phone_number, first_name, last_name) VALUES ('6', 'tmcrorie9@livejournal.com', '207-349-5012', 'Thalia', 'McRorie');
-INSERT INTO Administrators (admin_id, email_address, phone_number, first_name, last_name) VALUES ('14', 'rdudeniea@rediff.com', '284-237-3716', 'Ruthy', 'Dudenie');
-INSERT INTO Administrators (admin_id, email_address, phone_number, first_name, last_name) VALUES ('10', 'rlapishb@nymag.com', '200-935-0539', 'Retha', 'Lapish');
-INSERT INTO Administrators (admin_id, email_address, phone_number, first_name, last_name) VALUES ('68', 'gjeunec@springer.com', '229-427-3945', 'Grethel', 'Jeune');
-INSERT INTO Administrators (admin_id, email_address, phone_number, first_name, last_name) VALUES ('49', 'smakind@arstechnica.com', '908-708-3264', 'Salomon', 'Makin');
-INSERT INTO Administrators (admin_id, email_address, phone_number, first_name, last_name) VALUES ('84', 'fpeirpointe@theatlantic.com', '109-986-2027', 'Frank', 'Peirpoint');
-INSERT INTO Administrators (admin_id, email_address, phone_number, first_name, last_name) VALUES ('6', 'ddymondf@sfgate.com', '115-748-5999', 'Douglass', 'Dymond');
-INSERT INTO Administrators (admin_id, email_address, phone_number, first_name, last_name) VALUES ('14', 'bmacgahyg@examiner.com', '973-997-8878', 'Blanca', 'MacGahy');
-INSERT INTO Administrators (admin_id, email_address, phone_number, first_name, last_name) VALUES ('73', 'tbaintonh@friendfeed.com', '507-314-7405', 'Tobey', 'Bainton');
-INSERT INTO Administrators (admin_id, email_address, phone_number, first_name, last_name) VALUES ('2', 'psticklesi@issuu.com', '163-547-0467', 'Patti', 'Stickles');
-INSERT INTO Administrators (admin_id, email_address, phone_number, first_name, last_name) VALUES ('33', 'csimeonej@github.com', '929-937-4521', 'Clementina', 'Simeone');
-INSERT INTO Administrators (admin_id, email_address, phone_number, first_name, last_name) VALUES ('37', 'soultramk@yale.edu', '570-975-6493', 'Sindee', 'Oultram');
-INSERT INTO Administrators (admin_id, email_address, phone_number, first_name, last_name) VALUES ('82', 'jstoadel@bigcartel.com', '561-988-0917', 'Johanna', 'Stoade');
-INSERT INTO Administrators (admin_id, email_address, phone_number, first_name, last_name) VALUES ('73', 'fdodimeadm@sina.com.cn', '268-358-2846', 'Franciska', 'Dodimead');
-INSERT INTO Administrators (admin_id, email_address, phone_number, first_name, last_name) VALUES ('99', 'rjollandn@sciencedirect.com', '267-862-2844', 'Rickey', 'Jolland');
-INSERT INTO Administrators (admin_id, email_address, phone_number, first_name, last_name) VALUES ('80', 'jsemkeno@google.it', '178-865-1635', 'Joly', 'Semken');
-INSERT INTO Administrators (admin_id, email_address, phone_number, first_name, last_name) VALUES ('82', 'afleetp@taobao.com', '531-473-9323', 'Augusta', 'Fleet');
-INSERT INTO Administrators (admin_id, email_address, phone_number, first_name, last_name) VALUES ('21', 'cduggonq@cdbaby.com', '962-694-1404', 'Camala', 'Duggon');
-INSERT INTO Administrators (admin_id, email_address, phone_number, first_name, last_name) VALUES ('1', 'crufflesr@w3.org', '462-766-6663', 'Clerc', 'Ruffles');
-INSERT INTO Administrators (admin_id, email_address, phone_number, first_name, last_name) VALUES ('90', 'jwynetts@issuu.com', '826-475-3492', 'Jamesy', 'Wynett');
-INSERT INTO Administrators (admin_id, email_address, phone_number, first_name, last_name) VALUES ('58', 'tdonativot@columbia.edu', '107-840-4408', 'Thea', 'Donativo');
-INSERT INTO Administrators (admin_id, email_address, phone_number, first_name, last_name) VALUES ('96', 'ofennicku@businessinsider.com', '665-952-5282', 'Obed', 'Fennick');
-INSERT INTO Administrators (admin_id, email_address, phone_number, first_name, last_name) VALUES ('2', 'aeveringhamv@arstechnica.com', '808-996-4897', 'Ania', 'Everingham');
-INSERT INTO Administrators (admin_id, email_address, phone_number, first_name, last_name) VALUES ('5', 'hchattellw@oaic.gov.au', '534-209-2628', 'Harriott', 'Chattell');
-INSERT INTO Administrators (admin_id, email_address, phone_number, first_name, last_name) VALUES ('30', 'bfulcherx@booking.com', '740-106-7386', 'Benedikta', 'Fulcher');
-INSERT INTO Administrators (admin_id, email_address, phone_number, first_name, last_name) VALUES ('43', 'nscriveny@ow.ly', '314-568-0141', 'Nichols', 'Scriven');
-INSERT INTO Administrators (admin_id, email_address, phone_number, first_name, last_name) VALUES ('42', 'bgoffordz@howstuffworks.com', '383-121-1124', 'Biddie', 'Gofford');
-INSERT INTO Administrators (admin_id, email_address, phone_number, first_name, last_name) VALUES ('70', 'erawle10@usa.gov', '399-739-5512', 'Everett', 'Rawle');
-INSERT INTO Administrators (admin_id, email_address, phone_number, first_name, last_name) VALUES ('69', 'ltassell11@reddit.com', '498-713-6706', 'Lemmie', 'Tassell');
-INSERT INTO Administrators (admin_id, email_address, phone_number, first_name, last_name) VALUES ('28', 'arickaert12@google.com', '148-873-8069', 'Adara', 'Rickaert');
-INSERT INTO Administrators (admin_id, email_address, phone_number, first_name, last_name) VALUES ('17', 'sderoos13@de.vu', '950-846-8695', 'Sheba', 'De Roos');
-INSERT INTO Administrators (admin_id, email_address, phone_number, first_name, last_name) VALUES ('98', 'bbuddles14@weibo.com', '474-221-2625', 'Berty', 'Buddles');
-INSERT INTO Administrators (admin_id, email_address, phone_number, first_name, last_name) VALUES ('57', 'ptuffell15@privacy.gov.au', '380-765-7744', 'Pollyanna', 'Tuffell');
-INSERT INTO Administrators (admin_id, email_address, phone_number, first_name, last_name) VALUES ('88', 'emaccambridge16@wix.com', '724-955-2218', 'Ernest', 'MacCambridge');
-INSERT INTO Administrators (admin_id, email_address, phone_number, first_name, last_name) VALUES ('30', 'jlevene17@ocn.ne.jp', '276-490-4051', 'Jerome', 'Levene');
-INSERT INTO Administrators (admin_id, email_address, phone_number, first_name, last_name) VALUES ('92', 'cshewry18@ted.com', '336-184-5442', 'Caryl', 'Shewry');
-INSERT INTO Administrators (admin_id, email_address, phone_number, first_name, last_name) VALUES ('15', 'epostlewhite19@pbs.org', '425-104-3768', 'Elisha', 'Postlewhite');
-INSERT INTO Administrators (admin_id, email_address, phone_number, first_name, last_name) VALUES ('8', 'cpatching1a@wunderground.com', '131-501-4338', 'Chloette', 'Patching');
-INSERT INTO Administrators (admin_id, email_address, phone_number, first_name, last_name) VALUES ('38', 'tcraigmile1b@seattletimes.com', '931-657-2248', 'Torey', 'Craigmile');
-INSERT INTO Administrators (admin_id, email_address, phone_number, first_name, last_name) VALUES ('64', 'icordeiro1c@fda.gov', '189-195-1621', 'Iris', 'Cordeiro');
-INSERT INTO Administrators (admin_id, email_address, phone_number, first_name, last_name) VALUES ('54', 'pmallock1d@homestead.com', '667-480-4801', 'Pen', 'Mallock');
-INSERT INTO Administrators (admin_id, email_address, phone_number, first_name, last_name) VALUES ('40', 'rdalessandro1e@guardian.co.uk', '494-654-4747', 'Rhianna', 'Alessandro');
-INSERT INTO Administrators (admin_id, email_address, phone_number, first_name, last_name) VALUES ('68', 'mmottram1f@usgs.gov', '273-914-3570', 'Melonie', 'Mottram');
-INSERT INTO Administrators (admin_id, email_address, phone_number, first_name, last_name) VALUES ('27', 'ebeeze1g@linkedin.com', '709-424-4876', 'Erskine', 'Beeze');
-INSERT INTO Administrators (admin_id, email_address, phone_number, first_name, last_name) VALUES ('48', 'dkroch1h@marriott.com', '365-255-5722', 'Darsey', 'Kroch');
-INSERT INTO Administrators (admin_id, email_address, phone_number, first_name, last_name) VALUES ('60', 'dcurreen1i@netvibes.com', '712-490-1829', 'Danielle', 'Curreen');
-INSERT INTO Administrators (admin_id, email_address, phone_number, first_name, last_name) VALUES ('58', 'krolinson1j@cdc.gov', '721-865-8509', 'Kenon', 'Rolinson');
-INSERT INTO Administrators (admin_id, email_address, phone_number, first_name, last_name) VALUES ('15', 'amacken1k@dmoz.org', '573-158-5754', 'Abbe', 'Macken');
-INSERT INTO Administrators (admin_id, email_address, phone_number, first_name, last_name) VALUES ('40', 'bchidgey1l@sciencedirect.com', '630-981-1721', 'Brnaby', 'Chidgey');
-INSERT INTO Administrators (admin_id, email_address, phone_number, first_name, last_name) VALUES ('90', 'mbisacre1m@springer.com', '767-637-4582', 'Mariska', 'Bisacre');
-INSERT INTO Administrators (admin_id, email_address, phone_number, first_name, last_name) VALUES ('84', 'kpechell1n@google.ru', '606-504-9682', 'Kathryne', 'Pechell');
-INSERT INTO Administrators (admin_id, email_address, phone_number, first_name, last_name) VALUES ('16', 'rcorbin1o@amazon.co.uk', '635-956-4538', 'Red', 'Corbin');
-INSERT INTO Administrators (admin_id, email_address, phone_number, first_name, last_name) VALUES ('93', 'wdungate1p@hao123.com', '948-826-1439', 'Wynn', 'Dungate');
-INSERT INTO Administrators (admin_id, email_address, phone_number, first_name, last_name) VALUES ('31', 'lfoulcher1q@vk.com', '755-342-3059', 'Lucine', 'Foulcher');
-INSERT INTO Administrators (admin_id, email_address, phone_number, first_name, last_name) VALUES ('56', 'erotter1r@washingtonpost.com', '663-104-0561', 'Esme', 'Rotter');
-INSERT INTO Administrators (admin_id, email_address, phone_number, first_name, last_name) VALUES ('48', 'wrembrandt1s@jimdo.com', '129-893-7643', 'Wanda', 'Rembrandt');
-INSERT INTO Administrators (admin_id, email_address, phone_number, first_name, last_name) VALUES ('48', 'zchrispin1t@reuters.com', '234-181-9188', 'Zack', 'Chrispin');
-INSERT INTO Administrators (admin_id, email_address, phone_number, first_name, last_name) VALUES ('19', 'scamellini1u@uol.com.br', '773-889-0302', 'Smith', 'Camellini');
-INSERT INTO Administrators (admin_id, email_address, phone_number, first_name, last_name) VALUES ('84', 'darboine1v@sohu.com', '729-709-8557', 'Demott', 'Arboine');
-INSERT INTO Administrators (admin_id, email_address, phone_number, first_name, last_name) VALUES ('51', 'tcourt1w@mozilla.org', '332-352-1964', 'Tate', 'Court');
-INSERT INTO Administrators (admin_id, email_address, phone_number, first_name, last_name) VALUES ('72', 'rcaselli1x@sakura.ne.jp', '339-615-7371', 'Rufus', 'Caselli');
-INSERT INTO Administrators (admin_id, email_address, phone_number, first_name, last_name) VALUES ('93', 'blongworth1y@miibeian.gov.cn', '412-611-8505', 'Basilius', 'Longworth');
-INSERT INTO Administrators (admin_id, email_address, phone_number, first_name, last_name) VALUES ('75', 'mborn1z@feedburner.com', '251-500-1423', 'Minna', 'Born');
-INSERT INTO Administrators (admin_id, email_address, phone_number, first_name, last_name) VALUES ('47', 'cfeast20@cam.ac.uk', '823-884-0156', 'Courtnay', 'Feast');
-INSERT INTO Administrators (admin_id, email_address, phone_number, first_name, last_name) VALUES ('17', 'mtremethack21@surveymonkey.com', '779-464-8270', 'Madelaine', 'Tremethack');
-INSERT INTO Administrators (admin_id, email_address, phone_number, first_name, last_name) VALUES ('14', 'mcalleja22@miibeian.gov.cn', '174-867-4822', 'Mandie', 'Calleja');
-INSERT INTO Administrators (admin_id, email_address, phone_number, first_name, last_name) VALUES ('50', 'jkerner23@networksolutions.com', '225-431-5185', 'Jayme', 'Kerner');
-INSERT INTO Administrators (admin_id, email_address, phone_number, first_name, last_name) VALUES ('28', 'jpinfold24@live.com', '729-734-7214', 'Jesse', 'Pinfold');
-INSERT INTO Administrators (admin_id, email_address, phone_number, first_name, last_name) VALUES ('2', 'nmcmurthy25@bbc.co.uk', '177-846-5181', 'Noby', 'McMurthy');
-INSERT INTO Administrators (admin_id, email_address, phone_number, first_name, last_name) VALUES ('13', 'odaughtry26@vk.com', '857-102-8445', 'Oliver', 'Daughtry');
-INSERT INTO Administrators (admin_id, email_address, phone_number, first_name, last_name) VALUES ('32', 'amayhead27@pcworld.com', '263-537-8433', 'Ahmad', 'Mayhead');
-INSERT INTO Administrators (admin_id, email_address, phone_number, first_name, last_name) VALUES ('19', 'gdeclerq28@mozilla.com', '739-465-6302', 'Garfield', 'de Clerq');
-INSERT INTO Administrators (admin_id, email_address, phone_number, first_name, last_name) VALUES ('76', 'djaffa29@usda.gov', '625-192-0744', 'Doralyn', 'Jaffa');
-INSERT INTO Administrators (admin_id, email_address, phone_number, first_name, last_name) VALUES ('18', 'akitchingham2a@chron.com', '967-385-0017', 'Antonino', 'Kitchingham');
-INSERT INTO Administrators (admin_id, email_address, phone_number, first_name, last_name) VALUES ('7', 'aelijah2b@booking.com', '100-738-8815', 'Anneliese', 'Elijah');
-INSERT INTO Administrators (admin_id, email_address, phone_number, first_name, last_name) VALUES ('92', 'jhemmingway2c@baidu.com', '373-723-2223', 'Joycelin', 'Hemmingway');
-INSERT INTO Administrators (admin_id, email_address, phone_number, first_name, last_name) VALUES ('61', 'ebounds2d@google.de', '807-987-3229', 'Emmery', 'Bounds');
-INSERT INTO Administrators (admin_id, email_address, phone_number, first_name, last_name) VALUES ('67', 'tdmiterko2e@examiner.com', '157-974-2465', 'Tull', 'Dmiterko');
-INSERT INTO Administrators (admin_id, email_address, phone_number, first_name, last_name) VALUES ('94', 'rwallen2f@mysql.com', '838-521-7402', 'Russ', 'Wallen');
-INSERT INTO Administrators (admin_id, email_address, phone_number, first_name, last_name) VALUES ('35', 'wjacques2g@hc360.com', '669-728-5560', 'Wolf', 'Jacques');
-INSERT INTO Administrators (admin_id, email_address, phone_number, first_name, last_name) VALUES ('80', 'lbleue2h@liveinternet.ru', '781-745-1405', 'Lawrence', 'Bleue');
-INSERT INTO Administrators (admin_id, email_address, phone_number, first_name, last_name) VALUES ('80', 'cslade2i@alibaba.com', '649-381-6700', 'Christian', 'Slade');
-INSERT INTO Administrators (admin_id, email_address, phone_number, first_name, last_name) VALUES ('39', 'mtrice2j@t-online.de', '920-883-8329', 'Marieann', 'Trice');
-INSERT INTO Administrators (admin_id, email_address, phone_number, first_name, last_name) VALUES ('5', 'zoldland2k@imageshack.us', '540-308-1342', 'Zelda', 'Oldland');
-INSERT INTO Administrators (admin_id, email_address, phone_number, first_name, last_name) VALUES ('43', 'twakerley2l@freewebs.com', '207-273-5241', 'Trever', 'Wakerley');
-INSERT INTO Administrators (admin_id, email_address, phone_number, first_name, last_name) VALUES ('100', 'emoret2m@loc.gov', '180-843-9485', 'Elyn', 'Moret');
-INSERT INTO Administrators (admin_id, email_address, phone_number, first_name, last_name) VALUES ('57', 'lmanneville2n@tinyurl.com', '666-479-4048', 'Lynette', 'Manneville');
-INSERT INTO Administrators (admin_id, email_address, phone_number, first_name, last_name) VALUES ('92', 'maugustine2o@zimbio.com', '801-273-5701', 'Maggi', 'Augustine');
-INSERT INTO Administrators (admin_id, email_address, phone_number, first_name, last_name) VALUES ('45', 'ftisun2p@goodreads.com', '552-156-6917', 'Fidelia', 'Tisun');
-INSERT INTO Administrators (admin_id, email_address, phone_number, first_name, last_name) VALUES ('63', 'ccasolla2q@skype.com', '603-639-0223', 'Caren', 'Casolla');
-INSERT INTO Administrators (admin_id, email_address, phone_number, first_name, last_name) VALUES ('55', 'bsmithies2r@facebook.com', '728-434-8392', 'Blithe', 'Smithies');
-
---# Creators
-INSERT INTO Creators (creator_id, username, password, date_made, phone_number, email_address, first_name, last_name, card_number, cvv, expiration_date, street, city, state, zip_code) VALUES ('1', 'ronowlan0', 'WQRCKrSQK', '8/12/2022', '215-458-7971', 'rpinckney0@naver.com', 'Lizette', 'Ruby', '3575723003460298', '971', '9/5/2022', 'Straubel', 'Philadelphia', 'Pennsylvania', '19136');
-INSERT INTO Creators (creator_id, username, password, date_made, phone_number, email_address, first_name, last_name, card_number, cvv, expiration_date, street, city, state, zip_code) VALUES ('2', 'bbedow1', 'wwBhYAfm', '1/11/2023', '509-190-5775', 'bcasine1@theatlantic.com', 'Abbie', 'Bonnibelle', '3548009314243613', '597', '7/29/2022', 'Basil', 'Yakima', 'Washington', '98907');
-INSERT INTO Creators (creator_id, username, password, date_made, phone_number, email_address, first_name, last_name, card_number, cvv, expiration_date, street, city, state, zip_code) VALUES ('3', 'mmyott2', 'o1Kef7SV82x', '5/31/2022', '843-865-3961', 'mwallage2@admin.ch', 'Calida', 'Marna', '6304905551315591', '34', '9/11/2022', 'Lindbergh', 'Charleston', 'South Carolina', '29403');
-INSERT INTO Creators (creator_id, username, password, date_made, phone_number, email_address, first_name, last_name, card_number, cvv, expiration_date, street, city, state, zip_code) VALUES ('4', 'rchallener3', 'LhIJ7NVP', '6/10/2022', '617-257-2093', 'rlook3@taobao.com', 'Kandace', 'Rita', '4175008343478636', '577', '8/26/2022', 'Packers', 'Newton', 'Massachusetts', '02458');
-INSERT INTO Creators (creator_id, username, password, date_made, phone_number, email_address, first_name, last_name, card_number, cvv, expiration_date, street, city, state, zip_code) VALUES ('5', 'nbuyers4', '8bqRk3', '6/12/2022', '772-421-4686', 'ncoburn4@blogger.com', 'Martelle', 'Nani', '3584555883989494', '846', '10/23/2022', 'Grover', 'Fort Pierce', 'Florida', '34981');
-INSERT INTO Creators (creator_id, username, password, date_made, phone_number, email_address, first_name, last_name, card_number, cvv, expiration_date, street, city, state, zip_code) VALUES ('6', 'gmenzies5', 'weevjAJXLo4', '4/2/2023', '412-283-6872', 'gflemmich5@kickstarter.com', 'Nelie', 'Gare', '3557873048972484', '665', '3/17/2023', 'Heffernan', 'Pittsburgh', 'Pennsylvania', '15215');
-INSERT INTO Creators (creator_id, username, password, date_made, phone_number, email_address, first_name, last_name, card_number, cvv, expiration_date, street, city, state, zip_code) VALUES ('7', 'aklimushev6', 'fGJWXqA07', '5/15/2022', '734-365-8211', 'akornilov6@nbcnews.com', 'Bobina', 'Alphonso', '3571965276929624', '201', '5/30/2022', 'Gulseth', 'Detroit', 'Michigan', '48206');
-INSERT INTO Creators (creator_id, username, password, date_made, phone_number, email_address, first_name, last_name, card_number, cvv, expiration_date, street, city, state, zip_code) VALUES ('8', 'lhutson7', 'l6m0jd9CCk1', '9/6/2022', '775-207-3600', 'ltrobey7@php.net', 'Alexi', 'Lelia', '5020031283729631315', '220', '1/5/2023', 'Vera', 'Reno', 'Nevada', '89510');
-INSERT INTO Creators (creator_id, username, password, date_made, phone_number, email_address, first_name, last_name, card_number, cvv, expiration_date, street, city, state, zip_code) VALUES ('9', 'smacdonogh8', 'zPfr8fy', '9/7/2022', '937-959-0486', 'sfagge8@pbs.org', 'Ann', 'Susette', '3566204835898790', '327', '12/14/2022', 'Vidon', 'Dayton', 'Ohio', '45454');
-INSERT INTO Creators (creator_id, username, password, date_made, phone_number, email_address, first_name, last_name, card_number, cvv, expiration_date, street, city, state, zip_code) VALUES ('10', 'akeasey9', '9jvS67nA', '1/1/2023', '414-781-5574', 'asilley9@smh.com.au', 'Darelle', 'Allys', '374288758768047', '755', '5/14/2022', 'Arizona', 'Milwaukee', 'Wisconsin', '53220');
-INSERT INTO Creators (creator_id, username, password, date_made, phone_number, email_address, first_name, last_name, card_number, cvv, expiration_date, street, city, state, zip_code) VALUES ('11', 'fkosiadaa', 'PbWDXuxqdAd', '2/14/2023', '719-607-5158', 'fvonhagta@walmart.com', 'Cedric', 'Faunie', '372301465110288', '799', '3/10/2023', 'Hermina', 'Pueblo', 'Colorado', '81015');
-INSERT INTO Creators (creator_id, username, password, date_made, phone_number, email_address, first_name, last_name, card_number, cvv, expiration_date, street, city, state, zip_code) VALUES ('12', 'hsebireb', 'Sg4XB7j5n8g', '6/20/2022', '614-410-5169', 'hgorringeb@weather.com', 'Urbain', 'Hartwell', '4911115048142802', '761', '8/17/2022', 'Gale', 'Columbus', 'Ohio', '43204');
-INSERT INTO Creators (creator_id, username, password, date_made, phone_number, email_address, first_name, last_name, card_number, cvv, expiration_date, street, city, state, zip_code) VALUES ('13', 'mgathc', 'Ku4COfsQOkRq', '3/28/2023', '610-192-3311', 'mparkinc@nationalgeographic.com', 'Tim', 'Manon', '3550920156528439', '346', '3/30/2023', 'Arrowood', 'Reading', 'Pennsylvania', '19610');
-INSERT INTO Creators (creator_id, username, password, date_made, phone_number, email_address, first_name, last_name, card_number, cvv, expiration_date, street, city, state, zip_code) VALUES ('14', 'jpleasaunced', '9kUYryDtX', '7/18/2022', '386-313-8790', 'jdavinetd@tinypic.com', 'Sebastian', 'Justis', '3531364956933057', '819', '4/2/2023', 'Basil', 'Daytona Beach', 'Florida', '32123');
-INSERT INTO Creators (creator_id, username, password, date_made, phone_number, email_address, first_name, last_name, card_number, cvv, expiration_date, street, city, state, zip_code) VALUES ('15', 'amacronalde', '3tt9pQVm', '10/18/2022', '510-619-2128', 'aaspinalle@disqus.com', 'Aldo', 'Alfie', '3528968885663026', '363', '7/18/2022', 'Petterle', 'Richmond', 'California', '94807');
-INSERT INTO Creators (creator_id, username, password, date_made, phone_number, email_address, first_name, last_name, card_number, cvv, expiration_date, street, city, state, zip_code) VALUES ('16', 'ccheleyf', 'er20nfh5XDQP', '8/28/2022', '215-547-7228', 'ccollocottf@vistaprint.com', 'Red', 'Casar', '3584005372874765', '463', '3/2/2023', 'Red Cloud', 'Philadelphia', 'Pennsylvania', '19093');
-INSERT INTO Creators (creator_id, username, password, date_made, phone_number, email_address, first_name, last_name, card_number, cvv, expiration_date, street, city, state, zip_code) VALUES ('17', 'nringsg', '1QhEkRY', '3/17/2023', '313-378-8674', 'nboerderg@reverbnation.com', 'Richart', 'Nikolaus', '3577557515451264', '276', '6/5/2022', 'Fordem', 'Detroit', 'Michigan', '48224');
-INSERT INTO Creators (creator_id, username, password, date_made, phone_number, email_address, first_name, last_name, card_number, cvv, expiration_date, street, city, state, zip_code) VALUES ('18', 'msouzah', 'k2jTwM', '3/14/2023', '414-596-0181', 'mliveingh@chron.com', 'Marge', 'Marieann', '3589981103612184', '800', '9/19/2022', 'Oriole', 'Milwaukee', 'Wisconsin', '53263');
-INSERT INTO Creators (creator_id, username, password, date_made, phone_number, email_address, first_name, last_name, card_number, cvv, expiration_date, street, city, state, zip_code) VALUES ('19', 'jalderwicki', '519ewm', '10/2/2022', '213-748-6251', 'jmcphillipsi@walmart.com', 'Merilee', 'Jasen', '201531217801548', '971', '8/29/2022', 'Graedel', 'Los Angeles', 'California', '90081');
-INSERT INTO Creators (creator_id, username, password, date_made, phone_number, email_address, first_name, last_name, card_number, cvv, expiration_date, street, city, state, zip_code) VALUES ('20', 'bclemontj', 'usJDO19WOB', '10/5/2022', '719-677-9752', 'bwaudbyj@angelfire.com', 'Allene', 'Beilul', '3532145550623106', '573', '11/3/2022', 'Barby', 'Colorado Springs', 'Colorado', '80935');
-INSERT INTO Creators (creator_id, username, password, date_made, phone_number, email_address, first_name, last_name, card_number, cvv, expiration_date, street, city, state, zip_code) VALUES ('21', 'lpoggk', 'NTlP3RfI5', '7/24/2022', '504-765-7916', 'lbielfeldtk@fotki.com', 'Levey', 'Lurlene', '3576470252277846', '867', '2/4/2023', 'Arapahoe', 'New Orleans', 'Louisiana', '70116');
-INSERT INTO Creators (creator_id, username, password, date_made, phone_number, email_address, first_name, last_name, card_number, cvv, expiration_date, street, city, state, zip_code) VALUES ('22', 'sbuyersl', 'VZyapfQD01I', '7/27/2022', '714-799-4053', 'sdudderidgel@cocolog-nifty.com', 'Anabelle', 'Starlin', '4017954960282', '237', '4/3/2023', 'Stone Corner', 'San Jose', 'California', '95128');
-INSERT INTO Creators (creator_id, username, password, date_made, phone_number, email_address, first_name, last_name, card_number, cvv, expiration_date, street, city, state, zip_code) VALUES ('23', 'jsapshedm', 'LqbpwmqZ8', '7/5/2022', '260-704-4273', 'jeasbiem@cnn.com', 'Val', 'Jeno', '3557701623660416', '765', '5/18/2022', 'Esch', 'Fort Wayne', 'Indiana', '46896');
-INSERT INTO Creators (creator_id, username, password, date_made, phone_number, email_address, first_name, last_name, card_number, cvv, expiration_date, street, city, state, zip_code) VALUES ('24', 'kgosnalln', 'zB39Bsxb', '10/26/2022', '714-577-4962', 'knawtonn@bloomberg.com', 'Nadia', 'Keven', '5641829798273476', '147', '5/31/2022', 'Springs', 'Fullerton', 'California', '92835');
-INSERT INTO Creators (creator_id, username, password, date_made, phone_number, email_address, first_name, last_name, card_number, cvv, expiration_date, street, city, state, zip_code) VALUES ('25', 'cbugdello', 'QZkI1hR', '2/5/2023', '813-828-8476', 'ccaddo@yahoo.co.jp', 'North', 'Calvin', '337941872101406', '286', '8/11/2022', 'Bluestem', 'Tampa', 'Florida', '33686');
-INSERT INTO Creators (creator_id, username, password, date_made, phone_number, email_address, first_name, last_name, card_number, cvv, expiration_date, street, city, state, zip_code) VALUES ('26', 'atabertp', 'uszk5E2ufRQ', '11/18/2022', '623-104-1840', 'amcairtp@xing.com', 'Lianna', 'Ava', '3543082186298648', '469', '7/21/2022', 'Waubesa', 'Phoenix', 'Arizona', '85035');
-INSERT INTO Creators (creator_id, username, password, date_made, phone_number, email_address, first_name, last_name, card_number, cvv, expiration_date, street, city, state, zip_code) VALUES ('27', 'ayeabsleyq', 'bPBf8rzTs', '9/28/2022', '864-535-1819', 'akinsetq@sun.com', 'Jania', 'Alexander', '3573049034720019', '695', '4/2/2023', 'Lindbergh', 'Spartanburg', 'South Carolina', '29305');
-INSERT INTO Creators (creator_id, username, password, date_made, phone_number, email_address, first_name, last_name, card_number, cvv, expiration_date, street, city, state, zip_code) VALUES ('28', 'kbeaner', 'SyEDUu', '3/18/2023', '512-389-2669', 'kwarriorr@pagesperso-orange.fr', 'Gardner', 'Kyla', '5602255700261564', '688', '9/21/2022', 'Steensland', 'Austin', 'Texas', '78703');
-INSERT INTO Creators (creator_id, username, password, date_made, phone_number, email_address, first_name, last_name, card_number, cvv, expiration_date, street, city, state, zip_code) VALUES ('29', 'rallins', 'elyxXzCW5v', '10/15/2022', '225-805-9552', 'rjudges@omniture.com', 'Griffy', 'Randie', '374622076848075', '535', '8/10/2022', 'Northwestern', 'Baton Rouge', 'Louisiana', '70820');
-INSERT INTO Creators (creator_id, username, password, date_made, phone_number, email_address, first_name, last_name, card_number, cvv, expiration_date, street, city, state, zip_code) VALUES ('30', 'amiskt', 'QiOZ5FgDRYW', '8/31/2022', '615-509-3632', 'akencottt@tinyurl.com', 'Colver', 'Amii', '30349170309491', '647', '5/8/2022', 'Nevada', 'Nashville', 'Tennessee', '37220');
-INSERT INTO Creators (creator_id, username, password, date_made, phone_number, email_address, first_name, last_name, card_number, cvv, expiration_date, street, city, state, zip_code) VALUES ('31', 'bgathercoalu', '757igIRMc', '12/11/2022', '718-379-0287', 'bspacyu@deviantart.com', 'Gypsy', 'Barbaraanne', '3535971669030306', '460', '3/7/2023', 'Jackson', 'Staten Island', 'New York', '10305');
-INSERT INTO Creators (creator_id, username, password, date_made, phone_number, email_address, first_name, last_name, card_number, cvv, expiration_date, street, city, state, zip_code) VALUES ('32', 'ebescobyv', 'orp5VpebOx', '3/31/2023', '210-993-2346', 'eeadyv@walmart.com', 'Reese', 'Erasmus', '3534124610416809', '404', '9/28/2022', 'Annamark', 'San Antonio', 'Texas', '78210');
-INSERT INTO Creators (creator_id, username, password, date_made, phone_number, email_address, first_name, last_name, card_number, cvv, expiration_date, street, city, state, zip_code) VALUES ('33', 'rtraskw', 'FTJSJtk5q', '6/3/2022', '775-894-0563', 'rpancoustw@is.gd', 'Chrysa', 'Risa', '3550983060770455', '261', '5/29/2022', 'Crest Line', 'Reno', 'Nevada', '89510');
-INSERT INTO Creators (creator_id, username, password, date_made, phone_number, email_address, first_name, last_name, card_number, cvv, expiration_date, street, city, state, zip_code) VALUES ('34', 'ftindallx', 'DLvTNjvB7ns', '3/27/2023', '515-247-0535', 'fbugbirdx@ibm.com', 'Matty', 'Flora', '5108756868585743', '376', '12/28/2022', 'Kropf', 'Des Moines', 'Iowa', '50335');
-INSERT INTO Creators (creator_id, username, password, date_made, phone_number, email_address, first_name, last_name, card_number, cvv, expiration_date, street, city, state, zip_code) VALUES ('35', 'mlissemorey', 'AYi8JPR', '9/30/2022', '956-288-0173', 'msmowtony@networksolutions.com', 'Eartha', 'Mordecai', '58938603075519435', '921', '11/29/2022', 'Rigney', 'Laredo', 'Texas', '78044');
-INSERT INTO Creators (creator_id, username, password, date_made, phone_number, email_address, first_name, last_name, card_number, cvv, expiration_date, street, city, state, zip_code) VALUES ('36', 'astockleyz', 'aErAzmMP', '6/19/2022', '612-419-6931', 'arumboldz@hostgator.com', 'Corbie', 'Adelheid', '337941702302570', '426', '10/27/2022', 'Fallview', 'Minneapolis', 'Minnesota', '55436');
-INSERT INTO Creators (creator_id, username, password, date_made, phone_number, email_address, first_name, last_name, card_number, cvv, expiration_date, street, city, state, zip_code) VALUES ('37', 'sewington10', 'uUcEjSaZi', '11/19/2022', '336-555-2715', 'sodulchonta10@taobao.com', 'Auguste', 'Sawyer', '5602257209433322', '53', '12/8/2022', '2nd', 'Winston Salem', 'North Carolina', '27157');
-INSERT INTO Creators (creator_id, username, password, date_made, phone_number, email_address, first_name, last_name, card_number, cvv, expiration_date, street, city, state, zip_code) VALUES ('38', 'mgilogly11', 'gjISqac8zMS', '3/25/2023', '469-865-7429', 'malsford11@cnn.com', 'Sallie', 'Manfred', '5048373875330700', '484', '1/30/2023', 'Derek', 'Dallas', 'Texas', '75205');
-INSERT INTO Creators (creator_id, username, password, date_made, phone_number, email_address, first_name, last_name, card_number, cvv, expiration_date, street, city, state, zip_code) VALUES ('39', 'egavin12', 'MDu2XyJ5F', '2/22/2023', '916-163-5836', 'eganniclifft12@europa.eu', 'Pierrette', 'Erwin', '3571766247716060', '182', '5/31/2022', 'Dottie', 'Sacramento', 'California', '94263');
-INSERT INTO Creators (creator_id, username, password, date_made, phone_number, email_address, first_name, last_name, card_number, cvv, expiration_date, street, city, state, zip_code) VALUES ('40', 'bhounsham13', 'qvonNaFFxf', '10/1/2022', '304-725-2255', 'bpainter13@gizmodo.com', 'Kennett', 'Brendin', '5523366364267643', '383', '7/14/2022', 'Elgar', 'Charleston', 'West Virginia', '25313');
-INSERT INTO Creators (creator_id, username, password, date_made, phone_number, email_address, first_name, last_name, card_number, cvv, expiration_date, street, city, state, zip_code) VALUES ('41', 'smooney14', 'CbkSIEHFDx1', '10/3/2022', '713-333-5287', 'sgethouse14@disqus.com', 'Rodge', 'Shurlocke', '630472809605414470', '247', '7/5/2022', 'Lien', 'Houston', 'Texas', '77045');
-INSERT INTO Creators (creator_id, username, password, date_made, phone_number, email_address, first_name, last_name, card_number, cvv, expiration_date, street, city, state, zip_code) VALUES ('42', 'dpalser15', 'WzSzQdz', '11/19/2022', '203-319-5345', 'dbratt15@google.de', 'Nowell', 'Dacy', '3583132648395705', '566', '12/26/2022', 'Annamark', 'Bridgeport', 'Connecticut', '06606');
-INSERT INTO Creators (creator_id, username, password, date_made, phone_number, email_address, first_name, last_name, card_number, cvv, expiration_date, street, city, state, zip_code) VALUES ('43', 'ehinstridge16', 'foWeE8', '9/7/2022', '803-925-0240', 'epinckstone16@istockphoto.com', 'Thalia', 'Emogene', '374622133349992', '765', '10/14/2022', 'Arrowood', 'Columbia', 'South Carolina', '29225');
-INSERT INTO Creators (creator_id, username, password, date_made, phone_number, email_address, first_name, last_name, card_number, cvv, expiration_date, street, city, state, zip_code) VALUES ('44', 'smcevon17', '4FSWJQGvq', '4/12/2023', '502-644-5249', 'sjoyce17@printfriendly.com', 'Antonina', 'Seumas', '677100481779837448', '360', '4/27/2022', 'Arkansas', 'Louisville', 'Kentucky', '40210');
-INSERT INTO Creators (creator_id, username, password, date_made, phone_number, email_address, first_name, last_name, card_number, cvv, expiration_date, street, city, state, zip_code) VALUES ('45', 'edowbekin18', 'Nc9oM7nRDbl', '10/18/2022', '205-566-6987', 'efernley18@apache.org', 'Johnna', 'Estrella', '374622907282809', '534', '6/4/2022', 'Acker', 'Birmingham', 'Alabama', '35244');
-INSERT INTO Creators (creator_id, username, password, date_made, phone_number, email_address, first_name, last_name, card_number, cvv, expiration_date, street, city, state, zip_code) VALUES ('46', 'rdilleway19', 'fKck3QNuT8', '6/16/2022', '405-527-6061', 'rbondar19@cmu.edu', 'Yolanda', 'Rodrique', '5558314377698097', '948', '3/5/2023', 'Paget', 'Oklahoma City', 'Oklahoma', '73152');
-INSERT INTO Creators (creator_id, username, password, date_made, phone_number, email_address, first_name, last_name, card_number, cvv, expiration_date, street, city, state, zip_code) VALUES ('47', 'dwastall1a', '59c7orX71e', '2/3/2023', '512-772-9421', 'dboog1a@marriott.com', 'Angeline', 'Dominga', '6759768076133463', '437', '1/30/2023', 'Waubesa', 'Austin', 'Texas', '78783');
-INSERT INTO Creators (creator_id, username, password, date_made, phone_number, email_address, first_name, last_name, card_number, cvv, expiration_date, street, city, state, zip_code) VALUES ('48', 'bgaylord1b', 'sVDdjzSzB', '6/5/2022', '615-762-6770', 'bcorsham1b@list-manage.com', 'Launce', 'Barb', '6763886982860138', '324', '2/15/2023', 'Waxwing', 'Nashville', 'Tennessee', '37210');
-INSERT INTO Creators (creator_id, username, password, date_made, phone_number, email_address, first_name, last_name, card_number, cvv, expiration_date, street, city, state, zip_code) VALUES ('49', 'ahusby1c', 'jnBHSbP', '1/26/2023', '718-596-2436', 'anano1c@bloglines.com', 'Jereme', 'Anthiathia', '3574648959313558', '523', '3/4/2023', '2nd', 'Jamaica', 'New York', '11480');
-INSERT INTO Creators (creator_id, username, password, date_made, phone_number, email_address, first_name, last_name, card_number, cvv, expiration_date, street, city, state, zip_code) VALUES ('50', 'bsamsin1d', 'gKYUU6', '2/6/2023', '440-770-3606', 'bbielfeldt1d@acquirethisname.com', 'Wake', 'Betsey', '4913817930724005', '141', '12/2/2022', 'Buhler', 'Cleveland', 'Ohio', '44125');
-INSERT INTO Creators (creator_id, username, password, date_made, phone_number, email_address, first_name, last_name, card_number, cvv, expiration_date, street, city, state, zip_code) VALUES ('51', 'lburberow1e', 'QVoKRRNx7F', '3/7/2023', '210-374-3877', 'lwilkinson1e@webeden.co.uk', 'Alla', 'Lorianne', '201735134858271', '559', '2/3/2023', 'Jenna', 'San Antonio', 'Texas', '78291');
-INSERT INTO Creators (creator_id, username, password, date_made, phone_number, email_address, first_name, last_name, card_number, cvv, expiration_date, street, city, state, zip_code) VALUES ('52', 'ativnan1f', 'xZzS4FI', '2/11/2023', '775-587-4695', 'afontelles1f@indiatimes.com', 'Ellyn', 'Ara', '6383299708595352', '905', '3/15/2023', 'Armistice', 'Reno', 'Nevada', '89550');
-INSERT INTO Creators (creator_id, username, password, date_made, phone_number, email_address, first_name, last_name, card_number, cvv, expiration_date, street, city, state, zip_code) VALUES ('53', 'vmulrean1g', 'E8Dn22Bu3SCv', '7/3/2022', '915-860-8779', 'vpeck1g@springer.com', 'Boycie', 'Vivien', '201677468644275', '349', '11/22/2022', 'Johnson', 'El Paso', 'Texas', '79916');
-INSERT INTO Creators (creator_id, username, password, date_made, phone_number, email_address, first_name, last_name, card_number, cvv, expiration_date, street, city, state, zip_code) VALUES ('54', 'ibiaggelli1h', 'Egj360zBnVP', '9/17/2022', '916-532-9247', 'idongate1h@topsy.com', 'Maddy', 'Iona', '3576639912092064', '715', '4/19/2022', 'Packers', 'Sacramento', 'California', '95894');
-INSERT INTO Creators (creator_id, username, password, date_made, phone_number, email_address, first_name, last_name, card_number, cvv, expiration_date, street, city, state, zip_code) VALUES ('55', 'ydakhno1i', '4WPwLU', '3/5/2023', '304-817-6385', 'ywestley1i@ibm.com', 'Wilek', 'Yorker', '5559404752566719', '910', '5/15/2022', 'Waxwing', 'Huntington', 'West Virginia', '25770');
-INSERT INTO Creators (creator_id, username, password, date_made, phone_number, email_address, first_name, last_name, card_number, cvv, expiration_date, street, city, state, zip_code) VALUES ('56', 'rsewart1j', 'SVRmen', '8/23/2022', '281-486-1998', 'ralmeida1j@g.co', 'Rufe', 'Raynor', '3565608133361833', '170', '3/20/2023', 'Mesta', 'Houston', 'Texas', '77050');
-INSERT INTO Creators (creator_id, username, password, date_made, phone_number, email_address, first_name, last_name, card_number, cvv, expiration_date, street, city, state, zip_code) VALUES ('57', 'lcheak1k', 'epf9J4wjuoK', '10/17/2022', '520-640-1962', 'lnutley1k@nationalgeographic.com', 'Opalina', 'Lucille', '3563227093574640', '333', '7/7/2022', 'Burrows', 'Tucson', 'Arizona', '85705');
-INSERT INTO Creators (creator_id, username, password, date_made, phone_number, email_address, first_name, last_name, card_number, cvv, expiration_date, street, city, state, zip_code) VALUES ('58', 'bshatford1l', 'A5qgfToJED', '3/15/2023', '423-205-8429', 'bmemory1l@opera.com', 'Ariel', 'Berte', '3576639867768379', '32', '5/21/2022', '5th', 'Chattanooga', 'Tennessee', '37410');
-INSERT INTO Creators (creator_id, username, password, date_made, phone_number, email_address, first_name, last_name, card_number, cvv, expiration_date, street, city, state, zip_code) VALUES ('59', 'vbehnke1m', 'QBVJAFlWh02t', '10/2/2022', '757-981-4113', 'vhembrow1m@drupal.org', 'Jarred', 'Vonnie', '675947187024777484', '738', '7/2/2022', 'Glacier Hill', 'Virginia Beach', 'Virginia', '23459');
-INSERT INTO Creators (creator_id, username, password, date_made, phone_number, email_address, first_name, last_name, card_number, cvv, expiration_date, street, city, state, zip_code) VALUES ('60', 'fgoudard1n', 'gwleMYXnygq', '12/28/2022', '919-366-9581', 'fshotton1n@umn.edu', 'Lucho', 'Fan', '3540676694722792', '761', '6/25/2022', 'Hooker', 'Raleigh', 'North Carolina', '27635');
-INSERT INTO Creators (creator_id, username, password, date_made, phone_number, email_address, first_name, last_name, card_number, cvv, expiration_date, street, city, state, zip_code) VALUES ('61', 'eclunie1o', 'q3cWBa', '5/4/2022', '480-708-3283', 'equayle1o@salon.com', 'Rena', 'Ethyl', '3569806374925011', '990', '1/2/2023', 'Meadow Valley', 'Apache Junction', 'Arizona', '85219');
-INSERT INTO Creators (creator_id, username, password, date_made, phone_number, email_address, first_name, last_name, card_number, cvv, expiration_date, street, city, state, zip_code) VALUES ('62', 'cbault1p', 'pakEOMa', '2/9/2023', '619-780-2589', 'cdowthwaite1p@domainmarket.com', 'Rakel', 'Clemmy', '6759730248341655469', '225', '5/20/2022', 'Trailsway', 'San Diego', 'California', '92165');
-INSERT INTO Creators (creator_id, username, password, date_made, phone_number, email_address, first_name, last_name, card_number, cvv, expiration_date, street, city, state, zip_code) VALUES ('63', 'vandraud1q', 'i66SNbSsFd', '5/10/2022', '850-884-1089', 'vsharram1q@baidu.com', 'Barry', 'Violet', '3549277585618180', '291', '10/7/2022', 'Crest Line', 'Pensacola', 'Florida', '32595');
-INSERT INTO Creators (creator_id, username, password, date_made, phone_number, email_address, first_name, last_name, card_number, cvv, expiration_date, street, city, state, zip_code) VALUES ('64', 'etadman1r', 'tLLlCmAS', '6/29/2022', '540-595-0701', 'etanguy1r@soundcloud.com', 'Orton', 'Enriqueta', '3549291281749793', '637', '11/20/2022', 'Namekagon', 'Roanoke', 'Virginia', '24040');
-INSERT INTO Creators (creator_id, username, password, date_made, phone_number, email_address, first_name, last_name, card_number, cvv, expiration_date, street, city, state, zip_code) VALUES ('65', 'dsiddele1s', 'nFkD0cGjkK', '5/17/2022', '517-604-2756', 'dmcgreary1s@bloglovin.com', 'Elvis', 'Dian', '4913215051296467', '773', '11/13/2022', 'Hooker', 'Lansing', 'Michigan', '48901');
-INSERT INTO Creators (creator_id, username, password, date_made, phone_number, email_address, first_name, last_name, card_number, cvv, expiration_date, street, city, state, zip_code) VALUES ('66', 'ioakwood1t', 'r15Ka25v', '5/8/2022', '559-943-8666', 'iwhipple1t@springer.com', 'Fayette', 'Inger', '5610720311102531', '508', '2/22/2023', 'Clove', 'Fresno', 'California', '93709');
-INSERT INTO Creators (creator_id, username, password, date_made, phone_number, email_address, first_name, last_name, card_number, cvv, expiration_date, street, city, state, zip_code) VALUES ('67', 'sfinci1u', '0YsFzk0', '11/18/2022', '309-436-4315', 'sanfosso1u@google.com.br', 'Frederique', 'Sharline', '348269302812666', '170', '7/16/2022', 'Union', 'Carol Stream', 'Illinois', '60158');
-INSERT INTO Creators (creator_id, username, password, date_made, phone_number, email_address, first_name, last_name, card_number, cvv, expiration_date, street, city, state, zip_code) VALUES ('68', 'mhazeldene1v', 'oBR1Xcj880', '3/18/2023', '713-273-8832', 'mdorricott1v@networksolutions.com', 'Daveta', 'Marlie', '3587190108000021', '508', '1/11/2023', 'Macpherson', 'Houston', 'Texas', '77271');
-INSERT INTO Creators (creator_id, username, password, date_made, phone_number, email_address, first_name, last_name, card_number, cvv, expiration_date, street, city, state, zip_code) VALUES ('69', 'ktweddle1w', 'hep2UdzP6F4', '1/4/2023', '240-556-4349', 'klamswood1w@oakley.com', 'Mercy', 'Kilian', '5602256828815836', '756', '9/14/2022', 'Northport', 'Silver Spring', 'Maryland', '20918');
-INSERT INTO Creators (creator_id, username, password, date_made, phone_number, email_address, first_name, last_name, card_number, cvv, expiration_date, street, city, state, zip_code) VALUES ('70', 'elife1x', 'QwOt8fec42', '3/28/2023', '303-392-7021', 'enarey1x@soundcloud.com', 'Alf', 'Erek', '3551133292386758', '626', '10/13/2022', 'Huxley', 'Denver', 'Colorado', '80243');
-INSERT INTO Creators (creator_id, username, password, date_made, phone_number, email_address, first_name, last_name, card_number, cvv, expiration_date, street, city, state, zip_code) VALUES ('71', 'jhenker1y', 'dCKaVW', '11/4/2022', '520-663-2337', 'jcogar1y@blogs.com', 'Pen', 'Jaimie', '4913932609624897', '946', '7/31/2022', 'Arkansas', 'Tucson', 'Arizona', '85743');
-INSERT INTO Creators (creator_id, username, password, date_made, phone_number, email_address, first_name, last_name, card_number, cvv, expiration_date, street, city, state, zip_code) VALUES ('72', 'jlording1z', 'Sv3eKD', '12/10/2022', '936-496-3130', 'jwhatford1z@tripod.com', 'Gordan', 'Jody', '3528932854153708', '901', '11/11/2022', 'Hoepker', 'Houston', 'Texas', '77090');
-INSERT INTO Creators (creator_id, username, password, date_made, phone_number, email_address, first_name, last_name, card_number, cvv, expiration_date, street, city, state, zip_code) VALUES ('73', 'nantley20', 'iiOKac', '3/23/2023', '520-925-4941', 'nlindell20@homestead.com', 'Gwennie', 'Nonnah', '3557601567474172', '812', '1/18/2023', 'Rieder', 'Tucson', 'Arizona', '85743');
-INSERT INTO Creators (creator_id, username, password, date_made, phone_number, email_address, first_name, last_name, card_number, cvv, expiration_date, street, city, state, zip_code) VALUES ('74', 'nhafford21', 'yAZRH0ts', '1/5/2023', '714-627-1475', 'nfaley21@canalblog.com', 'Graehme', 'Nikita', '337941812183084', '6', '10/30/2022', 'Canary', 'Fullerton', 'California', '92835');
-INSERT INTO Creators (creator_id, username, password, date_made, phone_number, email_address, first_name, last_name, card_number, cvv, expiration_date, street, city, state, zip_code) VALUES ('75', 'pcollumbell22', 'zuz7Io', '11/26/2022', '360-717-1209', 'ptotton22@gizmodo.com', 'Thaxter', 'Paxton', '3544918531831568', '73', '12/2/2022', 'Browning', 'Vancouver', 'Washington', '98687');
-INSERT INTO Creators (creator_id, username, password, date_made, phone_number, email_address, first_name, last_name, card_number, cvv, expiration_date, street, city, state, zip_code) VALUES ('76', 'scapps23', 'U9nB26FUxvrS', '12/11/2022', '269-393-6748', 'scovil23@phoca.cz', 'Doralia', 'Sisile', '4041376156121', '264', '7/16/2022', '6th', 'Kalamazoo', 'Michigan', '49006');
-INSERT INTO Creators (creator_id, username, password, date_made, phone_number, email_address, first_name, last_name, card_number, cvv, expiration_date, street, city, state, zip_code) VALUES ('77', 'hsawdy24', '9aeeVP', '9/3/2022', '559-262-7836', 'hmingame24@google.com.br', 'Carlina', 'Hamil', '374622826510926', '215', '9/5/2022', 'Pierstorff', 'Fresno', 'California', '93786');
-INSERT INTO Creators (creator_id, username, password, date_made, phone_number, email_address, first_name, last_name, card_number, cvv, expiration_date, street, city, state, zip_code) VALUES ('78', 'btiplady25', 'aqyMCZnsBUj', '4/17/2022', '719-973-9491', 'bhowkins25@answers.com', 'Alphard', 'Bennie', '5598017370757552', '763', '12/6/2022', 'Lyons', 'Colorado Springs', 'Colorado', '80920');
-INSERT INTO Creators (creator_id, username, password, date_made, phone_number, email_address, first_name, last_name, card_number, cvv, expiration_date, street, city, state, zip_code) VALUES ('79', 'ndebullion26', 'wScvKCz0yD73', '7/2/2022', '585-864-3058', 'natkins26@netlog.com', 'Charlotte', 'Nananne', '5108752447086436', '782', '5/4/2022', 'Swallow', 'Rochester', 'New York', '14646');
-INSERT INTO Creators (creator_id, username, password, date_made, phone_number, email_address, first_name, last_name, card_number, cvv, expiration_date, street, city, state, zip_code) VALUES ('80', 'rguion27', 'lRqn9q', '4/25/2022', '814-145-0538', 'rspilsbury27@wikipedia.org', 'Edna', 'Ramsay', '4017950349761', '778', '10/7/2022', 'Shoshone', 'Erie', 'Pennsylvania', '16510');
-INSERT INTO Creators (creator_id, username, password, date_made, phone_number, email_address, first_name, last_name, card_number, cvv, expiration_date, street, city, state, zip_code) VALUES ('81', 'peberst28', 'qIOZcdN7Z7', '7/26/2022', '937-418-7716', 'psallans28@hexun.com', 'Binnie', 'Pip', '4936020216924794', '161', '4/8/2023', 'Loftsgordon', 'Springfield', 'Ohio', '45505');
-INSERT INTO Creators (creator_id, username, password, date_made, phone_number, email_address, first_name, last_name, card_number, cvv, expiration_date, street, city, state, zip_code) VALUES ('82', 'aepsley29', 'WC2j12QyV', '9/23/2022', '605-164-2597', 'acaseri29@nyu.edu', 'Mariana', 'Aubine', '347560355541710', '480', '4/5/2023', 'Fulton', 'Sioux Falls', 'South Dakota', '57198');
-INSERT INTO Creators (creator_id, username, password, date_made, phone_number, email_address, first_name, last_name, card_number, cvv, expiration_date, street, city, state, zip_code) VALUES ('83', 'asantora2a', 'r4SfHts2S0P', '6/28/2022', '410-300-1660', 'abrigginshaw2a@parallels.com', 'Tasia', 'Ashien', '630480287693699098', '370', '3/27/2023', 'Service', 'Baltimore', 'Maryland', '21265');
-INSERT INTO Creators (creator_id, username, password, date_made, phone_number, email_address, first_name, last_name, card_number, cvv, expiration_date, street, city, state, zip_code) VALUES ('84', 'yguile2b', 'AiVsaH5OA06', '7/4/2022', '646-153-3656', 'ysampson2b@umn.edu', 'Licha', 'Yovonnda', '30241058840061', '995', '4/7/2023', 'Carpenter', 'New York City', 'New York', '10060');
-INSERT INTO Creators (creator_id, username, password, date_made, phone_number, email_address, first_name, last_name, card_number, cvv, expiration_date, street, city, state, zip_code) VALUES ('85', 'csyphas2c', 'sPp8RUX4nJ7', '11/18/2022', '805-766-3947', 'codooley2c@phpbb.com', 'Lona', 'Cyrillus', '3545743290546697', '303', '2/4/2023', '8th', 'Bakersfield', 'California', '93311');
-INSERT INTO Creators (creator_id, username, password, date_made, phone_number, email_address, first_name, last_name, card_number, cvv, expiration_date, street, city, state, zip_code) VALUES ('86', 'vwestberg2d', 'Gzz3EpUjfb', '1/1/2023', '209-357-1767', 'vmackniely2d@princeton.edu', 'Cosimo', 'Vladamir', '5100172057570793', '299', '12/13/2022', 'Upham', 'Stockton', 'California', '95205');
-INSERT INTO Creators (creator_id, username, password, date_made, phone_number, email_address, first_name, last_name, card_number, cvv, expiration_date, street, city, state, zip_code) VALUES ('87', 'nmccalister2e', 'QrKRprBQH', '4/14/2023', '210-338-0673', 'nneill2e@themeforest.net', 'Bard', 'Noreen', '3585088985045766', '178', '2/18/2023', 'Sunnyside', 'San Antonio', 'Texas', '78225');
-INSERT INTO Creators (creator_id, username, password, date_made, phone_number, email_address, first_name, last_name, card_number, cvv, expiration_date, street, city, state, zip_code) VALUES ('88', 'nhabbert2f', '5yH8cgcB', '12/21/2022', '336-703-4510', 'norsman2f@ning.com', 'Aleda', 'Nicolis', '6762140267922887', '632', '12/5/2022', 'Corben', 'Winston Salem', 'North Carolina', '27157');
-INSERT INTO Creators (creator_id, username, password, date_made, phone_number, email_address, first_name, last_name, card_number, cvv, expiration_date, street, city, state, zip_code) VALUES ('89', 'mmonroe2g', 'rKGCEp8SmOMW', '5/8/2022', '559-258-7924', 'mclarridge2g@virginia.edu', 'Seward', 'Mellisent', '5602231380458069', '275', '3/5/2023', 'Dorton', 'Fullerton', 'California', '92640');
-INSERT INTO Creators (creator_id, username, password, date_made, phone_number, email_address, first_name, last_name, card_number, cvv, expiration_date, street, city, state, zip_code) VALUES ('90', 'rgreason2h', 'YD6ohe4Y', '1/1/2023', '313-953-7252', 'rtirte2h@creativecommons.org', 'Clarabelle', 'Rriocard', '374283342468113', '372', '5/7/2022', 'Packers', 'Detroit', 'Michigan', '48267');
-INSERT INTO Creators (creator_id, username, password, date_made, phone_number, email_address, first_name, last_name, card_number, cvv, expiration_date, street, city, state, zip_code) VALUES ('91', 'lsmee2i', '2U8fmxs8I', '1/19/2023', '989-452-5506', 'lmcnirlin2i@webmd.com', 'Clary', 'Lynnell', '374283414057976', '553', '6/2/2022', 'Village', 'Saginaw', 'Michigan', '48604');
-INSERT INTO Creators (creator_id, username, password, date_made, phone_number, email_address, first_name, last_name, card_number, cvv, expiration_date, street, city, state, zip_code) VALUES ('92', 'gwitsey2j', 'ALIJIGXD3p', '7/28/2022', '717-881-3092', 'gbethell2j@youtube.com', 'Haslett', 'Giacopo', '30288418432733', '28', '3/3/2023', 'Monument', 'Lancaster', 'Pennsylvania', '17605');
-INSERT INTO Creators (creator_id, username, password, date_made, phone_number, email_address, first_name, last_name, card_number, cvv, expiration_date, street, city, state, zip_code) VALUES ('93', 'zfowell2k', 'bjRIRipL', '2/28/2023', '251-364-3177', 'zsilson2k@usda.gov', 'Henka', 'Zulema', '373063409491682', '526', '6/29/2022', 'Bartillon', 'Mobile', 'Alabama', '36616');
-INSERT INTO Creators (creator_id, username, password, date_made, phone_number, email_address, first_name, last_name, card_number, cvv, expiration_date, street, city, state, zip_code) VALUES ('94', 'dkamenar2l', '650ZSq', '3/1/2023', '404-579-3270', 'dchampniss2l@de.vu', 'Annabella', 'Doralin', '4017950039768', '721', '11/2/2022', 'Sycamore', 'Atlanta', 'Georgia', '31132');
-INSERT INTO Creators (creator_id, username, password, date_made, phone_number, email_address, first_name, last_name, card_number, cvv, expiration_date, street, city, state, zip_code) VALUES ('95', 'tliepmann2m', 'npdyfncpFQM', '12/6/2022', '510-521-8408', 'tcrutch2m@mapquest.com', 'Burr', 'Tildy', '6763516277999875', '375', '9/6/2022', 'Aberg', 'Oakland', 'California', '94627');
-INSERT INTO Creators (creator_id, username, password, date_made, phone_number, email_address, first_name, last_name, card_number, cvv, expiration_date, street, city, state, zip_code) VALUES ('96', 'emarin2n', 'axHTYI', '5/18/2022', '860-182-7341', 'ehopewell2n@ftc.gov', 'Julina', 'Emmalee', '201860606759003', '149', '6/23/2022', 'Elgar', 'Hartford', 'Connecticut', '06140');
-INSERT INTO Creators (creator_id, username, password, date_made, phone_number, email_address, first_name, last_name, card_number, cvv, expiration_date, street, city, state, zip_code) VALUES ('97', 'brisborough2o', 'WkidW55k', '12/4/2022', '804-353-7338', 'bskirving2o@linkedin.com', 'Salli', 'Bartholomew', '63049868727294184', '396', '2/18/2023', 'Quincy', 'Richmond', 'Virginia', '23203');
-INSERT INTO Creators (creator_id, username, password, date_made, phone_number, email_address, first_name, last_name, card_number, cvv, expiration_date, street, city, state, zip_code) VALUES ('98', 'mfeatherstonhalgh2p', 'YbuWcaQor', '3/21/2023', '717-852-8342', 'msaltsberger2p@etsy.com', 'Minnnie', 'Michaelina', '6304525960963821', '346', '5/16/2022', 'Hudson', 'Lancaster', 'Pennsylvania', '17622');
-INSERT INTO Creators (creator_id, username, password, date_made, phone_number, email_address, first_name, last_name, card_number, cvv, expiration_date, street, city, state, zip_code) VALUES ('99', 'eannand2q', 'Zb2VufypcY', '2/14/2023', '316-112-0751', 'ebuckberry2q@stumbleupon.com', 'Laughton', 'Ebonee', '3579139549281302', '875', '1/23/2023', 'Namekagon', 'Wichita', 'Kansas', '67205');
-INSERT INTO Creators (creator_id, username, password, date_made, phone_number, email_address, first_name, last_name, card_number, cvv, expiration_date, street, city, state, zip_code) VALUES ('100', 'grumbelow2r', 'gmBo5bZbJbdU', '12/11/2022', '904-998-8524', 'gcarff2r@icio.us', 'Lorri', 'Gina', '3549025775725855', '559', '8/10/2022', 'Mockingbird', 'Jacksonville', 'Florida', '32259');
-
---# Episodes
 INSERT INTO Episodes (episode_number, duration, listens, season_number, episode_name, podcast_name, playlist_name) VALUES ('1', '482', '2538307', '25', 'Episodeqjmoq', 'Podcast167', 'Playlistsbpw9');
 INSERT INTO Episodes (episode_number, duration, listens, season_number, episode_name, podcast_name, playlist_name) VALUES ('2', '205', '9649811', '42', 'Episodeqzmee', 'Podcast750', 'PlaylistC8cLv');
 INSERT INTO Episodes (episode_number, duration, listens, season_number, episode_name, podcast_name, playlist_name) VALUES ('3', '290', '4692535', '36', 'Episodeikjwd', 'Podcast543', 'PlaylistYXiFD');
@@ -594,619 +318,450 @@ INSERT INTO Episodes (episode_number, duration, listens, season_number, episode_
 INSERT INTO Episodes (episode_number, duration, listens, season_number, episode_name, podcast_name, playlist_name) VALUES ('99', '149', '4188833', '48', 'Episodetyawx', 'Podcast638', 'PlaylistgnvYl');
 INSERT INTO Episodes (episode_number, duration, listens, season_number, episode_name, podcast_name, playlist_name) VALUES ('100', '223', '8036660', '24', 'Episodeyuzke', 'Podcast819', 'PlaylistrgTQy');
 
---# Genre
-INSERT INTO Genre (genre_name, number_of_shows, number_of_playlists, podcast_name) VALUES ('Comedy', '1647065', '7311280', 'Podcast455');
-INSERT INTO Genre (genre_name, number_of_shows, number_of_playlists, podcast_name) VALUES ('Drama', '6979473', '5068111', 'Podcast874');
-INSERT INTO Genre (genre_name, number_of_shows, number_of_playlists, podcast_name) VALUES ('Drama|Musical', '3927314', '2095518', 'Podcast612');
-INSERT INTO Genre (genre_name, number_of_shows, number_of_playlists, podcast_name) VALUES ('Action|Comedy|Thriller', '5018792', '3527873', 'Podcast649');
-INSERT INTO Genre (genre_name, number_of_shows, number_of_playlists, podcast_name) VALUES ('Comedy|Drama|Romance', '2746109', '302751', 'Podcast061');
-INSERT INTO Genre (genre_name, number_of_shows, number_of_playlists, podcast_name) VALUES ('Crime|Drama', '3018360', '9133721', 'Podcast834');
-INSERT INTO Genre (genre_name, number_of_shows, number_of_playlists, podcast_name) VALUES ('Drama|Mystery|Sci-Fi|Thriller', '600309', '9262767', 'Podcast760');
-INSERT INTO Genre (genre_name, number_of_shows, number_of_playlists, podcast_name) VALUES ('Comedy|Romance', '2126352', '9427059', 'Podcast853');
-INSERT INTO Genre (genre_name, number_of_shows, number_of_playlists, podcast_name) VALUES ('Drama|Romance', '7833139', '6035756', 'Podcast689');
-INSERT INTO Genre (genre_name, number_of_shows, number_of_playlists, podcast_name) VALUES ('Drama', '9617470', '8386649', 'Podcast808');
-INSERT INTO Genre (genre_name, number_of_shows, number_of_playlists, podcast_name) VALUES ('Comedy', '1571153', '5676426', 'Podcast190');
-INSERT INTO Genre (genre_name, number_of_shows, number_of_playlists, podcast_name) VALUES ('Comedy', '8333087', '3769528', 'Podcast701');
-INSERT INTO Genre (genre_name, number_of_shows, number_of_playlists, podcast_name) VALUES ('Horror|Mystery|Thriller', '5171637', '2534518', 'Podcast866');
-INSERT INTO Genre (genre_name, number_of_shows, number_of_playlists, podcast_name) VALUES ('Drama|Mystery', '6485533', '918475', 'Podcast745');
-INSERT INTO Genre (genre_name, number_of_shows, number_of_playlists, podcast_name) VALUES ('Comedy', '1254674', '2869915', 'Podcast425');
-INSERT INTO Genre (genre_name, number_of_shows, number_of_playlists, podcast_name) VALUES ('Adventure', '5034508', '9972148', 'Podcast512');
-INSERT INTO Genre (genre_name, number_of_shows, number_of_playlists, podcast_name) VALUES ('Drama', '7071898', '7269924', 'Podcast447');
-INSERT INTO Genre (genre_name, number_of_shows, number_of_playlists, podcast_name) VALUES ('Action|Drama', '4950531', '3609125', 'Podcast942');
-INSERT INTO Genre (genre_name, number_of_shows, number_of_playlists, podcast_name) VALUES ('Crime', '8844384', '1090388', 'Podcast873');
-INSERT INTO Genre (genre_name, number_of_shows, number_of_playlists, podcast_name) VALUES ('Drama', '1020500', '8634070', 'Podcast612');
-INSERT INTO Genre (genre_name, number_of_shows, number_of_playlists, podcast_name) VALUES ('Drama', '3623625', '6511401', 'Podcast145');
-INSERT INTO Genre (genre_name, number_of_shows, number_of_playlists, podcast_name) VALUES ('Crime|Drama|Film-Noir|Thriller', '920009', '231151', 'Podcast213');
-INSERT INTO Genre (genre_name, number_of_shows, number_of_playlists, podcast_name) VALUES ('Comedy', '5241460', '7278325', 'Podcast194');
-INSERT INTO Genre (genre_name, number_of_shows, number_of_playlists, podcast_name) VALUES ('Comedy|Drama', '8231809', '453342', 'Podcast745');
-INSERT INTO Genre (genre_name, number_of_shows, number_of_playlists, podcast_name) VALUES ('Action|Sci-Fi|War', '1520960', '5706337', 'Podcast405');
-INSERT INTO Genre (genre_name, number_of_shows, number_of_playlists, podcast_name) VALUES ('Drama|Sci-Fi', '5109896', '231384', 'Podcast694');
-INSERT INTO Genre (genre_name, number_of_shows, number_of_playlists, podcast_name) VALUES ('Drama|Romance', '6932260', '5318291', 'Podcast225');
-INSERT INTO Genre (genre_name, number_of_shows, number_of_playlists, podcast_name) VALUES ('Action|Adventure|Thriller|War', '5650253', '9059867', 'Podcast726');
-INSERT INTO Genre (genre_name, number_of_shows, number_of_playlists, podcast_name) VALUES ('Horror|Sci-Fi', '1414892', '4811124', 'Podcast857');
-INSERT INTO Genre (genre_name, number_of_shows, number_of_playlists, podcast_name) VALUES ('Drama', '6846495', '5322960', 'Podcast366');
-INSERT INTO Genre (genre_name, number_of_shows, number_of_playlists, podcast_name) VALUES ('Drama|War', '1135642', '6121415', 'Podcast870');
-INSERT INTO Genre (genre_name, number_of_shows, number_of_playlists, podcast_name) VALUES ('Drama|Musical|Romance', '2598092', '1513928', 'Podcast370');
-INSERT INTO Genre (genre_name, number_of_shows, number_of_playlists, podcast_name) VALUES ('Adventure|Drama', '8119408', '8366515', 'Podcast430');
-INSERT INTO Genre (genre_name, number_of_shows, number_of_playlists, podcast_name) VALUES ('Adventure|Fantasy|Thriller', '1970955', '7399665', 'Podcast432');
-INSERT INTO Genre (genre_name, number_of_shows, number_of_playlists, podcast_name) VALUES ('Comedy|Drama', '1254265', '2284532', 'Podcast665');
-INSERT INTO Genre (genre_name, number_of_shows, number_of_playlists, podcast_name) VALUES ('Comedy|Romance', '2418337', '6330514', 'Podcast825');
-INSERT INTO Genre (genre_name, number_of_shows, number_of_playlists, podcast_name) VALUES ('Drama|Mystery', '7623006', '7394069', 'Podcast624');
-INSERT INTO Genre (genre_name, number_of_shows, number_of_playlists, podcast_name) VALUES ('Comedy|Crime', '6028243', '206507', 'Podcast200');
-INSERT INTO Genre (genre_name, number_of_shows, number_of_playlists, podcast_name) VALUES ('Mystery|Thriller', '9045733', '9427732', 'Podcast330');
-INSERT INTO Genre (genre_name, number_of_shows, number_of_playlists, podcast_name) VALUES ('Comedy|Drama', '3413044', '1087276', 'Podcast338');
-INSERT INTO Genre (genre_name, number_of_shows, number_of_playlists, podcast_name) VALUES ('Action|Comedy|Crime|Thriller', '4562857', '233855', 'Podcast261');
-INSERT INTO Genre (genre_name, number_of_shows, number_of_playlists, podcast_name) VALUES ('Drama', '7170512', '5214402', 'Podcast677');
-INSERT INTO Genre (genre_name, number_of_shows, number_of_playlists, podcast_name) VALUES ('Horror|Mystery|Thriller', '1267569', '6346594', 'Podcast423');
-INSERT INTO Genre (genre_name, number_of_shows, number_of_playlists, podcast_name) VALUES ('Drama|Romance|War', '60479', '4194558', 'Podcast482');
-INSERT INTO Genre (genre_name, number_of_shows, number_of_playlists, podcast_name) VALUES ('Drama', '7303070', '1457359', 'Podcast181');
-INSERT INTO Genre (genre_name, number_of_shows, number_of_playlists, podcast_name) VALUES ('Documentary', '5184083', '632649', 'Podcast336');
-INSERT INTO Genre (genre_name, number_of_shows, number_of_playlists, podcast_name) VALUES ('Documentary', '4673221', '5100160', 'Podcast291');
-INSERT INTO Genre (genre_name, number_of_shows, number_of_playlists, podcast_name) VALUES ('Horror|Sci-Fi|Thriller', '6448816', '558637', 'Podcast529');
-INSERT INTO Genre (genre_name, number_of_shows, number_of_playlists, podcast_name) VALUES ('Drama|Horror|Romance', '770123', '1711897', 'Podcast428');
-INSERT INTO Genre (genre_name, number_of_shows, number_of_playlists, podcast_name) VALUES ('Mystery', '9887998', '9287187', 'Podcast414');
-INSERT INTO Genre (genre_name, number_of_shows, number_of_playlists, podcast_name) VALUES ('Action|Sci-Fi|Thriller', '6877897', '6945390', 'Podcast603');
-INSERT INTO Genre (genre_name, number_of_shows, number_of_playlists, podcast_name) VALUES ('Drama|Musical|Romance', '4586720', '6285178', 'Podcast816');
-INSERT INTO Genre (genre_name, number_of_shows, number_of_playlists, podcast_name) VALUES ('Drama', '6691885', '8389097', 'Podcast390');
-INSERT INTO Genre (genre_name, number_of_shows, number_of_playlists, podcast_name) VALUES ('Comedy', '1963848', '4454044', 'Podcast850');
-INSERT INTO Genre (genre_name, number_of_shows, number_of_playlists, podcast_name) VALUES ('Adventure|Animation|Children|Drama', '6341998', '6687263', 'Podcast447');
-INSERT INTO Genre (genre_name, number_of_shows, number_of_playlists, podcast_name) VALUES ('Drama', '2970268', '6379293', 'Podcast227');
-INSERT INTO Genre (genre_name, number_of_shows, number_of_playlists, podcast_name) VALUES ('Animation|Children', '5326019', '1261302', 'Podcast537');
-INSERT INTO Genre (genre_name, number_of_shows, number_of_playlists, podcast_name) VALUES ('Drama|Romance', '2545226', '4825278', 'Podcast513');
-INSERT INTO Genre (genre_name, number_of_shows, number_of_playlists, podcast_name) VALUES ('Comedy|Drama|Romance', '3281891', '9643604', 'Podcast349');
-INSERT INTO Genre (genre_name, number_of_shows, number_of_playlists, podcast_name) VALUES ('(no genres listed)', '950953', '4230321', 'Podcast264');
-INSERT INTO Genre (genre_name, number_of_shows, number_of_playlists, podcast_name) VALUES ('(no genres listed)', '6244414', '1237694', 'Podcast407');
-INSERT INTO Genre (genre_name, number_of_shows, number_of_playlists, podcast_name) VALUES ('Action|Animation|Children|Sci-Fi', '6722557', '2695073', 'Podcast252');
-INSERT INTO Genre (genre_name, number_of_shows, number_of_playlists, podcast_name) VALUES ('Action|Horror|Sci-Fi|Thriller', '5468187', '2563107', 'Podcast849');
-INSERT INTO Genre (genre_name, number_of_shows, number_of_playlists, podcast_name) VALUES ('Drama', '2913868', '4016781', 'Podcast168');
-INSERT INTO Genre (genre_name, number_of_shows, number_of_playlists, podcast_name) VALUES ('Horror|Sci-Fi|Thriller', '104022', '7006200', 'Podcast687');
-INSERT INTO Genre (genre_name, number_of_shows, number_of_playlists, podcast_name) VALUES ('Drama', '4409100', '7399455', 'Podcast094');
-INSERT INTO Genre (genre_name, number_of_shows, number_of_playlists, podcast_name) VALUES ('Horror|Mystery|Thriller', '6824192', '4157786', 'Podcast735');
-INSERT INTO Genre (genre_name, number_of_shows, number_of_playlists, podcast_name) VALUES ('Comedy|Drama|Romance', '3744502', '6534771', 'Podcast237');
-INSERT INTO Genre (genre_name, number_of_shows, number_of_playlists, podcast_name) VALUES ('Drama', '543941', '4711045', 'Podcast292');
-INSERT INTO Genre (genre_name, number_of_shows, number_of_playlists, podcast_name) VALUES ('Drama', '8055673', '6258901', 'Podcast658');
-INSERT INTO Genre (genre_name, number_of_shows, number_of_playlists, podcast_name) VALUES ('Documentary', '3147582', '109044', 'Podcast331');
-INSERT INTO Genre (genre_name, number_of_shows, number_of_playlists, podcast_name) VALUES ('Comedy|Drama', '4912535', '6776351', 'Podcast282');
-INSERT INTO Genre (genre_name, number_of_shows, number_of_playlists, podcast_name) VALUES ('Animation|Children|Fantasy', '8165853', '7862783', 'Podcast819');
-INSERT INTO Genre (genre_name, number_of_shows, number_of_playlists, podcast_name) VALUES ('Comedy|Romance', '4236136', '7414973', 'Podcast701');
-INSERT INTO Genre (genre_name, number_of_shows, number_of_playlists, podcast_name) VALUES ('Comedy', '7067319', '5885596', 'Podcast226');
-INSERT INTO Genre (genre_name, number_of_shows, number_of_playlists, podcast_name) VALUES ('Comedy|Drama|Romance', '1853210', '8051868', 'Podcast296');
-INSERT INTO Genre (genre_name, number_of_shows, number_of_playlists, podcast_name) VALUES ('Documentary', '2531450', '598866', 'Podcast161');
-INSERT INTO Genre (genre_name, number_of_shows, number_of_playlists, podcast_name) VALUES ('Drama|Romance', '6636368', '2272391', 'Podcast070');
-INSERT INTO Genre (genre_name, number_of_shows, number_of_playlists, podcast_name) VALUES ('Drama|War', '5455145', '1724573', 'Podcast999');
-INSERT INTO Genre (genre_name, number_of_shows, number_of_playlists, podcast_name) VALUES ('Crime|Drama|Romance|Thriller', '4114019', '5063636', 'Podcast839');
-INSERT INTO Genre (genre_name, number_of_shows, number_of_playlists, podcast_name) VALUES ('Comedy|Romance', '1633220', '2378511', 'Podcast235');
-INSERT INTO Genre (genre_name, number_of_shows, number_of_playlists, podcast_name) VALUES ('Drama|Mystery|Thriller', '4069438', '4051714', 'Podcast753');
-INSERT INTO Genre (genre_name, number_of_shows, number_of_playlists, podcast_name) VALUES ('Drama|Fantasy|Romance', '4179158', '6017496', 'Podcast663');
-INSERT INTO Genre (genre_name, number_of_shows, number_of_playlists, podcast_name) VALUES ('Adventure|Animation|Children|Drama|Fantasy', '6246867', '6453510', 'Podcast006');
-INSERT INTO Genre (genre_name, number_of_shows, number_of_playlists, podcast_name) VALUES ('Drama|Romance', '2286964', '5143788', 'Podcast281');
-INSERT INTO Genre (genre_name, number_of_shows, number_of_playlists, podcast_name) VALUES ('(no genres listed)', '7480909', '6999904', 'Podcast831');
-INSERT INTO Genre (genre_name, number_of_shows, number_of_playlists, podcast_name) VALUES ('Comedy|Romance', '8265700', '7498436', 'Podcast747');
-INSERT INTO Genre (genre_name, number_of_shows, number_of_playlists, podcast_name) VALUES ('Drama|Mystery|Romance', '6732912', '5941096', 'Podcast738');
-INSERT INTO Genre (genre_name, number_of_shows, number_of_playlists, podcast_name) VALUES ('Documentary', '4956799', '122482', 'Podcast707');
-INSERT INTO Genre (genre_name, number_of_shows, number_of_playlists, podcast_name) VALUES ('Drama', '4117447', '6259196', 'Podcast075');
-INSERT INTO Genre (genre_name, number_of_shows, number_of_playlists, podcast_name) VALUES ('Fantasy|Horror|Thriller', '2218840', '3552734', 'Podcast074');
-INSERT INTO Genre (genre_name, number_of_shows, number_of_playlists, podcast_name) VALUES ('Drama', '3789927', '3159766', 'Podcast696');
-INSERT INTO Genre (genre_name, number_of_shows, number_of_playlists, podcast_name) VALUES ('Comedy|Sci-Fi', '4674588', '3603527', 'Podcast263');
-INSERT INTO Genre (genre_name, number_of_shows, number_of_playlists, podcast_name) VALUES ('Comedy|Drama', '9731940', '8508326', 'Podcast988');
-INSERT INTO Genre (genre_name, number_of_shows, number_of_playlists, podcast_name) VALUES ('Action|Animation|Comedy', '7947272', '6903945', 'Podcast796');
-INSERT INTO Genre (genre_name, number_of_shows, number_of_playlists, podcast_name) VALUES ('Drama', '4081775', '4253235', 'Podcast832');
-INSERT INTO Genre (genre_name, number_of_shows, number_of_playlists, podcast_name) VALUES ('Thriller', '3102692', '8748379', 'Podcast279');
-INSERT INTO Genre (genre_name, number_of_shows, number_of_playlists, podcast_name) VALUES ('Comedy', '5460733', '7531340', 'Podcast201');
-INSERT INTO Genre (genre_name, number_of_shows, number_of_playlists, podcast_name) VALUES ('Crime|Drama|Mystery|Thriller', '3383654', '7731090', 'Podcast969');
-INSERT INTO Genre (genre_name, number_of_shows, number_of_playlists, podcast_name) VALUES ('Comedy|Drama|Romance', '5407101', '3907556', 'Podcast968');
+INSERT INTO Creators(creator_id,username,password,date_made,phone_number,email_address,first_name,last_name,card_number,cvv,expiration_date,street,city,state,zip_code) VALUES (1,'twestmarland0','Dbd3eCxG8','2022-04-17 21:07:51','206-234-8189','tgostall0@altervista.org','Cy','Trudey',132498956,622,'2023-01-07 05:07:55','Scoville','Seattle','Washington',98195);
+INSERT INTO Creators(creator_id,username,password,date_made,phone_number,email_address,first_name,last_name,card_number,cvv,expiration_date,street,city,state,zip_code) VALUES (2,'rbrotherhood1','INMxhb947iB','2022-10-15 19:20:12','719-271-8769','rspoors1@irs.gov','Kort','Rayshell',638163511,368,'2022-04-16 05:23:50','Mendota','Colorado Springs','Colorado',80940);
+INSERT INTO Creators(creator_id,username,password,date_made,phone_number,email_address,first_name,last_name,card_number,cvv,expiration_date,street,city,state,zip_code) VALUES (3,'xjahan2','zlRdlwqAHA','2023-04-13 05:27:17','281-918-4224','xbrighty2@a8.net','Feliks','Xaviera',685069567,851,'2022-07-16 08:14:03','Nancy','Houston','Texas',77060);
+INSERT INTO Creators(creator_id,username,password,date_made,phone_number,email_address,first_name,last_name,card_number,cvv,expiration_date,street,city,state,zip_code) VALUES (4,'emcgeachey3','9Cw868cb','2023-02-19 22:05:17','832-265-6167','ejurzyk3@youku.com','Bernelle','Emmye',413156952,732,'2022-10-24 09:51:29','Dwight','Houston','Texas',77201);
+INSERT INTO Creators(creator_id,username,password,date_made,phone_number,email_address,first_name,last_name,card_number,cvv,expiration_date,street,city,state,zip_code) VALUES (5,'ddulieu4','0YOrNy','2022-10-22 22:19:18','619-385-7622','ddefont4@yandex.ru','Barrie','Dona',708810399,58,'2022-11-01 23:26:29','Mitchell','San Diego','California',92170);
+INSERT INTO Creators(creator_id,username,password,date_made,phone_number,email_address,first_name,last_name,card_number,cvv,expiration_date,street,city,state,zip_code) VALUES (6,'aargabrite5','QzdfaO','2022-09-18 07:40:40','806-891-3578','acopozio5@t-online.de','Ruth','Anatollo',960132139,598,'2023-02-14 14:07:26','Marquette','Amarillo','Texas',79159);
+INSERT INTO Creators(creator_id,username,password,date_made,phone_number,email_address,first_name,last_name,card_number,cvv,expiration_date,street,city,state,zip_code) VALUES (7,'abaggaley6','rCtZ0uJcl','2022-04-28 13:29:04','940-435-9995','amaving6@a8.net','Brande','Andras',273301757,443,'2022-12-30 14:02:32','Artisan','Wichita Falls','Texas',76310);
+INSERT INTO Creators(creator_id,username,password,date_made,phone_number,email_address,first_name,last_name,card_number,cvv,expiration_date,street,city,state,zip_code) VALUES (8,'lcharrier7','33Ocli','2022-12-01 19:41:11','513-881-0056','lsigg7@bbb.org','Dottie','Leonelle',059971297,31,'2022-09-23 03:55:39','Caliangt','Cincinnati','Ohio',45233);
+INSERT INTO Creators(creator_id,username,password,date_made,phone_number,email_address,first_name,last_name,card_number,cvv,expiration_date,street,city,state,zip_code) VALUES (9,'bhector8','4qKIIVj','2023-01-23 01:51:30','478-836-3745','bspurryer8@twitter.com','Vicki','Bruce',752862432,709,'2023-03-30 04:35:21','Ohio','Macon','Georgia',31217);
+INSERT INTO Creators(creator_id,username,password,date_made,phone_number,email_address,first_name,last_name,card_number,cvv,expiration_date,street,city,state,zip_code) VALUES (10,'sbaline9','w0Pvzc','2022-10-02 20:57:17','215-913-6057','spimlett9@1und1.de','Sukey','Sadye',318168269,199,'2023-01-08 11:27:00','Northport','Philadelphia','Pennsylvania',19120);
+INSERT INTO Creators(creator_id,username,password,date_made,phone_number,email_address,first_name,last_name,card_number,cvv,expiration_date,street,city,state,zip_code) VALUES (11,'egoldsbya','YZmB0dOi3Q6j','2022-05-17 12:32:48','405-328-0062','eclarksona@time.com','Edin','Emily',762537334,899,'2022-12-31 05:52:03','Lakewood','Oklahoma City','Oklahoma',73119);
+INSERT INTO Creators(creator_id,username,password,date_made,phone_number,email_address,first_name,last_name,card_number,cvv,expiration_date,street,city,state,zip_code) VALUES (12,'hsambellb','HsqrvsI','2022-05-08 15:51:02','717-785-0105','hjanoutb@sciencedirect.com','Meir','Hanna',359818784,535,'2022-09-30 21:57:23','Farwell','Harrisburg','Pennsylvania',17126);
+INSERT INTO Creators(creator_id,username,password,date_made,phone_number,email_address,first_name,last_name,card_number,cvv,expiration_date,street,city,state,zip_code) VALUES (13,'aarsonc','DdPYzowY','2022-07-29 08:30:05','404-202-1663','aingersonc@mysql.com','Randene','Albrecht',113677148,392,'2023-03-27 13:10:19','Mccormick','Gainesville','Georgia',30506);
+INSERT INTO Creators(creator_id,username,password,date_made,phone_number,email_address,first_name,last_name,card_number,cvv,expiration_date,street,city,state,zip_code) VALUES (14,'atroddend','mKhyIQKU8','2022-07-07 23:13:39','703-350-3497','aglantond@chicagotribune.com','Duffie','Agata',325322220,815,'2022-07-28 12:24:47','Surrey','Alexandria','Virginia',22301);
+INSERT INTO Creators(creator_id,username,password,date_made,phone_number,email_address,first_name,last_name,card_number,cvv,expiration_date,street,city,state,zip_code) VALUES (15,'phanwelle','DVZefxM','2023-01-02 21:46:39','706-456-6028','pferraresie@artisteer.com','Fleming','Pandora',559694438,573,'2022-11-20 17:34:27','Havey','Augusta','Georgia',30919);
+INSERT INTO Creators(creator_id,username,password,date_made,phone_number,email_address,first_name,last_name,card_number,cvv,expiration_date,street,city,state,zip_code) VALUES (16,'gbradlyf','U6JhIh','2022-04-21 07:59:44','518-424-9157','gbaslerf@storify.com','Kingsly','Gabi',417640483,959,'2022-11-18 16:19:13','Brown','Albany','New York',12232);
+INSERT INTO Creators(creator_id,username,password,date_made,phone_number,email_address,first_name,last_name,card_number,cvv,expiration_date,street,city,state,zip_code) VALUES (17,'nskiltong','oIdcC5LJ','2023-04-07 01:07:00','561-570-7042','nwithamg@drupal.org','Baxie','Nicolai',662083140,725,'2023-02-10 08:53:09','Lakewood Gardens','Boynton Beach','Florida',33436);
+INSERT INTO Creators(creator_id,username,password,date_made,phone_number,email_address,first_name,last_name,card_number,cvv,expiration_date,street,city,state,zip_code) VALUES (18,'brandlesh','vnZvp6','2022-08-10 06:58:11','212-907-6728','bdemageardh@ycombinator.com','Neel','Blayne',410993439,922,'2023-03-25 15:48:42','Katie','New York City','New York',10249);
+INSERT INTO Creators(creator_id,username,password,date_made,phone_number,email_address,first_name,last_name,card_number,cvv,expiration_date,street,city,state,zip_code) VALUES (19,'dnormanti','52tg34jg7iL','2023-02-05 13:51:08','405-811-5385','dsurri@booking.com','Byran','Dorita',996797993,6,'2022-07-21 16:54:32','Vera','Oklahoma City','Oklahoma',73179);
+INSERT INTO Creators(creator_id,username,password,date_made,phone_number,email_address,first_name,last_name,card_number,cvv,expiration_date,street,city,state,zip_code) VALUES (20,'tscusej','WjZm9a0hBBC9','2023-01-08 19:36:44','661-322-9217','theardj@jalbum.net','Ced','Teodoro',454124247,801,'2022-05-25 01:35:51','David','Bakersfield','California',93386);
+INSERT INTO Creators(creator_id,username,password,date_made,phone_number,email_address,first_name,last_name,card_number,cvv,expiration_date,street,city,state,zip_code) VALUES (21,'sozannek','XYs35qSR','2022-06-25 23:24:59','702-434-4152','syeellk@scribd.com','Rochell','Steffie',380723471,783,'2022-11-14 02:40:20','Linden','Las Vegas','Nevada',89145);
+INSERT INTO Creators(creator_id,username,password,date_made,phone_number,email_address,first_name,last_name,card_number,cvv,expiration_date,street,city,state,zip_code) VALUES (22,'rborgnetl','tmIAVL5xPk','2022-06-19 22:45:52','352-895-5614','rbrombelll@biglobe.ne.jp','Marice','Rolfe',383730944,327,'2023-03-23 14:03:11','Little Fleur','Brooksville','Florida',34605);
+INSERT INTO Creators(creator_id,username,password,date_made,phone_number,email_address,first_name,last_name,card_number,cvv,expiration_date,street,city,state,zip_code) VALUES (23,'mondrakm','IXgvyNajlIe','2022-04-17 17:43:24','916-652-6231','mmatticcim@about.me','Dianemarie','Mellisent',915949206,792,'2023-02-22 13:13:19','Schmedeman','Sacramento','California',94291);
+INSERT INTO Creators(creator_id,username,password,date_made,phone_number,email_address,first_name,last_name,card_number,cvv,expiration_date,street,city,state,zip_code) VALUES (24,'ppidgeonn','5yBoCSF','2022-07-26 13:31:53','804-409-2361','pashfulln@yandex.ru','Annamaria','Peri',018374502,997,'2023-02-09 17:54:19','Nevada','Richmond','Virginia',23272);
+INSERT INTO Creators(creator_id,username,password,date_made,phone_number,email_address,first_name,last_name,card_number,cvv,expiration_date,street,city,state,zip_code) VALUES (25,'bstrausso','vDeWTTd','2022-12-12 19:26:29','251-434-8868','bdoddo@google.co.jp','Bessy','Boigie',397846798,374,'2022-08-17 04:05:44','Norway Maple','Mobile','Alabama',36622);
+INSERT INTO Creators(creator_id,username,password,date_made,phone_number,email_address,first_name,last_name,card_number,cvv,expiration_date,street,city,state,zip_code) VALUES (26,'vwaghornep','eSJhRXzE','2022-04-24 21:49:31','205-340-4376','vcroptonp@businesswire.com','Latia','Veda',844671846,245,'2022-12-28 07:59:09','Sunfield','Birmingham','Alabama',35279);
+INSERT INTO Creators(creator_id,username,password,date_made,phone_number,email_address,first_name,last_name,card_number,cvv,expiration_date,street,city,state,zip_code) VALUES (27,'ipelosiq','xA8mVzcDnE7','2022-08-24 18:23:37','317-744-2136','ispirrittq@theglobeandmail.com','Wilt','Ilyse',551784145,979,'2023-01-02 09:10:45','Prairieview','Indianapolis','Indiana',46278);
+INSERT INTO Creators(creator_id,username,password,date_made,phone_number,email_address,first_name,last_name,card_number,cvv,expiration_date,street,city,state,zip_code) VALUES (28,'jnotmanr','fLJRufBWDE1','2022-10-17 17:48:24','719-868-2518','jgarmansonr@ihg.com','Jonis','Jolene',361695644,857,'2023-01-14 21:38:21','David','Colorado Springs','Colorado',80995);
+INSERT INTO Creators(creator_id,username,password,date_made,phone_number,email_address,first_name,last_name,card_number,cvv,expiration_date,street,city,state,zip_code) VALUES (29,'tcoggells','wHDJmwjF','2023-01-16 16:17:21','817-358-1712','tbilofskys@flickr.com','Salomi','Teresa',456788921,967,'2023-02-08 01:37:31','Harper','Denton','Texas',76210);
+INSERT INTO Creators(creator_id,username,password,date_made,phone_number,email_address,first_name,last_name,card_number,cvv,expiration_date,street,city,state,zip_code) VALUES (30,'aellertont','ofcOuVeRi6','2023-01-09 22:56:48','646-146-2634','aheffordet@dot.gov','Theo','Ara',778439075,865,'2022-11-02 03:53:20','Prairieview','New York City','New York',10039);
+INSERT INTO Creators(creator_id,username,password,date_made,phone_number,email_address,first_name,last_name,card_number,cvv,expiration_date,street,city,state,zip_code) VALUES (31,'pdidsburyu','5Q3JiBv2otfw','2022-09-30 17:10:26','513-644-0615','panyonu@examiner.com','Bernie','Papagena',874454077,921,'2022-06-19 14:00:15','Wayridge','Cincinnati','Ohio',45238);
+INSERT INTO Creators(creator_id,username,password,date_made,phone_number,email_address,first_name,last_name,card_number,cvv,expiration_date,street,city,state,zip_code) VALUES (32,'gskeyv','lIjFcwk','2022-08-23 03:35:01','765-401-7309','ghardernv@bravesites.com','Madel','Gardie',362708237,487,'2022-11-19 04:22:07','Dexter','Lafayette','Indiana',47905);
+INSERT INTO Creators(creator_id,username,password,date_made,phone_number,email_address,first_name,last_name,card_number,cvv,expiration_date,street,city,state,zip_code) VALUES (33,'dpurvisw','ZrIvw8hwK','2022-09-22 04:15:15','502-690-7037','dletcherw@usgs.gov','Georgeanna','Dee dee',664583703,581,'2023-01-21 20:11:04','Esch','Louisville','Kentucky',40280);
+INSERT INTO Creators(creator_id,username,password,date_made,phone_number,email_address,first_name,last_name,card_number,cvv,expiration_date,street,city,state,zip_code) VALUES (34,'jthurstancex','VfHpE2i','2022-06-16 02:25:59','410-183-7994','jstandenx@economist.com','Carlynne','Joellyn',132819659,839,'2022-05-08 18:15:28','Commercial','Baltimore','Maryland',21216);
+INSERT INTO Creators(creator_id,username,password,date_made,phone_number,email_address,first_name,last_name,card_number,cvv,expiration_date,street,city,state,zip_code) VALUES (35,'dtiey','OvK91plFV','2023-01-27 15:54:41','212-863-3002','dbaselliy@cdbaby.com','Edouard','Darcee',844680020,952,'2022-11-12 11:01:22','Hanover','New York City','New York',10125);
+INSERT INTO Creators(creator_id,username,password,date_made,phone_number,email_address,first_name,last_name,card_number,cvv,expiration_date,street,city,state,zip_code) VALUES (36,'tmosebyz','M04WLh','2022-11-08 20:21:37','229-209-8627','tdagworthyz@list-manage.com','Calvin','Thaxter',816272426,693,'2022-04-19 13:56:38','Mesta','Valdosta','Georgia',31605);
+INSERT INTO Creators(creator_id,username,password,date_made,phone_number,email_address,first_name,last_name,card_number,cvv,expiration_date,street,city,state,zip_code) VALUES (37,'vlaverick10','RzEq4CF','2022-08-18 09:35:25','817-223-3973','vsember10@bloglovin.com','Kathlin','Vin',246656478,431,'2022-04-17 15:30:33','Lillian','Fort Worth','Texas',76129);
+INSERT INTO Creators(creator_id,username,password,date_made,phone_number,email_address,first_name,last_name,card_number,cvv,expiration_date,street,city,state,zip_code) VALUES (38,'tburnyeat11','ePMUZODjjt','2022-12-23 21:11:29','615-121-9546','tanelay11@is.gd','Koenraad','Tammy',317782554,161,'2023-03-08 23:09:31','Hermina','Nashville','Tennessee',37220);
+INSERT INTO Creators(creator_id,username,password,date_made,phone_number,email_address,first_name,last_name,card_number,cvv,expiration_date,street,city,state,zip_code) VALUES (39,'ajennick12','lzLmB3','2022-06-18 09:00:24','315-746-2522','abillingsley12@hhs.gov','Juieta','Ada',628903389,86,'2022-10-24 21:20:38','Goodland','Syracuse','New York',13251);
+INSERT INTO Creators(creator_id,username,password,date_made,phone_number,email_address,first_name,last_name,card_number,cvv,expiration_date,street,city,state,zip_code) VALUES (40,'jcrippes13','2qYoNBKQs','2022-10-12 14:40:01','773-786-1398','jabbot13@bloglovin.com','Cobb','Jenni',605138128,350,'2022-04-18 16:23:07','Aberg','Chicago','Illinois',60604);
+INSERT INTO Creators(creator_id,username,password,date_made,phone_number,email_address,first_name,last_name,card_number,cvv,expiration_date,street,city,state,zip_code) VALUES (41,'mkinze14','rMFaiwBO','2023-01-21 23:49:42','917-341-1761','mnettleship14@cnet.com','Dorri','Maximilien',207354265,54,'2023-03-05 00:50:00','Algoma','New York City','New York',10034);
+INSERT INTO Creators(creator_id,username,password,date_made,phone_number,email_address,first_name,last_name,card_number,cvv,expiration_date,street,city,state,zip_code) VALUES (42,'ehissie15','ywq9o3ygFUWy','2022-12-10 19:28:29','323-927-3695','ebartod15@csmonitor.com','Garrick','Emylee',828027317,994,'2022-12-10 19:49:08','Glendale','Long Beach','California',90810);
+INSERT INTO Creators(creator_id,username,password,date_made,phone_number,email_address,first_name,last_name,card_number,cvv,expiration_date,street,city,state,zip_code) VALUES (43,'wkitley16','wUbnmCIZtM77','2022-11-04 06:11:58','520-298-1710','wagate16@netscape.com','Darya','Wrennie',048912712,175,'2022-05-04 10:34:08','Loeprich','Tucson','Arizona',85737);
+INSERT INTO Creators(creator_id,username,password,date_made,phone_number,email_address,first_name,last_name,card_number,cvv,expiration_date,street,city,state,zip_code) VALUES (44,'ngilpillan17','M5cCCv','2023-03-05 21:16:00','406-577-9979','nbroadbere17@java.com','Brant','Nico',280183987,215,'2022-06-12 10:08:05','Daystar','Helena','Montana',59623);
+INSERT INTO Creators(creator_id,username,password,date_made,phone_number,email_address,first_name,last_name,card_number,cvv,expiration_date,street,city,state,zip_code) VALUES (45,'cfoulks18','TfjuVC','2022-06-16 23:14:52','202-139-7986','chinckesman18@sogou.com','Devonna','Christen',637903960,361,'2022-06-13 19:59:08','Scott','Washington','District of Columbia',20409);
+INSERT INTO Creators(creator_id,username,password,date_made,phone_number,email_address,first_name,last_name,card_number,cvv,expiration_date,street,city,state,zip_code) VALUES (46,'chillborne19','4i8PljqgsIih','2023-02-16 19:32:13','234-671-0447','crozet19@webmd.com','Laureen','Cecelia',178255978,685,'2022-09-20 19:44:20','Bunting','Canton','Ohio',44760);
+INSERT INTO Creators(creator_id,username,password,date_made,phone_number,email_address,first_name,last_name,card_number,cvv,expiration_date,street,city,state,zip_code) VALUES (47,'cmonini1a','lLfOoP5','2022-09-23 03:22:14','571-240-7667','cgosling1a@fotki.com','Batholomew','Corrie',256945525,841,'2022-05-25 21:57:41','Algoma','Arlington','Virginia',22244);
+INSERT INTO Creators(creator_id,username,password,date_made,phone_number,email_address,first_name,last_name,card_number,cvv,expiration_date,street,city,state,zip_code) VALUES (48,'koager1b','yB7UC7','2023-02-04 08:36:41','919-914-2701','kgayler1b@boston.com','Norby','Korey',347490482,834,'2023-01-14 16:55:03','Nancy','Raleigh','North Carolina',27626);
+INSERT INTO Creators(creator_id,username,password,date_made,phone_number,email_address,first_name,last_name,card_number,cvv,expiration_date,street,city,state,zip_code) VALUES (49,'ashawe1c','QRUPrQJRaoGg','2022-08-30 20:58:02','952-332-1169','amussilli1c@domainmarket.com','Douglas','Antonia',843768298,594,'2022-05-01 21:47:50','Washington','Minneapolis','Minnesota',55407);
+INSERT INTO Creators(creator_id,username,password,date_made,phone_number,email_address,first_name,last_name,card_number,cvv,expiration_date,street,city,state,zip_code) VALUES (50,'dspaxman1d','81JgjL2','2023-02-25 23:57:18','512-719-3839','dbarcke1d@ed.gov','Craggie','Donella',713878366,151,'2023-03-16 13:01:50','Monica','Austin','Texas',78710);
+INSERT INTO Creators(creator_id,username,password,date_made,phone_number,email_address,first_name,last_name,card_number,cvv,expiration_date,street,city,state,zip_code) VALUES (51,'tchuter1e','vGOPkmxOVgR3','2022-07-24 09:47:51','386-131-8777','taskell1e@cbsnews.com','Reed','Tansy',188182861,897,'2022-11-21 15:22:23','Messerschmidt','Daytona Beach','Florida',32123);
+INSERT INTO Creators(creator_id,username,password,date_made,phone_number,email_address,first_name,last_name,card_number,cvv,expiration_date,street,city,state,zip_code) VALUES (52,'eprahl1f','Yrs21C','2022-05-31 09:12:06','202-836-1055','emiddleditch1f@yandex.ru','Taylor','Edgar',815627391,400,'2022-05-11 20:35:02','Ruskin','Washington','District of Columbia',20057);
+INSERT INTO Creators(creator_id,username,password,date_made,phone_number,email_address,first_name,last_name,card_number,cvv,expiration_date,street,city,state,zip_code) VALUES (53,'afarron1g','6nUx02s9xv','2023-01-09 16:12:27','410-116-3231','asharville1g@nhs.uk','Dionisio','Ambrose',021213993,972,'2022-10-04 19:57:57','Sutherland','Baltimore','Maryland',21265);
+INSERT INTO Creators(creator_id,username,password,date_made,phone_number,email_address,first_name,last_name,card_number,cvv,expiration_date,street,city,state,zip_code) VALUES (54,'bniemiec1h','jyXduB','2022-06-16 13:18:53','702-208-1312','bdelhay1h@shinystat.com','Gwyneth','Berkie',823017564,610,'2022-12-14 15:40:38','Waxwing','Las Vegas','Nevada',89160);
+INSERT INTO Creators(creator_id,username,password,date_made,phone_number,email_address,first_name,last_name,card_number,cvv,expiration_date,street,city,state,zip_code) VALUES (55,'sbeeze1i','UWqQmNwRDiX','2022-11-24 22:45:09','602-161-5531','sgowman1i@amazon.co.jp','Arnaldo','Shaw',457005752,699,'2022-10-27 01:26:22','Del Mar','Phoenix','Arizona',85040);
+INSERT INTO Creators(creator_id,username,password,date_made,phone_number,email_address,first_name,last_name,card_number,cvv,expiration_date,street,city,state,zip_code) VALUES (56,'krevie1j','hqwbls','2022-09-28 07:14:01','530-529-9849','kcastiblanco1j@tumblr.com','Demetrius','Kaitlyn',523729019,7,'2023-01-03 06:40:47','Old Gate','South Lake Tahoe','California',96154);
+INSERT INTO Creators(creator_id,username,password,date_made,phone_number,email_address,first_name,last_name,card_number,cvv,expiration_date,street,city,state,zip_code) VALUES (57,'abolam1k','Y3Bs4c','2023-01-08 02:49:05','973-992-1711','afrankling1k@weibo.com','Katuscha','Anatola',891166907,967,'2023-02-24 19:29:15','Everett','Paterson','New Jersey',07522);
+INSERT INTO Creators(creator_id,username,password,date_made,phone_number,email_address,first_name,last_name,card_number,cvv,expiration_date,street,city,state,zip_code) VALUES (58,'scullnean1l','zZon4Fqm','2023-03-04 23:38:04','904-364-5308','smaccorkell1l@domainmarket.com','Alvan','Shelby',470652827,652,'2022-06-27 09:18:21','Hoffman','Jacksonville','Florida',32220);
+INSERT INTO Creators(creator_id,username,password,date_made,phone_number,email_address,first_name,last_name,card_number,cvv,expiration_date,street,city,state,zip_code) VALUES (59,'rdare1m','4S3Ih6ihcTjO','2022-09-23 04:18:16','772-347-6986','rlabrow1m@shinystat.com','Star','Rania',685212778,751,'2022-10-22 10:52:55','Russell','Fort Pierce','Florida',34981);
+INSERT INTO Creators(creator_id,username,password,date_made,phone_number,email_address,first_name,last_name,card_number,cvv,expiration_date,street,city,state,zip_code) VALUES (60,'rspearing1n','L1WC8vOK','2022-06-03 00:23:50','601-170-0217','rcharnick1n@scientificamerican.com','Sile','Rena',177885251,758,'2023-03-08 20:39:51','Anderson','Jackson','Mississippi',39210);
+INSERT INTO Creators(creator_id,username,password,date_made,phone_number,email_address,first_name,last_name,card_number,cvv,expiration_date,street,city,state,zip_code) VALUES (61,'landrichak1o','BFRMAxY6rq','2022-07-17 07:09:40','216-477-6582','lflori1o@goo.ne.jp','Ronny','Leontyne',535990211,155,'2023-02-25 12:01:15','Carberry','Cleveland','Ohio',44105);
+INSERT INTO Creators(creator_id,username,password,date_made,phone_number,email_address,first_name,last_name,card_number,cvv,expiration_date,street,city,state,zip_code) VALUES (62,'ftimblett1p','AodIGxLs','2023-01-03 08:32:40','971-481-9070','fpenwright1p@wikia.com','Camille','Frederico',749017337,594,'2022-10-28 13:09:54','Alpine','Portland','Oregon',97201);
+INSERT INTO Creators(creator_id,username,password,date_made,phone_number,email_address,first_name,last_name,card_number,cvv,expiration_date,street,city,state,zip_code) VALUES (63,'krackstraw1q','2kebFlR','2022-08-14 05:58:55','509-550-7732','kgiggie1q@scribd.com','Colin','Karalynn',163318705,821,'2022-11-13 06:06:10','Tony','Spokane','Washington',99205);
+INSERT INTO Creators(creator_id,username,password,date_made,phone_number,email_address,first_name,last_name,card_number,cvv,expiration_date,street,city,state,zip_code) VALUES (64,'jmethuen1r','2Uf2Xylj7','2022-07-26 14:52:21','816-465-3900','jannand1r@craigslist.org','Sheila','Janot',607207929,858,'2022-09-14 05:37:39','Merry','Kansas City','Missouri',64142);
+INSERT INTO Creators(creator_id,username,password,date_made,phone_number,email_address,first_name,last_name,card_number,cvv,expiration_date,street,city,state,zip_code) VALUES (65,'rstroton1s','1mhgLas4Lpx','2023-01-03 17:23:17','501-505-0040','rmyhill1s@bloglovin.com','Sadie','Ryann',053275213,97,'2023-04-05 12:42:48','Clyde Gallagher','Little Rock','Arkansas',72209);
+INSERT INTO Creators(creator_id,username,password,date_made,phone_number,email_address,first_name,last_name,card_number,cvv,expiration_date,street,city,state,zip_code) VALUES (66,'jsheivels1t','2p2IYFJnpzO','2022-08-02 15:37:57','281-126-9069','jtick1t@about.com','Adan','Josephina',745393760,620,'2023-04-06 20:21:17','Bellgrove','Humble','Texas',77346);
+INSERT INTO Creators(creator_id,username,password,date_made,phone_number,email_address,first_name,last_name,card_number,cvv,expiration_date,street,city,state,zip_code) VALUES (67,'kdemaine1u','mJI9Ffa9','2022-05-18 10:10:51','210-293-7817','kgreenhowe1u@istockphoto.com','Gris','Kippy',611167671,316,'2022-12-04 06:59:14','Brentwood','San Antonio','Texas',78278);
+INSERT INTO Creators(creator_id,username,password,date_made,phone_number,email_address,first_name,last_name,card_number,cvv,expiration_date,street,city,state,zip_code) VALUES (68,'eharyngton1v','TUJYs4cg','2022-07-09 22:53:57','215-932-0059','eashcroft1v@drupal.org','Ruthann','Enrico',515702250,190,'2022-08-17 16:52:59','Quincy','Philadelphia','Pennsylvania',19191);
+INSERT INTO Creators(creator_id,username,password,date_made,phone_number,email_address,first_name,last_name,card_number,cvv,expiration_date,street,city,state,zip_code) VALUES (69,'dsecretan1w','dkmOtPaU','2022-05-22 10:08:24','309-395-8769','dgowry1w@apache.org','Erv','Dora',427790758,630,'2023-01-23 02:09:07','Cardinal','Carol Stream','Illinois',60351);
+INSERT INTO Creators(creator_id,username,password,date_made,phone_number,email_address,first_name,last_name,card_number,cvv,expiration_date,street,city,state,zip_code) VALUES (70,'bbrasted1x','xOTOgF','2022-10-30 02:06:38','804-764-7145','bguage1x@wordpress.com','Tommie','Briant',131439632,205,'2022-05-07 01:10:06','Longview','Richmond','Virginia',23208);
+INSERT INTO Creators(creator_id,username,password,date_made,phone_number,email_address,first_name,last_name,card_number,cvv,expiration_date,street,city,state,zip_code) VALUES (71,'aurien1y','vYOP1jPZ0H','2022-06-04 02:07:14','304-913-0556','ablunn1y@digg.com','Desiri','Andromache',050061398,261,'2023-03-23 16:58:52','Daystar','Charleston','West Virginia',25326);
+INSERT INTO Creators(creator_id,username,password,date_made,phone_number,email_address,first_name,last_name,card_number,cvv,expiration_date,street,city,state,zip_code) VALUES (72,'bdowey1z','QTEX3Imig8','2023-02-04 16:02:34','808-863-6723','bdaintree1z@google.it','Malory','Barbe',438813801,444,'2022-07-05 14:04:26','Tennyson','Honolulu','Hawaii',96840);
+INSERT INTO Creators(creator_id,username,password,date_made,phone_number,email_address,first_name,last_name,card_number,cvv,expiration_date,street,city,state,zip_code) VALUES (73,'sfeeney20','gH6WykFiZ','2023-04-15 02:44:52','717-844-7036','sgidley20@eventbrite.com','Cobby','Sawyer',817236876,422,'2022-05-23 16:46:21','Farragut','Harrisburg','Pennsylvania',17110);
+INSERT INTO Creators(creator_id,username,password,date_made,phone_number,email_address,first_name,last_name,card_number,cvv,expiration_date,street,city,state,zip_code) VALUES (74,'bdallicoat21','kHFFBt','2023-01-06 08:28:03','616-655-4130','btomalin21@nps.gov','Hi','Bettina',311693822,701,'2022-08-15 11:39:31','Gale','Grand Rapids','Michigan',49518);
+INSERT INTO Creators(creator_id,username,password,date_made,phone_number,email_address,first_name,last_name,card_number,cvv,expiration_date,street,city,state,zip_code) VALUES (75,'alenz22','rvGCJe','2022-10-04 17:24:34','402-962-5143','atyght22@imageshack.us','Judi','Aveline',680192649,204,'2022-07-16 18:27:50','Killdeer','Omaha','Nebraska',68144);
+INSERT INTO Creators(creator_id,username,password,date_made,phone_number,email_address,first_name,last_name,card_number,cvv,expiration_date,street,city,state,zip_code) VALUES (76,'sstaddart23','nfvBcsIXo7V','2022-11-14 00:32:11','603-965-7154','sbloyes23@discovery.com','Savina','Saidee',839603931,977,'2022-07-11 23:00:42','Village','Manchester','New Hampshire',03105);
+INSERT INTO Creators(creator_id,username,password,date_made,phone_number,email_address,first_name,last_name,card_number,cvv,expiration_date,street,city,state,zip_code) VALUES (77,'fdawney24','khlxXBCD','2023-03-31 04:14:42','305-531-5939','fsay24@prlog.org','Siegfried','Fredelia',340308680,772,'2023-01-27 15:13:59','Loomis','Miami','Florida',33129);
+INSERT INTO Creators(creator_id,username,password,date_made,phone_number,email_address,first_name,last_name,card_number,cvv,expiration_date,street,city,state,zip_code) VALUES (78,'ebremen25','G5TnZZ','2022-06-22 20:44:20','203-247-7435','elalor25@weibo.com','Hanna','Elwin',331212017,635,'2022-09-26 09:28:46','Annamark','Stamford','Connecticut',06922);
+INSERT INTO Creators(creator_id,username,password,date_made,phone_number,email_address,first_name,last_name,card_number,cvv,expiration_date,street,city,state,zip_code) VALUES (79,'cdawidowitz26','SfSnc1DxiZnt','2022-12-18 23:09:59','254-335-1490','cfellnee26@plala.or.jp','Waldemar','Codie',994621658,694,'2022-10-06 23:11:28','Oriole','Waco','Texas',76796);
+INSERT INTO Creators(creator_id,username,password,date_made,phone_number,email_address,first_name,last_name,card_number,cvv,expiration_date,street,city,state,zip_code) VALUES (80,'bgoodliff27','CQsthHESK3','2023-03-07 18:24:50','702-619-8462','bchetham27@domainmarket.com','Monroe','Baxie',849266944,953,'2022-08-28 09:48:39','Cambridge','North Las Vegas','Nevada',89087);
+INSERT INTO Creators(creator_id,username,password,date_made,phone_number,email_address,first_name,last_name,card_number,cvv,expiration_date,street,city,state,zip_code) VALUES (81,'htroth28','iekbQ4','2022-05-17 05:51:48','786-397-1305','hlapish28@com.com','Hillie','Howie',662458659,113,'2023-01-02 07:04:23','Kipling','Miami','Florida',33124);
+INSERT INTO Creators(creator_id,username,password,date_made,phone_number,email_address,first_name,last_name,card_number,cvv,expiration_date,street,city,state,zip_code) VALUES (82,'bplain29','aJiiyh','2022-05-27 17:10:23','707-997-9667','bhavelin29@bloglovin.com','Eden','Brien',365736233,977,'2022-05-12 01:53:23','Emmet','Petaluma','California',94975);
+INSERT INTO Creators(creator_id,username,password,date_made,phone_number,email_address,first_name,last_name,card_number,cvv,expiration_date,street,city,state,zip_code) VALUES (83,'aarsey2a','FIOA0eHPo','2022-05-29 14:23:29','251-258-4396','aivanishin2a@wunderground.com','Lane','Angus',400779165,426,'2022-09-07 03:32:14','Corry','Mobile','Alabama',36628);
+INSERT INTO Creators(creator_id,username,password,date_made,phone_number,email_address,first_name,last_name,card_number,cvv,expiration_date,street,city,state,zip_code) VALUES (84,'eranklin2b','S1MZCqbkYMOP','2022-09-06 10:45:25','913-942-1685','ewhybray2b@ask.com','Judie','Esmeralda',382471545,992,'2022-05-30 09:13:31','Dapin','Kansas City','Kansas',66160);
+INSERT INTO Creators(creator_id,username,password,date_made,phone_number,email_address,first_name,last_name,card_number,cvv,expiration_date,street,city,state,zip_code) VALUES (85,'igodain2c','IYkXd7uyAG','2023-04-03 16:07:30','804-548-0292','ipavlovic2c@flavors.me','Marc','Irina',403958845,427,'2022-05-18 13:44:36','East','Richmond','Virginia',23285);
+INSERT INTO Creators(creator_id,username,password,date_made,phone_number,email_address,first_name,last_name,card_number,cvv,expiration_date,street,city,state,zip_code) VALUES (86,'jcicchelli2d','8J8ac9','2022-06-25 18:43:53','240-303-5278','jgude2d@diigo.com','Alley','Jaquelyn',959662652,847,'2022-09-27 22:24:52','Northfield','Gaithersburg','Maryland',20883);
+INSERT INTO Creators(creator_id,username,password,date_made,phone_number,email_address,first_name,last_name,card_number,cvv,expiration_date,street,city,state,zip_code) VALUES (87,'bwishkar2e','dfnyW0ZFZ','2022-05-07 03:53:41','510-965-0865','bgwyllt2e@taobao.com','Wyn','Bria',674167292,526,'2023-03-04 04:11:48','Carey','Richmond','California',94807);
+INSERT INTO Creators(creator_id,username,password,date_made,phone_number,email_address,first_name,last_name,card_number,cvv,expiration_date,street,city,state,zip_code) VALUES (88,'erizziello2f','M1jrpfnBg2','2022-10-04 21:41:15','913-822-9383','ebegin2f@bbb.org','Deane','Elisha',235368155,797,'2022-11-04 07:48:41','Stephen','Kansas City','Kansas',66160);
+INSERT INTO Creators(creator_id,username,password,date_made,phone_number,email_address,first_name,last_name,card_number,cvv,expiration_date,street,city,state,zip_code) VALUES (89,'bupsale2g','QWZj9UPM85dr','2022-09-08 07:08:58','434-224-7668','bspringtorpe2g@senate.gov','Maurie','Barn',772120863,995,'2022-10-30 06:28:34','Crescent Oaks','Charlottesville','Virginia',22908);
+INSERT INTO Creators(creator_id,username,password,date_made,phone_number,email_address,first_name,last_name,card_number,cvv,expiration_date,street,city,state,zip_code) VALUES (90,'ageorges2h','gIManWm','2022-10-25 04:51:39','801-626-3626','achrippes2h@illinois.edu','Aloin','Andria',815869900,965,'2023-03-23 19:01:02','Fisk','Salt Lake City','Utah',84199);
+INSERT INTO Creators(creator_id,username,password,date_made,phone_number,email_address,first_name,last_name,card_number,cvv,expiration_date,street,city,state,zip_code) VALUES (91,'jmenghi2i','1p3HTR2GR','2022-05-20 04:14:52','916-764-1049','jcozins2i@ask.com','Giuditta','Jerrylee',285333793,726,'2023-02-18 06:53:28','Utah','Sacramento','California',94297);
+INSERT INTO Creators(creator_id,username,password,date_made,phone_number,email_address,first_name,last_name,card_number,cvv,expiration_date,street,city,state,zip_code) VALUES (92,'cshyre2j','D1Sr2GmHpDMf','2023-02-23 05:57:10','706-970-6184','cchatan2j@netlog.com','Yard','Clim',783951825,986,'2022-08-17 23:27:23','Brown','Athens','Georgia',30610);
+INSERT INTO Creators(creator_id,username,password,date_made,phone_number,email_address,first_name,last_name,card_number,cvv,expiration_date,street,city,state,zip_code) VALUES (93,'gmabson2k','4eVv4IqSQQW2','2022-09-25 20:01:11','757-984-4152','gbuckley2k@netvibes.com','Sergio','Gilbertine',244533379,564,'2022-05-15 19:07:01','Mandrake','Virginia Beach','Virginia',23464);
+INSERT INTO Creators(creator_id,username,password,date_made,phone_number,email_address,first_name,last_name,card_number,cvv,expiration_date,street,city,state,zip_code) VALUES (94,'mblythe2l','8Tf60mYIJ7','2023-03-19 03:26:30','641-426-7003','makess2l@ehow.com','Barrett','Marta',873671190,255,'2022-10-08 10:42:48','Gina','Des Moines','Iowa',50315);
+INSERT INTO Creators(creator_id,username,password,date_made,phone_number,email_address,first_name,last_name,card_number,cvv,expiration_date,street,city,state,zip_code) VALUES (95,'gsalter2m','OAtExkQFY7JI','2023-01-20 22:14:21','804-895-3700','ghambatch2m@ox.ac.uk','Livvy','Gert',962669742,281,'2023-03-07 02:01:48','Muir','Richmond','Virginia',23272);
+INSERT INTO Creators(creator_id,username,password,date_made,phone_number,email_address,first_name,last_name,card_number,cvv,expiration_date,street,city,state,zip_code) VALUES (96,'kmcmenamin2n','xyqySIvq','2022-11-25 19:20:33','407-490-2529','kjurek2n@xrea.com','Mylo','Kaila',099324577,17,'2022-11-05 04:19:37','Stang','Orlando','Florida',32891);
+INSERT INTO Creators(creator_id,username,password,date_made,phone_number,email_address,first_name,last_name,card_number,cvv,expiration_date,street,city,state,zip_code) VALUES (97,'bboate2o','3hagSh81Z','2022-08-10 03:04:40','561-447-3513','bgerssam2o@dagondesign.com','Cristabel','Brose',423430918,535,'2022-12-03 10:58:04','Little Fleur','West Palm Beach','Florida',33416);
+INSERT INTO Creators(creator_id,username,password,date_made,phone_number,email_address,first_name,last_name,card_number,cvv,expiration_date,street,city,state,zip_code) VALUES (98,'wmockford2p','KTqFvAJWr','2022-06-07 21:04:16','281-877-5531','warlt2p@163.com','Brody','Welbie',092391685,328,'2022-12-17 03:39:59','Hermina','Houston','Texas',77050);
+INSERT INTO Creators(creator_id,username,password,date_made,phone_number,email_address,first_name,last_name,card_number,cvv,expiration_date,street,city,state,zip_code) VALUES (99,'hdiamond2q','5FZj9DF','2023-02-15 14:28:11','203-729-0328','hpogosian2q@pcworld.com','Merry','Herbie',389037876,119,'2023-04-04 17:35:21','Algoma','Fairfield','Connecticut',06825);
+INSERT INTO Creators(creator_id,username,password,date_made,phone_number,email_address,first_name,last_name,card_number,cvv,expiration_date,street,city,state,zip_code) VALUES (100,'fchiommienti2r','yQpnn9OpmopM','2023-01-07 02:13:41','770-634-1461','fpetracco2r@instagram.com','Sam','Florentia',400317278,147,'2022-04-28 01:44:29','High Crossing','Marietta','Georgia',30061);
 
---# Inventory
-INSERT INTO Inventory (total_in_stock, item_number, available_sizes, date_last_restock, date_next_restock) VALUES ('4137237', '9', 'L', '5/12/2022', '4/21/2023');
-INSERT INTO Inventory (total_in_stock, item_number, available_sizes, date_last_restock, date_next_restock) VALUES ('441126', '56', '2XL', '1/12/2023', '5/25/2022');
-INSERT INTO Inventory (total_in_stock, item_number, available_sizes, date_last_restock, date_next_restock) VALUES ('1631355', '73', 'XS', '3/11/2023', '4/29/2022');
-INSERT INTO Inventory (total_in_stock, item_number, available_sizes, date_last_restock, date_next_restock) VALUES ('9734144', '72', 'S', '12/3/2022', '1/13/2023');
-INSERT INTO Inventory (total_in_stock, item_number, available_sizes, date_last_restock, date_next_restock) VALUES ('5807033', '76', '2XL', '10/2/2022', '1/10/2023');
-INSERT INTO Inventory (total_in_stock, item_number, available_sizes, date_last_restock, date_next_restock) VALUES ('6600295', '25', 'S', '12/8/2022', '6/20/2023');
-INSERT INTO Inventory (total_in_stock, item_number, available_sizes, date_last_restock, date_next_restock) VALUES ('8221773', '94', 'L', '4/2/2022', '7/24/2022');
-INSERT INTO Inventory (total_in_stock, item_number, available_sizes, date_last_restock, date_next_restock) VALUES ('809113', '93', 'XS', '8/7/2022', '4/18/2023');
-INSERT INTO Inventory (total_in_stock, item_number, available_sizes, date_last_restock, date_next_restock) VALUES ('5983354', '11', '3XL', '5/12/2022', '9/1/2022');
-INSERT INTO Inventory (total_in_stock, item_number, available_sizes, date_last_restock, date_next_restock) VALUES ('2435760', '15', '2XL', '10/15/2022', '2/20/2023');
-INSERT INTO Inventory (total_in_stock, item_number, available_sizes, date_last_restock, date_next_restock) VALUES ('5731386', '78', 'M', '11/21/2022', '8/19/2022');
-INSERT INTO Inventory (total_in_stock, item_number, available_sizes, date_last_restock, date_next_restock) VALUES ('8381419', '23', 'XS', '3/12/2023', '2/24/2023');
-INSERT INTO Inventory (total_in_stock, item_number, available_sizes, date_last_restock, date_next_restock) VALUES ('2974933', '67', 'XS', '7/15/2023', '6/2/2022');
-INSERT INTO Inventory (total_in_stock, item_number, available_sizes, date_last_restock, date_next_restock) VALUES ('7699937', '67', 'L', '4/12/2023', '10/12/2022');
-INSERT INTO Inventory (total_in_stock, item_number, available_sizes, date_last_restock, date_next_restock) VALUES ('5623205', '73', 'M', '1/19/2023', '7/18/2023');
-INSERT INTO Inventory (total_in_stock, item_number, available_sizes, date_last_restock, date_next_restock) VALUES ('9885691', '82', 'S', '3/9/2022', '4/14/2022');
-INSERT INTO Inventory (total_in_stock, item_number, available_sizes, date_last_restock, date_next_restock) VALUES ('1034194', '46', '3XL', '3/3/2022', '5/17/2022');
-INSERT INTO Inventory (total_in_stock, item_number, available_sizes, date_last_restock, date_next_restock) VALUES ('8506915', '72', 'L', '3/3/2022', '6/8/2022');
-INSERT INTO Inventory (total_in_stock, item_number, available_sizes, date_last_restock, date_next_restock) VALUES ('5905582', '38', 'XL', '1/11/2023', '3/12/2023');
-INSERT INTO Inventory (total_in_stock, item_number, available_sizes, date_last_restock, date_next_restock) VALUES ('9122102', '28', 'XS', '10/17/2022', '9/16/2022');
-INSERT INTO Inventory (total_in_stock, item_number, available_sizes, date_last_restock, date_next_restock) VALUES ('2778835', '71', 'L', '6/19/2022', '6/21/2022');
-INSERT INTO Inventory (total_in_stock, item_number, available_sizes, date_last_restock, date_next_restock) VALUES ('9767977', '15', '2XL', '6/27/2023', '7/2/2022');
-INSERT INTO Inventory (total_in_stock, item_number, available_sizes, date_last_restock, date_next_restock) VALUES ('9301956', '7', 'XL', '8/4/2022', '1/20/2023');
-INSERT INTO Inventory (total_in_stock, item_number, available_sizes, date_last_restock, date_next_restock) VALUES ('9840924', '6', 'L', '6/7/2022', '6/20/2022');
-INSERT INTO Inventory (total_in_stock, item_number, available_sizes, date_last_restock, date_next_restock) VALUES ('459972', '1', 'XS', '2/25/2023', '3/22/2023');
-INSERT INTO Inventory (total_in_stock, item_number, available_sizes, date_last_restock, date_next_restock) VALUES ('6122240', '99', 'M', '3/11/2022', '1/17/2023');
-INSERT INTO Inventory (total_in_stock, item_number, available_sizes, date_last_restock, date_next_restock) VALUES ('3213317', '15', '2XL', '12/25/2022', '5/26/2023');
-INSERT INTO Inventory (total_in_stock, item_number, available_sizes, date_last_restock, date_next_restock) VALUES ('5824929', '54', 'XS', '5/19/2022', '6/3/2022');
-INSERT INTO Inventory (total_in_stock, item_number, available_sizes, date_last_restock, date_next_restock) VALUES ('8760592', '90', 'S', '10/11/2022', '8/9/2022');
-INSERT INTO Inventory (total_in_stock, item_number, available_sizes, date_last_restock, date_next_restock) VALUES ('5675988', '85', 'XS', '5/2/2023', '10/19/2022');
-INSERT INTO Inventory (total_in_stock, item_number, available_sizes, date_last_restock, date_next_restock) VALUES ('637526', '25', 'XS', '5/3/2022', '10/16/2022');
-INSERT INTO Inventory (total_in_stock, item_number, available_sizes, date_last_restock, date_next_restock) VALUES ('64712', '45', '2XL', '3/13/2023', '3/8/2022');
-INSERT INTO Inventory (total_in_stock, item_number, available_sizes, date_last_restock, date_next_restock) VALUES ('6822706', '13', 'XL', '2/17/2023', '1/23/2023');
-INSERT INTO Inventory (total_in_stock, item_number, available_sizes, date_last_restock, date_next_restock) VALUES ('3088033', '34', 'XS', '1/2/2023', '4/18/2023');
-INSERT INTO Inventory (total_in_stock, item_number, available_sizes, date_last_restock, date_next_restock) VALUES ('2786836', '36', 'XS', '4/15/2022', '2/22/2023');
-INSERT INTO Inventory (total_in_stock, item_number, available_sizes, date_last_restock, date_next_restock) VALUES ('7085796', '29', 'M', '11/29/2022', '7/5/2022');
-INSERT INTO Inventory (total_in_stock, item_number, available_sizes, date_last_restock, date_next_restock) VALUES ('82320', '28', 'XS', '4/12/2023', '5/15/2023');
-INSERT INTO Inventory (total_in_stock, item_number, available_sizes, date_last_restock, date_next_restock) VALUES ('3275664', '4', 'XL', '12/20/2022', '7/25/2023');
-INSERT INTO Inventory (total_in_stock, item_number, available_sizes, date_last_restock, date_next_restock) VALUES ('9831804', '92', '3XL', '5/18/2022', '10/16/2022');
-INSERT INTO Inventory (total_in_stock, item_number, available_sizes, date_last_restock, date_next_restock) VALUES ('5178692', '21', '3XL', '8/3/2022', '9/24/2022');
-INSERT INTO Inventory (total_in_stock, item_number, available_sizes, date_last_restock, date_next_restock) VALUES ('1082446', '88', '3XL', '8/16/2022', '6/18/2023');
-INSERT INTO Inventory (total_in_stock, item_number, available_sizes, date_last_restock, date_next_restock) VALUES ('9809496', '58', 'L', '2/3/2023', '6/12/2022');
-INSERT INTO Inventory (total_in_stock, item_number, available_sizes, date_last_restock, date_next_restock) VALUES ('4326271', '25', 'S', '7/30/2022', '10/10/2022');
-INSERT INTO Inventory (total_in_stock, item_number, available_sizes, date_last_restock, date_next_restock) VALUES ('9103404', '94', '3XL', '7/23/2022', '3/16/2022');
-INSERT INTO Inventory (total_in_stock, item_number, available_sizes, date_last_restock, date_next_restock) VALUES ('4816842', '64', 'S', '5/2/2022', '7/8/2022');
-INSERT INTO Inventory (total_in_stock, item_number, available_sizes, date_last_restock, date_next_restock) VALUES ('439517', '10', '2XL', '12/5/2022', '5/9/2023');
-INSERT INTO Inventory (total_in_stock, item_number, available_sizes, date_last_restock, date_next_restock) VALUES ('3410385', '97', 'S', '12/27/2022', '5/6/2023');
-INSERT INTO Inventory (total_in_stock, item_number, available_sizes, date_last_restock, date_next_restock) VALUES ('5402698', '7', '2XL', '2/27/2023', '8/12/2022');
-INSERT INTO Inventory (total_in_stock, item_number, available_sizes, date_last_restock, date_next_restock) VALUES ('3030069', '80', '3XL', '9/1/2022', '2/27/2023');
-INSERT INTO Inventory (total_in_stock, item_number, available_sizes, date_last_restock, date_next_restock) VALUES ('6506478', '29', 'S', '6/6/2022', '9/15/2022');
-INSERT INTO Inventory (total_in_stock, item_number, available_sizes, date_last_restock, date_next_restock) VALUES ('156150', '61', '3XL', '4/26/2023', '12/29/2022');
-INSERT INTO Inventory (total_in_stock, item_number, available_sizes, date_last_restock, date_next_restock) VALUES ('5488878', '88', '2XL', '4/1/2023', '1/24/2023');
-INSERT INTO Inventory (total_in_stock, item_number, available_sizes, date_last_restock, date_next_restock) VALUES ('5292492', '25', 'L', '5/5/2022', '2/7/2023');
-INSERT INTO Inventory (total_in_stock, item_number, available_sizes, date_last_restock, date_next_restock) VALUES ('3429109', '31', 'XS', '10/11/2022', '3/17/2022');
-INSERT INTO Inventory (total_in_stock, item_number, available_sizes, date_last_restock, date_next_restock) VALUES ('2738177', '7', 'S', '7/9/2022', '5/30/2022');
-INSERT INTO Inventory (total_in_stock, item_number, available_sizes, date_last_restock, date_next_restock) VALUES ('1328726', '55', 'XS', '12/13/2022', '5/26/2023');
-INSERT INTO Inventory (total_in_stock, item_number, available_sizes, date_last_restock, date_next_restock) VALUES ('5641387', '76', '2XL', '7/10/2023', '2/6/2023');
-INSERT INTO Inventory (total_in_stock, item_number, available_sizes, date_last_restock, date_next_restock) VALUES ('9533187', '39', 'L', '2/1/2023', '12/10/2022');
-INSERT INTO Inventory (total_in_stock, item_number, available_sizes, date_last_restock, date_next_restock) VALUES ('2730167', '44', 'XL', '3/20/2023', '3/17/2022');
-INSERT INTO Inventory (total_in_stock, item_number, available_sizes, date_last_restock, date_next_restock) VALUES ('7014413', '20', 'S', '2/7/2023', '1/17/2023');
-INSERT INTO Inventory (total_in_stock, item_number, available_sizes, date_last_restock, date_next_restock) VALUES ('6818803', '59', 'XS', '7/19/2023', '5/10/2023');
-INSERT INTO Inventory (total_in_stock, item_number, available_sizes, date_last_restock, date_next_restock) VALUES ('2443104', '43', '3XL', '1/21/2023', '2/2/2023');
-INSERT INTO Inventory (total_in_stock, item_number, available_sizes, date_last_restock, date_next_restock) VALUES ('6090318', '50', '2XL', '3/4/2023', '1/9/2023');
-INSERT INTO Inventory (total_in_stock, item_number, available_sizes, date_last_restock, date_next_restock) VALUES ('3956000', '59', 'XL', '5/13/2022', '10/17/2022');
-INSERT INTO Inventory (total_in_stock, item_number, available_sizes, date_last_restock, date_next_restock) VALUES ('852379', '13', 'XS', '8/4/2022', '1/14/2023');
-INSERT INTO Inventory (total_in_stock, item_number, available_sizes, date_last_restock, date_next_restock) VALUES ('3367844', '67', '2XL', '4/29/2023', '3/30/2023');
-INSERT INTO Inventory (total_in_stock, item_number, available_sizes, date_last_restock, date_next_restock) VALUES ('140827', '99', '3XL', '4/21/2023', '10/11/2022');
-INSERT INTO Inventory (total_in_stock, item_number, available_sizes, date_last_restock, date_next_restock) VALUES ('684031', '2', 'M', '1/27/2023', '7/26/2023');
-INSERT INTO Inventory (total_in_stock, item_number, available_sizes, date_last_restock, date_next_restock) VALUES ('2651939', '64', 'L', '5/24/2023', '3/1/2022');
-INSERT INTO Inventory (total_in_stock, item_number, available_sizes, date_last_restock, date_next_restock) VALUES ('2073146', '95', 'XL', '5/3/2023', '1/17/2023');
-INSERT INTO Inventory (total_in_stock, item_number, available_sizes, date_last_restock, date_next_restock) VALUES ('9730966', '32', 'XL', '6/26/2023', '5/2/2023');
-INSERT INTO Inventory (total_in_stock, item_number, available_sizes, date_last_restock, date_next_restock) VALUES ('2559808', '72', 'S', '7/3/2023', '4/23/2022');
-INSERT INTO Inventory (total_in_stock, item_number, available_sizes, date_last_restock, date_next_restock) VALUES ('7395604', '19', 'S', '4/13/2023', '4/19/2022');
-INSERT INTO Inventory (total_in_stock, item_number, available_sizes, date_last_restock, date_next_restock) VALUES ('9505903', '99', 'M', '2/26/2023', '7/13/2023');
-INSERT INTO Inventory (total_in_stock, item_number, available_sizes, date_last_restock, date_next_restock) VALUES ('295223', '42', 'M', '11/28/2022', '11/1/2022');
-INSERT INTO Inventory (total_in_stock, item_number, available_sizes, date_last_restock, date_next_restock) VALUES ('8732177', '58', 'XL', '9/26/2022', '4/1/2023');
-INSERT INTO Inventory (total_in_stock, item_number, available_sizes, date_last_restock, date_next_restock) VALUES ('2096427', '51', 'M', '6/12/2022', '7/11/2022');
-INSERT INTO Inventory (total_in_stock, item_number, available_sizes, date_last_restock, date_next_restock) VALUES ('2819789', '72', '3XL', '3/11/2022', '11/28/2022');
-INSERT INTO Inventory (total_in_stock, item_number, available_sizes, date_last_restock, date_next_restock) VALUES ('9072274', '58', 'XL', '8/26/2022', '3/26/2022');
-INSERT INTO Inventory (total_in_stock, item_number, available_sizes, date_last_restock, date_next_restock) VALUES ('4892392', '21', 'L', '1/30/2023', '5/23/2023');
-INSERT INTO Inventory (total_in_stock, item_number, available_sizes, date_last_restock, date_next_restock) VALUES ('4032292', '36', 'XS', '7/15/2023', '11/17/2022');
-INSERT INTO Inventory (total_in_stock, item_number, available_sizes, date_last_restock, date_next_restock) VALUES ('6393944', '98', '3XL', '5/11/2023', '10/22/2022');
-INSERT INTO Inventory (total_in_stock, item_number, available_sizes, date_last_restock, date_next_restock) VALUES ('1490121', '29', 'M', '10/8/2022', '8/11/2022');
-INSERT INTO Inventory (total_in_stock, item_number, available_sizes, date_last_restock, date_next_restock) VALUES ('1166009', '86', 'XL', '2/8/2023', '9/6/2022');
-INSERT INTO Inventory (total_in_stock, item_number, available_sizes, date_last_restock, date_next_restock) VALUES ('4326481', '15', '3XL', '11/19/2022', '9/1/2022');
-INSERT INTO Inventory (total_in_stock, item_number, available_sizes, date_last_restock, date_next_restock) VALUES ('7840621', '14', '2XL', '11/6/2022', '12/1/2022');
-INSERT INTO Inventory (total_in_stock, item_number, available_sizes, date_last_restock, date_next_restock) VALUES ('4558469', '6', 'XL', '4/8/2022', '8/25/2022');
-INSERT INTO Inventory (total_in_stock, item_number, available_sizes, date_last_restock, date_next_restock) VALUES ('9582917', '69', 'S', '11/24/2022', '11/8/2022');
-INSERT INTO Inventory (total_in_stock, item_number, available_sizes, date_last_restock, date_next_restock) VALUES ('6947589', '82', '2XL', '6/18/2023', '11/4/2022');
-INSERT INTO Inventory (total_in_stock, item_number, available_sizes, date_last_restock, date_next_restock) VALUES ('9155747', '41', 'L', '5/11/2023', '12/18/2022');
-INSERT INTO Inventory (total_in_stock, item_number, available_sizes, date_last_restock, date_next_restock) VALUES ('2385889', '68', 'XL', '11/5/2022', '1/25/2023');
-INSERT INTO Inventory (total_in_stock, item_number, available_sizes, date_last_restock, date_next_restock) VALUES ('9813784', '10', 'M', '10/5/2022', '7/22/2022');
-INSERT INTO Inventory (total_in_stock, item_number, available_sizes, date_last_restock, date_next_restock) VALUES ('8714286', '6', 'XL', '3/12/2023', '7/7/2023');
-INSERT INTO Inventory (total_in_stock, item_number, available_sizes, date_last_restock, date_next_restock) VALUES ('7185154', '33', '2XL', '4/10/2022', '11/12/2022');
-INSERT INTO Inventory (total_in_stock, item_number, available_sizes, date_last_restock, date_next_restock) VALUES ('7606159', '23', 'L', '3/18/2022', '6/2/2022');
-INSERT INTO Inventory (total_in_stock, item_number, available_sizes, date_last_restock, date_next_restock) VALUES ('1966297', '22', 'L', '9/5/2022', '3/5/2022');
-INSERT INTO Inventory (total_in_stock, item_number, available_sizes, date_last_restock, date_next_restock) VALUES ('8706845', '20', 'L', '7/3/2023', '3/5/2022');
-INSERT INTO Inventory (total_in_stock, item_number, available_sizes, date_last_restock, date_next_restock) VALUES ('5738038', '96', 'XS', '3/1/2023', '7/14/2022');
-INSERT INTO Inventory (total_in_stock, item_number, available_sizes, date_last_restock, date_next_restock) VALUES ('7895986', '35', '2XL', '5/16/2023', '6/13/2022');
-INSERT INTO Inventory (total_in_stock, item_number, available_sizes, date_last_restock, date_next_restock) VALUES ('8437903', '86', 'L', '3/3/2023', '6/23/2023');
+INSERT INTO Podcasts(release_date,number_of_episodes,genre_name,episode_number,creator_id,name) VALUES ('2023-03-02 23:16:14',7183114,'Animation|Children',32,40,'Podcast493');
+INSERT INTO Podcasts(release_date,number_of_episodes,genre_name,episode_number,creator_id,name) VALUES ('2022-11-26 05:33:18',2248363,'Drama|War',11,45,'Podcast289');
+INSERT INTO Podcasts(release_date,number_of_episodes,genre_name,episode_number,creator_id,name) VALUES ('2022-11-09 13:09:47',2702235,'Comedy',52,37,'Podcast622');
+INSERT INTO Podcasts(release_date,number_of_episodes,genre_name,episode_number,creator_id,name) VALUES ('2022-11-11 18:29:37',8847262,'Horror|Mystery|Thriller',84,46,'Podcast303');
+INSERT INTO Podcasts(release_date,number_of_episodes,genre_name,episode_number,creator_id,name) VALUES ('2022-09-09 11:16:55',900105,'Drama|Romance',19,15,'Podcast640');
+INSERT INTO Podcasts(release_date,number_of_episodes,genre_name,episode_number,creator_id,name) VALUES ('2023-02-18 16:25:38',943592,'Drama|Sci-Fi',15,16,'Podcast437');
+INSERT INTO Podcasts(release_date,number_of_episodes,genre_name,episode_number,creator_id,name) VALUES ('2022-09-29 13:22:14',7031386,'Drama|Mystery',39,49,'Podcast483');
+INSERT INTO Podcasts(release_date,number_of_episodes,genre_name,episode_number,creator_id,name) VALUES ('2022-12-12 21:39:29',906275,'Comedy|Romance',99,47,'Podcast376');
+INSERT INTO Podcasts(release_date,number_of_episodes,genre_name,episode_number,creator_id,name) VALUES ('2022-05-01 05:24:04',1335975,'Comedy|Romance',37,45,'Podcast644');
+INSERT INTO Podcasts(release_date,number_of_episodes,genre_name,episode_number,creator_id,name) VALUES ('2022-08-23 11:51:28',3192537,'Comedy|Crime',59,23,'Podcast894');
+INSERT INTO Podcasts(release_date,number_of_episodes,genre_name,episode_number,creator_id,name) VALUES ('2022-05-22 00:04:43',1959628,'Action|Comedy|Crime|Thriller',77,28,'Podcast431');
+INSERT INTO Podcasts(release_date,number_of_episodes,genre_name,episode_number,creator_id,name) VALUES ('2022-10-07 09:25:56',6186596,'Crime|Drama|Film-Noir|Thriller',11,97,'Podcast585');
+INSERT INTO Podcasts(release_date,number_of_episodes,genre_name,episode_number,creator_id,name) VALUES ('2023-02-28 01:51:35',9320443,'Adventure|Animation|Children|Drama',96,39,'Podcast893');
+INSERT INTO Podcasts(release_date,number_of_episodes,genre_name,episode_number,creator_id,name) VALUES ('2022-05-19 09:38:30',4500286,'Drama|Mystery',32,87,'Podcast157');
+INSERT INTO Podcasts(release_date,number_of_episodes,genre_name,episode_number,creator_id,name) VALUES ('2023-01-07 19:12:25',2228079,'Comedy|Romance',53,34,'Podcast375');
+INSERT INTO Podcasts(release_date,number_of_episodes,genre_name,episode_number,creator_id,name) VALUES ('2022-11-21 03:16:42',4287117,'Horror|Sci-Fi',38,84,'Podcast802');
+INSERT INTO Podcasts(release_date,number_of_episodes,genre_name,episode_number,creator_id,name) VALUES ('2023-02-27 01:04:31',7349970,'Drama|Sci-Fi',82,13,'Podcast390');
+INSERT INTO Podcasts(release_date,number_of_episodes,genre_name,episode_number,creator_id,name) VALUES ('2022-11-19 22:04:31',20650,'Drama|Romance',12,30,'Podcast338');
+INSERT INTO Podcasts(release_date,number_of_episodes,genre_name,episode_number,creator_id,name) VALUES ('2023-01-17 18:57:24',6346114,'Drama',88,69,'Podcast202');
+INSERT INTO Podcasts(release_date,number_of_episodes,genre_name,episode_number,creator_id,name) VALUES ('2022-07-30 19:32:12',38354,'Horror|Sci-Fi|Thriller',42,6,'Podcast346');
+INSERT INTO Podcasts(release_date,number_of_episodes,genre_name,episode_number,creator_id,name) VALUES ('2022-12-02 06:43:25',5218204,'Adventure',23,4,'Podcast586');
+INSERT INTO Podcasts(release_date,number_of_episodes,genre_name,episode_number,creator_id,name) VALUES ('2022-06-27 01:24:27',4992095,'Drama',21,63,'Podcast168');
+INSERT INTO Podcasts(release_date,number_of_episodes,genre_name,episode_number,creator_id,name) VALUES ('2022-08-24 22:49:27',7398610,'Horror|Mystery|Thriller',42,10,'Podcast445');
+INSERT INTO Podcasts(release_date,number_of_episodes,genre_name,episode_number,creator_id,name) VALUES ('2022-06-13 15:33:21',3237148,'Comedy',47,60,'Podcast636');
+INSERT INTO Podcasts(release_date,number_of_episodes,genre_name,episode_number,creator_id,name) VALUES ('2022-10-29 18:38:56',3433508,'Adventure|Animation|Children|Drama',11,12,'Podcast865');
+INSERT INTO Podcasts(release_date,number_of_episodes,genre_name,episode_number,creator_id,name) VALUES ('2022-04-30 12:30:30',5686949,'Drama',15,8,'Podcast193');
+INSERT INTO Podcasts(release_date,number_of_episodes,genre_name,episode_number,creator_id,name) VALUES ('2023-04-10 18:35:57',9536216,'Comedy|Drama',85,86,'Podcast635');
+INSERT INTO Podcasts(release_date,number_of_episodes,genre_name,episode_number,creator_id,name) VALUES ('2022-10-04 05:53:24',6626167,'Drama|Musical',84,58,'Podcast031');
+INSERT INTO Podcasts(release_date,number_of_episodes,genre_name,episode_number,creator_id,name) VALUES ('2022-07-11 06:38:51',6755066,'Comedy',72,84,'Podcast591');
+INSERT INTO Podcasts(release_date,number_of_episodes,genre_name,episode_number,creator_id,name) VALUES ('2022-12-01 13:19:26',3242312,'Drama',78,14,'Podcast100');
+INSERT INTO Podcasts(release_date,number_of_episodes,genre_name,episode_number,creator_id,name) VALUES ('2023-02-06 21:07:01',132989,'Adventure|Fantasy|Thriller',94,27,'Podcast021');
+INSERT INTO Podcasts(release_date,number_of_episodes,genre_name,episode_number,creator_id,name) VALUES ('2023-04-10 10:18:24',5482470,'Adventure|Drama',56,97,'Podcast186');
+INSERT INTO Podcasts(release_date,number_of_episodes,genre_name,episode_number,creator_id,name) VALUES ('2022-10-12 10:15:23',6295014,'Drama',31,99,'Podcast096');
+INSERT INTO Podcasts(release_date,number_of_episodes,genre_name,episode_number,creator_id,name) VALUES ('2022-11-06 14:01:11',4884472,'Drama',6,4,'Podcast654');
+INSERT INTO Podcasts(release_date,number_of_episodes,genre_name,episode_number,creator_id,name) VALUES ('2022-06-08 05:30:43',8326371,'Drama',21,83,'Podcast665');
+INSERT INTO Podcasts(release_date,number_of_episodes,genre_name,episode_number,creator_id,name) VALUES ('2023-03-20 21:30:08',293665,'Action|Comedy|Crime|Thriller',2,27,'Podcast994');
+INSERT INTO Podcasts(release_date,number_of_episodes,genre_name,episode_number,creator_id,name) VALUES ('2022-08-07 15:01:04',4388794,'Drama|Romance',96,5,'Podcast034');
+INSERT INTO Podcasts(release_date,number_of_episodes,genre_name,episode_number,creator_id,name) VALUES ('2023-03-29 12:35:09',4781640,'Drama|Romance',27,88,'Podcast123');
+INSERT INTO Podcasts(release_date,number_of_episodes,genre_name,episode_number,creator_id,name) VALUES ('2022-08-05 05:41:25',3988548,'Horror|Mystery|Thriller',61,87,'Podcast501');
+INSERT INTO Podcasts(release_date,number_of_episodes,genre_name,episode_number,creator_id,name) VALUES ('2022-06-06 05:26:44',9620828,'Thriller',45,43,'Podcast199');
+INSERT INTO Podcasts(release_date,number_of_episodes,genre_name,episode_number,creator_id,name) VALUES ('2022-10-14 14:11:09',4827174,'Action|Adventure|Thriller|War',7,98,'Podcast637');
+INSERT INTO Podcasts(release_date,number_of_episodes,genre_name,episode_number,creator_id,name) VALUES ('2022-07-25 18:23:31',7499684,'Comedy|Romance',94,3,'Podcast051');
+INSERT INTO Podcasts(release_date,number_of_episodes,genre_name,episode_number,creator_id,name) VALUES ('2023-03-25 07:41:09',3906702,'Adventure|Drama',54,99,'Podcast511');
+INSERT INTO Podcasts(release_date,number_of_episodes,genre_name,episode_number,creator_id,name) VALUES ('2022-06-01 02:21:15',1089155,'Comedy|Drama|Romance',96,91,'Podcast957');
+INSERT INTO Podcasts(release_date,number_of_episodes,genre_name,episode_number,creator_id,name) VALUES ('2022-06-10 10:29:01',9529623,'Horror|Sci-Fi|Thriller',86,10,'Podcast218');
+INSERT INTO Podcasts(release_date,number_of_episodes,genre_name,episode_number,creator_id,name) VALUES ('2022-09-06 21:01:25',4198472,'Horror|Mystery|Thriller',18,96,'Podcast773');
+INSERT INTO Podcasts(release_date,number_of_episodes,genre_name,episode_number,creator_id,name) VALUES ('2023-02-26 02:25:48',6286755,'Animation|Children',53,27,'Podcast666');
+INSERT INTO Podcasts(release_date,number_of_episodes,genre_name,episode_number,creator_id,name) VALUES ('2022-05-02 21:07:25',7422830,'Comedy|Drama|Romance',44,45,'Podcast771');
+INSERT INTO Podcasts(release_date,number_of_episodes,genre_name,episode_number,creator_id,name) VALUES ('2022-07-29 21:09:46',5460900,'Comedy|Drama',35,17,'Podcast482');
+INSERT INTO Podcasts(release_date,number_of_episodes,genre_name,episode_number,creator_id,name) VALUES ('2022-12-22 04:50:44',4635541,'Comedy|Drama',27,60,'Podcast151');
+INSERT INTO Podcasts(release_date,number_of_episodes,genre_name,episode_number,creator_id,name) VALUES ('2023-03-22 17:05:32',3309515,'Drama',15,24,'Podcast767');
+INSERT INTO Podcasts(release_date,number_of_episodes,genre_name,episode_number,creator_id,name) VALUES ('2022-11-27 08:45:50',7395837,'Comedy',11,41,'Podcast078');
+INSERT INTO Podcasts(release_date,number_of_episodes,genre_name,episode_number,creator_id,name) VALUES ('2022-12-03 00:27:30',1350588,'Horror|Sci-Fi|Thriller',6,46,'Podcast839');
+INSERT INTO Podcasts(release_date,number_of_episodes,genre_name,episode_number,creator_id,name) VALUES ('2022-07-08 11:00:27',7483432,'Drama',41,54,'Podcast702');
+INSERT INTO Podcasts(release_date,number_of_episodes,genre_name,episode_number,creator_id,name) VALUES ('2022-04-27 04:41:15',4446623,'Drama|Mystery|Sci-Fi|Thriller',58,75,'Podcast809');
+INSERT INTO Podcasts(release_date,number_of_episodes,genre_name,episode_number,creator_id,name) VALUES ('2022-11-25 11:06:50',9197098,'Drama',79,22,'Podcast335');
+INSERT INTO Podcasts(release_date,number_of_episodes,genre_name,episode_number,creator_id,name) VALUES ('2022-06-26 20:52:10',7597929,'Drama',67,76,'Podcast672');
+INSERT INTO Podcasts(release_date,number_of_episodes,genre_name,episode_number,creator_id,name) VALUES ('2022-08-03 21:13:36',555991,'Drama|Horror|Romance',78,47,'Podcast403');
+INSERT INTO Podcasts(release_date,number_of_episodes,genre_name,episode_number,creator_id,name) VALUES ('2023-03-17 07:15:39',2822515,'Drama|Romance',28,24,'Podcast663');
+INSERT INTO Podcasts(release_date,number_of_episodes,genre_name,episode_number,creator_id,name) VALUES ('2022-08-04 13:03:39',2330635,'Mystery|Thriller',34,71,'Podcast770');
+INSERT INTO Podcasts(release_date,number_of_episodes,genre_name,episode_number,creator_id,name) VALUES ('2022-07-22 09:40:15',6077628,'Action|Comedy|Thriller',65,15,'Podcast693');
+INSERT INTO Podcasts(release_date,number_of_episodes,genre_name,episode_number,creator_id,name) VALUES ('2022-10-28 02:22:39',4573877,'Animation|Children',36,10,'Podcast126');
+INSERT INTO Podcasts(release_date,number_of_episodes,genre_name,episode_number,creator_id,name) VALUES ('2022-07-01 09:56:20',5974111,'Drama',26,28,'Podcast513');
+INSERT INTO Podcasts(release_date,number_of_episodes,genre_name,episode_number,creator_id,name) VALUES ('2023-01-26 21:16:47',5413041,'Drama|Mystery',1,74,'Podcast716');
+INSERT INTO Podcasts(release_date,number_of_episodes,genre_name,episode_number,creator_id,name) VALUES ('2023-02-07 09:39:40',5813008,'Adventure|Fantasy|Thriller',58,24,'Podcast871');
+INSERT INTO Podcasts(release_date,number_of_episodes,genre_name,episode_number,creator_id,name) VALUES ('2023-01-23 07:47:05',1004239,'Documentary',47,92,'Podcast069');
+INSERT INTO Podcasts(release_date,number_of_episodes,genre_name,episode_number,creator_id,name) VALUES ('2022-08-16 03:44:58',4519873,'Comedy',21,82,'Podcast613');
+INSERT INTO Podcasts(release_date,number_of_episodes,genre_name,episode_number,creator_id,name) VALUES ('2023-04-13 06:22:43',8528042,'Comedy',64,83,'Podcast140');
+INSERT INTO Podcasts(release_date,number_of_episodes,genre_name,episode_number,creator_id,name) VALUES ('2022-06-07 03:09:08',6897486,'Documentary',68,94,'Podcast824');
+INSERT INTO Podcasts(release_date,number_of_episodes,genre_name,episode_number,creator_id,name) VALUES ('2022-10-28 20:22:28',4197180,'Action|Animation|Comedy',15,22,'Podcast277');
+INSERT INTO Podcasts(release_date,number_of_episodes,genre_name,episode_number,creator_id,name) VALUES ('2023-03-29 00:53:22',9278509,'Drama|Romance',59,25,'Podcast861');
+INSERT INTO Podcasts(release_date,number_of_episodes,genre_name,episode_number,creator_id,name) VALUES ('2023-01-01 11:35:05',7341945,'Drama|Fantasy|Romance',69,57,'Podcast368');
+INSERT INTO Podcasts(release_date,number_of_episodes,genre_name,episode_number,creator_id,name) VALUES ('2023-03-15 02:16:37',334809,'Drama',58,2,'Podcast845');
+INSERT INTO Podcasts(release_date,number_of_episodes,genre_name,episode_number,creator_id,name) VALUES ('2022-12-29 01:19:43',6250608,'Comedy',97,60,'Podcast606');
+INSERT INTO Podcasts(release_date,number_of_episodes,genre_name,episode_number,creator_id,name) VALUES ('2023-03-14 07:03:55',5384011,'Horror|Sci-Fi',75,89,'Podcast758');
+INSERT INTO Podcasts(release_date,number_of_episodes,genre_name,episode_number,creator_id,name) VALUES ('2023-03-22 12:41:28',2734306,'Action|Animation|Children|Sci-Fi',66,33,'Podcast700');
+INSERT INTO Podcasts(release_date,number_of_episodes,genre_name,episode_number,creator_id,name) VALUES ('2023-01-26 06:23:25',3322860,'Fantasy|Horror|Thriller',30,64,'Podcast502');
+INSERT INTO Podcasts(release_date,number_of_episodes,genre_name,episode_number,creator_id,name) VALUES ('2022-11-22 02:47:45',1225299,'Drama|Mystery|Romance',67,63,'Podcast106');
+INSERT INTO Podcasts(release_date,number_of_episodes,genre_name,episode_number,creator_id,name) VALUES ('2022-10-13 11:48:19',2167922,'Drama',69,51,'Podcast164');
+INSERT INTO Podcasts(release_date,number_of_episodes,genre_name,episode_number,creator_id,name) VALUES ('2022-07-13 21:51:40',7662875,'Adventure|Animation|Children|Drama',88,73,'Podcast440');
+INSERT INTO Podcasts(release_date,number_of_episodes,genre_name,episode_number,creator_id,name) VALUES ('2022-07-13 16:50:55',5771024,'Drama',24,76,'Podcast911');
+INSERT INTO Podcasts(release_date,number_of_episodes,genre_name,episode_number,creator_id,name) VALUES ('2022-05-01 03:45:46',9736416,'Mystery',72,3,'Podcast023');
+INSERT INTO Podcasts(release_date,number_of_episodes,genre_name,episode_number,creator_id,name) VALUES ('2022-04-27 15:13:29',3491968,'Crime|Drama|Romance|Thriller',45,44,'Podcast537');
+INSERT INTO Podcasts(release_date,number_of_episodes,genre_name,episode_number,creator_id,name) VALUES ('2022-05-08 09:32:16',6959882,'Comedy|Drama|Romance',83,91,'Podcast612');
+INSERT INTO Podcasts(release_date,number_of_episodes,genre_name,episode_number,creator_id,name) VALUES ('2023-01-08 16:55:46',6103967,'Comedy|Drama|Romance',30,22,'Podcast541');
+INSERT INTO Podcasts(release_date,number_of_episodes,genre_name,episode_number,creator_id,name) VALUES ('2023-01-31 07:48:11',690349,'Drama',86,68,'Podcast536');
+INSERT INTO Podcasts(release_date,number_of_episodes,genre_name,episode_number,creator_id,name) VALUES ('2022-09-20 21:26:46',2741344,'Adventure|Animation|Children|Drama|Fantasy',4,87,'Podcast177');
+INSERT INTO Podcasts(release_date,number_of_episodes,genre_name,episode_number,creator_id,name) VALUES ('2022-08-26 18:50:13',6685589,'Comedy|Drama',59,14,'Podcast793');
+INSERT INTO Podcasts(release_date,number_of_episodes,genre_name,episode_number,creator_id,name) VALUES ('2022-10-06 20:12:43',8994931,'Documentary',75,69,'Podcast469');
+INSERT INTO Podcasts(release_date,number_of_episodes,genre_name,episode_number,creator_id,name) VALUES ('2023-03-19 10:08:47',6711436,'Adventure|Drama',11,44,'Podcast489');
+INSERT INTO Podcasts(release_date,number_of_episodes,genre_name,episode_number,creator_id,name) VALUES ('2023-02-28 12:19:53',1465357,'Drama|Romance',41,62,'Podcast514');
+INSERT INTO Podcasts(release_date,number_of_episodes,genre_name,episode_number,creator_id,name) VALUES ('2023-02-04 19:56:07',6840147,'Drama|Musical|Romance',7,85,'Podcast189');
+INSERT INTO Podcasts(release_date,number_of_episodes,genre_name,episode_number,creator_id,name) VALUES ('2023-01-02 16:20:21',1899884,'Documentary',36,26,'Podcast131');
+INSERT INTO Podcasts(release_date,number_of_episodes,genre_name,episode_number,creator_id,name) VALUES ('2022-07-05 15:33:18',6695934,'Drama|Fantasy|Romance',68,78,'Podcast898');
+INSERT INTO Podcasts(release_date,number_of_episodes,genre_name,episode_number,creator_id,name) VALUES ('2022-11-24 11:37:08',2908593,'Drama|Mystery',47,14,'Podcast647');
 
---# Merchandise
-INSERT INTO Merchandise (item_number, item_description, available_sizes, date_last_restock, date_next_restock, supplier_state, supplier_street, supplier_city, supplier_zip_code, creator_id, supplier_id, total_in_stock) VALUES ('1', 'Xkemuflruxvztp', '2XL', '12/18/2022', '2/8/2023', 'North Carolina', 'Acker', 'Charlotte', '28256', '70', '13', '5905582');
-INSERT INTO Merchandise (item_number, item_description, available_sizes, date_last_restock, date_next_restock, supplier_state, supplier_street, supplier_city, supplier_zip_code, creator_id, supplier_id, total_in_stock) VALUES ('2', 'Hwqrmrblysauva', 'M', '8/7/2022', '10/8/2022', 'Tennessee', 'Troy', 'Memphis', '38136', '22', '993', '4816842');
-INSERT INTO Merchandise (item_number, item_description, available_sizes, date_last_restock, date_next_restock, supplier_state, supplier_street, supplier_city, supplier_zip_code, creator_id, supplier_id, total_in_stock) VALUES ('3', 'Vssgktfzczdxgx', 'M', '4/14/2023', '6/12/2022', 'California', 'Hermina', 'San Francisco', '94105', '8', '266', '8706845');
-INSERT INTO Merchandise (item_number, item_description, available_sizes, date_last_restock, date_next_restock, supplier_state, supplier_street, supplier_city, supplier_zip_code, creator_id, supplier_id, total_in_stock) VALUES ('4', 'Toivsrqsotyaih', 'XS', '7/26/2022', '11/22/2022', 'Texas', 'Warrior', 'San Antonio', '78260', '59', '923', '9301956');
-INSERT INTO Merchandise (item_number, item_description, available_sizes, date_last_restock, date_next_restock, supplier_state, supplier_street, supplier_city, supplier_zip_code, creator_id, supplier_id, total_in_stock) VALUES ('5', 'Bcsvutuuyupbwp', '3XL', '4/11/2023', '8/17/2022', 'District of Columbia', 'Delaware', 'Washington', '20551', '76', '201', '9840924');
-INSERT INTO Merchandise (item_number, item_description, available_sizes, date_last_restock, date_next_restock, supplier_state, supplier_street, supplier_city, supplier_zip_code, creator_id, supplier_id, total_in_stock) VALUES ('6', 'Qpebbiugtdrdmq', 'XS', '6/23/2022', '9/22/2022', 'Kansas', 'Mariners Cove', 'Shawnee Mission', '66225', '18', '27', '9533187');
-INSERT INTO Merchandise (item_number, item_description, available_sizes, date_last_restock, date_next_restock, supplier_state, supplier_street, supplier_city, supplier_zip_code, creator_id, supplier_id, total_in_stock) VALUES ('7', 'Ngybcdupcyhevd', '3XL', '5/23/2022', '6/8/2022', 'New York', 'Longview', 'Elmira', '14905', '46', '960', '6822706');
-INSERT INTO Merchandise (item_number, item_description, available_sizes, date_last_restock, date_next_restock, supplier_state, supplier_street, supplier_city, supplier_zip_code, creator_id, supplier_id, total_in_stock) VALUES ('8', 'Kvhbslsxgzpicm', '3XL', '7/22/2022', '9/17/2022', 'District of Columbia', 'Express', 'Washington', '20397', '13', '967', '9103404');
-INSERT INTO Merchandise (item_number, item_description, available_sizes, date_last_restock, date_next_restock, supplier_state, supplier_street, supplier_city, supplier_zip_code, creator_id, supplier_id, total_in_stock) VALUES ('9', 'Hmlqkadmfubixm', 'XS', '1/2/2023', '4/28/2022', 'Utah', 'Harper', 'Salt Lake City', '84115', '96', '92', '6947589');
-INSERT INTO Merchandise (item_number, item_description, available_sizes, date_last_restock, date_next_restock, supplier_state, supplier_street, supplier_city, supplier_zip_code, creator_id, supplier_id, total_in_stock) VALUES ('10', 'Ctjmvpfbxcelub', '2XL', '6/13/2022', '1/9/2023', 'Texas', 'Sutherland', 'Pasadena', '77505', '15', '593', '8437903');
-INSERT INTO Merchandise (item_number, item_description, available_sizes, date_last_restock, date_next_restock, supplier_state, supplier_street, supplier_city, supplier_zip_code, creator_id, supplier_id, total_in_stock) VALUES ('11', 'Sxpqgzfhiqgzlh', '2XL', '9/1/2022', '8/7/2022', 'Delaware', 'Scott', 'Newark', '19725', '28', '966', '1082446');
-INSERT INTO Merchandise (item_number, item_description, available_sizes, date_last_restock, date_next_restock, supplier_state, supplier_street, supplier_city, supplier_zip_code, creator_id, supplier_id, total_in_stock) VALUES ('12', 'Aafjnfxaxuymiz', '3XL', '1/5/2023', '11/14/2022', 'North Carolina', 'High Crossing', 'Raleigh', '27605', '85', '592', '1490121');
-INSERT INTO Merchandise (item_number, item_description, available_sizes, date_last_restock, date_next_restock, supplier_state, supplier_street, supplier_city, supplier_zip_code, creator_id, supplier_id, total_in_stock) VALUES ('13', 'Xozfrqpwfcjsuu', 'L', '12/9/2022', '9/4/2022', 'Utah', 'Moland', 'Salt Lake City', '84120', '74', '855', '5178692');
-INSERT INTO Merchandise (item_number, item_description, available_sizes, date_last_restock, date_next_restock, supplier_state, supplier_street, supplier_city, supplier_zip_code, creator_id, supplier_id, total_in_stock) VALUES ('14', 'Izhbwlsilctvgi', 'L', '3/4/2023', '7/1/2022', 'Louisiana', 'Pawling', 'Metairie', '70005', '7', '568', '5292492');
-INSERT INTO Merchandise (item_number, item_description, available_sizes, date_last_restock, date_next_restock, supplier_state, supplier_street, supplier_city, supplier_zip_code, creator_id, supplier_id, total_in_stock) VALUES ('15', 'Dflwqfyhxtfvkn', '2XL', '5/3/2022', '7/9/2022', 'Florida', 'La Follette', 'Jacksonville', '32255', '41', '849', '156150');
-INSERT INTO Merchandise (item_number, item_description, available_sizes, date_last_restock, date_next_restock, supplier_state, supplier_street, supplier_city, supplier_zip_code, creator_id, supplier_id, total_in_stock) VALUES ('16', 'Iqkodebgsjwjqf', 'L', '9/18/2022', '11/14/2022', 'Alabama', 'Buell', 'Birmingham', '35236', '79', '206', '2385889');
-INSERT INTO Merchandise (item_number, item_description, available_sizes, date_last_restock, date_next_restock, supplier_state, supplier_street, supplier_city, supplier_zip_code, creator_id, supplier_id, total_in_stock) VALUES ('17', 'Dzwhltjhvpchqm', 'XS', '4/9/2023', '5/15/2022', 'Missouri', 'Garrison', 'Kansas City', '64109', '14', '479', '2073146');
-INSERT INTO Merchandise (item_number, item_description, available_sizes, date_last_restock, date_next_restock, supplier_state, supplier_street, supplier_city, supplier_zip_code, creator_id, supplier_id, total_in_stock) VALUES ('18', 'Yrofsabaaelewo', 'S', '9/14/2022', '6/2/2022', 'Alabama', 'Eliot', 'Birmingham', '35285', '28', '81', '9730966');
-INSERT INTO Merchandise (item_number, item_description, available_sizes, date_last_restock, date_next_restock, supplier_state, supplier_street, supplier_city, supplier_zip_code, creator_id, supplier_id, total_in_stock) VALUES ('19', 'Rexvgnvwcryzqs', '3XL', '12/27/2022', '5/2/2022', 'Illinois', 'Lerdahl', 'Springfield', '62776', '13', '623', '2435760');
-INSERT INTO Merchandise (item_number, item_description, available_sizes, date_last_restock, date_next_restock, supplier_state, supplier_street, supplier_city, supplier_zip_code, creator_id, supplier_id, total_in_stock) VALUES ('20', 'Mdqasirlurocrj', '2XL', '9/11/2022', '6/17/2022', 'California', 'Village Green', 'Anaheim', '92805', '31', '830', '3429109');
-INSERT INTO Merchandise (item_number, item_description, available_sizes, date_last_restock, date_next_restock, supplier_state, supplier_street, supplier_city, supplier_zip_code, creator_id, supplier_id, total_in_stock) VALUES ('21', 'Znqhgvqjqnfaki', 'XL', '5/29/2022', '12/1/2022', 'Kentucky', 'Huxley', 'Louisville', '40298', '29', '239', '8506915');
-INSERT INTO Merchandise (item_number, item_description, available_sizes, date_last_restock, date_next_restock, supplier_state, supplier_street, supplier_city, supplier_zip_code, creator_id, supplier_id, total_in_stock) VALUES ('22', 'Ghtmtqtrgvydvp', 'XL', '3/1/2023', '7/15/2022', 'California', 'Columbus', 'San Francisco', '94110', '71', '986', '7895986');
-INSERT INTO Merchandise (item_number, item_description, available_sizes, date_last_restock, date_next_restock, supplier_state, supplier_street, supplier_city, supplier_zip_code, creator_id, supplier_id, total_in_stock) VALUES ('23', 'Arrxzrmhqgjnwy', 'XL', '9/17/2022', '2/13/2023', 'New York', 'Monterey', 'Brooklyn', '11220', '54', '915', '7840621');
-INSERT INTO Merchandise (item_number, item_description, available_sizes, date_last_restock, date_next_restock, supplier_state, supplier_street, supplier_city, supplier_zip_code, creator_id, supplier_id, total_in_stock) VALUES ('24', 'Jfaaacxcyqfieq', '2XL', '12/22/2022', '6/17/2022', 'Louisiana', 'Doe Crossing', 'Baton Rouge', '70805', '3', '418', '6122240');
-INSERT INTO Merchandise (item_number, item_description, available_sizes, date_last_restock, date_next_restock, supplier_state, supplier_street, supplier_city, supplier_zip_code, creator_id, supplier_id, total_in_stock) VALUES ('25', 'Fdztwwaqpxgalx', 'M', '3/16/2023', '8/29/2022', 'California', 'Sheridan', 'Fresno', '93726', '31', '719', '2443104');
-INSERT INTO Merchandise (item_number, item_description, available_sizes, date_last_restock, date_next_restock, supplier_state, supplier_street, supplier_city, supplier_zip_code, creator_id, supplier_id, total_in_stock) VALUES ('26', 'Bmpqvzmvnyirsc', 'L', '8/22/2022', '1/24/2023', 'Minnesota', 'Hansons', 'Maple Plain', '55579', '93', '93', '8437903');
-INSERT INTO Merchandise (item_number, item_description, available_sizes, date_last_restock, date_next_restock, supplier_state, supplier_street, supplier_city, supplier_zip_code, creator_id, supplier_id, total_in_stock) VALUES ('27', 'Xvyjmojamnhxey', 'L', '5/24/2022', '1/13/2023', 'Texas', '3rd', 'El Paso', '79940', '76', '967', '2651939');
-INSERT INTO Merchandise (item_number, item_description, available_sizes, date_last_restock, date_next_restock, supplier_state, supplier_street, supplier_city, supplier_zip_code, creator_id, supplier_id, total_in_stock) VALUES ('28', 'Uidutbnzwfrizj', 'XL', '5/5/2022', '10/15/2022', 'North Carolina', 'Mccormick', 'Greensboro', '27415', '20', '441', '637526');
-INSERT INTO Merchandise (item_number, item_description, available_sizes, date_last_restock, date_next_restock, supplier_state, supplier_street, supplier_city, supplier_zip_code, creator_id, supplier_id, total_in_stock) VALUES ('29', 'Ofinfhcrjfhyha', 'XS', '7/19/2022', '10/14/2022', 'Texas', 'Buhler', 'Fort Worth', '76129', '35', '793', '439517');
-INSERT INTO Merchandise (item_number, item_description, available_sizes, date_last_restock, date_next_restock, supplier_state, supplier_street, supplier_city, supplier_zip_code, creator_id, supplier_id, total_in_stock) VALUES ('30', 'Dyufhhipcxkuny', '2XL', '4/22/2022', '3/21/2023', 'Texas', 'Holmberg', 'Beaumont', '77713', '59', '652', '9809496');
-INSERT INTO Merchandise (item_number, item_description, available_sizes, date_last_restock, date_next_restock, supplier_state, supplier_street, supplier_city, supplier_zip_code, creator_id, supplier_id, total_in_stock) VALUES ('31', 'Pyvfvnqgvajuoq', 'XS', '12/14/2022', '1/25/2023', 'New York', 'Mosinee', 'Brooklyn', '11236', '98', '501', '9809496');
-INSERT INTO Merchandise (item_number, item_description, available_sizes, date_last_restock, date_next_restock, supplier_state, supplier_street, supplier_city, supplier_zip_code, creator_id, supplier_id, total_in_stock) VALUES ('32', 'Jylzjyxjdmiymt', 'XL', '2/14/2023', '1/25/2023', 'Texas', 'Ramsey', 'San Angelo', '76905', '5', '656', '3088033');
-INSERT INTO Merchandise (item_number, item_description, available_sizes, date_last_restock, date_next_restock, supplier_state, supplier_street, supplier_city, supplier_zip_code, creator_id, supplier_id, total_in_stock) VALUES ('33', 'Eabgqjggvkynbu', 'L', '2/21/2023', '10/24/2022', 'Florida', 'Messerschmidt', 'Fort Lauderdale', '33355', '50', '526', '5623205');
-INSERT INTO Merchandise (item_number, item_description, available_sizes, date_last_restock, date_next_restock, supplier_state, supplier_street, supplier_city, supplier_zip_code, creator_id, supplier_id, total_in_stock) VALUES ('34', 'Fyiovgiolywwst', 'L', '8/13/2022', '10/5/2022', 'Pennsylvania', 'Lunder', 'Erie', '16510', '8', '494', '9885691');
-INSERT INTO Merchandise (item_number, item_description, available_sizes, date_last_restock, date_next_restock, supplier_state, supplier_street, supplier_city, supplier_zip_code, creator_id, supplier_id, total_in_stock) VALUES ('35', 'Dwxkuvwrlwkvcy', '2XL', '7/31/2022', '11/26/2022', 'Texas', 'Mallard', 'Houston', '77050', '76', '473', '2778835');
-INSERT INTO Merchandise (item_number, item_description, available_sizes, date_last_restock, date_next_restock, supplier_state, supplier_street, supplier_city, supplier_zip_code, creator_id, supplier_id, total_in_stock) VALUES ('36', 'Miekipehthmrfb', '2XL', '11/19/2022', '8/12/2022', 'Kansas', 'Pleasure', 'Shawnee Mission', '66210', '88', '463', '9155747');
-INSERT INTO Merchandise (item_number, item_description, available_sizes, date_last_restock, date_next_restock, supplier_state, supplier_street, supplier_city, supplier_zip_code, creator_id, supplier_id, total_in_stock) VALUES ('37', 'Xwlvqhpjhppamg', '2XL', '11/16/2022', '6/21/2022', 'California', 'Beilfuss', 'Visalia', '93291', '92', '857', '3088033');
-INSERT INTO Merchandise (item_number, item_description, available_sizes, date_last_restock, date_next_restock, supplier_state, supplier_street, supplier_city, supplier_zip_code, creator_id, supplier_id, total_in_stock) VALUES ('38', 'Qlezpcqbgdvtkw', '3XL', '1/19/2023', '10/29/2022', 'California', 'Farmco', 'Los Angeles', '90094', '18', '508', '64712');
-INSERT INTO Merchandise (item_number, item_description, available_sizes, date_last_restock, date_next_restock, supplier_state, supplier_street, supplier_city, supplier_zip_code, creator_id, supplier_id, total_in_stock) VALUES ('39', 'Lfcciajpmqgmkk', '3XL', '3/29/2023', '2/13/2023', 'Michigan', 'Longview', 'Detroit', '48267', '50', '794', '5292492');
-INSERT INTO Merchandise (item_number, item_description, available_sizes, date_last_restock, date_next_restock, supplier_state, supplier_street, supplier_city, supplier_zip_code, creator_id, supplier_id, total_in_stock) VALUES ('40', 'Djoyswwotyzkeu', 'XL', '4/14/2023', '1/16/2023', 'Idaho', 'Forster', 'Boise', '83727', '97', '457', '5488878');
-INSERT INTO Merchandise (item_number, item_description, available_sizes, date_last_restock, date_next_restock, supplier_state, supplier_street, supplier_city, supplier_zip_code, creator_id, supplier_id, total_in_stock) VALUES ('41', 'Gjkpeyeezcsvtt', 'M', '11/8/2022', '3/12/2023', 'Alabama', 'Michigan', 'Huntsville', '35895', '100', '731', '295223');
-INSERT INTO Merchandise (item_number, item_description, available_sizes, date_last_restock, date_next_restock, supplier_state, supplier_street, supplier_city, supplier_zip_code, creator_id, supplier_id, total_in_stock) VALUES ('42', 'Gymsnooeesoqhl', '3XL', '2/22/2023', '8/10/2022', 'Texas', 'Brown', 'Austin', '78749', '86', '491', '2443104');
-INSERT INTO Merchandise (item_number, item_description, available_sizes, date_last_restock, date_next_restock, supplier_state, supplier_street, supplier_city, supplier_zip_code, creator_id, supplier_id, total_in_stock) VALUES ('43', 'Oahlwyvswltewh', 'M', '4/26/2022', '11/29/2022', 'West Virginia', 'Carey', 'Huntington', '25705', '84', '489', '4326481');
-INSERT INTO Merchandise (item_number, item_description, available_sizes, date_last_restock, date_next_restock, supplier_state, supplier_street, supplier_city, supplier_zip_code, creator_id, supplier_id, total_in_stock) VALUES ('44', 'Iwaubgugwcaxkh', '2XL', '7/16/2022', '9/15/2022', 'North Carolina', 'Arapahoe', 'Charlotte', '28256', '94', '345', '3410385');
-INSERT INTO Merchandise (item_number, item_description, available_sizes, date_last_restock, date_next_restock, supplier_state, supplier_street, supplier_city, supplier_zip_code, creator_id, supplier_id, total_in_stock) VALUES ('45', 'Skoszndnvefjmo', 'XL', '1/31/2023', '5/29/2022', 'Texas', 'Del Mar', 'Houston', '77025', '95', '28', '8221773');
-INSERT INTO Merchandise (item_number, item_description, available_sizes, date_last_restock, date_next_restock, supplier_state, supplier_street, supplier_city, supplier_zip_code, creator_id, supplier_id, total_in_stock) VALUES ('46', 'Wtfabmhaytqdbn', 'L', '1/10/2023', '2/7/2023', 'Oklahoma', 'Texas', 'Norman', '73071', '59', '940', '6393944');
-INSERT INTO Merchandise (item_number, item_description, available_sizes, date_last_restock, date_next_restock, supplier_state, supplier_street, supplier_city, supplier_zip_code, creator_id, supplier_id, total_in_stock) VALUES ('47', 'Pwlrguzsstqqux', '3XL', '6/2/2022', '7/27/2022', 'Ohio', 'Sycamore', 'Dayton', '45490', '67', '470', '82320');
-INSERT INTO Merchandise (item_number, item_description, available_sizes, date_last_restock, date_next_restock, supplier_state, supplier_street, supplier_city, supplier_zip_code, creator_id, supplier_id, total_in_stock) VALUES ('48', 'Ytarrvfdrntopp', 'XL', '9/1/2022', '12/12/2022', 'Louisiana', 'Burning Wood', 'Baton Rouge', '70805', '39', '507', '2786836');
-INSERT INTO Merchandise (item_number, item_description, available_sizes, date_last_restock, date_next_restock, supplier_state, supplier_street, supplier_city, supplier_zip_code, creator_id, supplier_id, total_in_stock) VALUES ('49', 'Idnbinnxdmbkxo', 'S', '2/9/2023', '8/19/2022', 'Massachusetts', 'Anhalt', 'Boston', '02104', '71', '867', '5178692');
-INSERT INTO Merchandise (item_number, item_description, available_sizes, date_last_restock, date_next_restock, supplier_state, supplier_street, supplier_city, supplier_zip_code, creator_id, supplier_id, total_in_stock) VALUES ('50', 'Fxjhfgflmcyuak', 'M', '2/8/2023', '7/10/2022', 'Texas', 'Brentwood', 'San Antonio', '78240', '38', '539', '2819789');
-INSERT INTO Merchandise (item_number, item_description, available_sizes, date_last_restock, date_next_restock, supplier_state, supplier_street, supplier_city, supplier_zip_code, creator_id, supplier_id, total_in_stock) VALUES ('51', 'Tmyvkirfzckxux', 'M', '10/5/2022', '3/19/2023', 'Florida', 'Claremont', 'Pensacola', '32511', '88', '911', '7185154');
-INSERT INTO Merchandise (item_number, item_description, available_sizes, date_last_restock, date_next_restock, supplier_state, supplier_street, supplier_city, supplier_zip_code, creator_id, supplier_id, total_in_stock) VALUES ('52', 'Qbyeugquxgvtlp', 'XL', '10/7/2022', '5/14/2022', 'New York', 'Reinke', 'New York City', '10034', '91', '411', '4816842');
-INSERT INTO Merchandise (item_number, item_description, available_sizes, date_last_restock, date_next_restock, supplier_state, supplier_street, supplier_city, supplier_zip_code, creator_id, supplier_id, total_in_stock) VALUES ('53', 'Avtokmkclsdyhm', 'M', '3/8/2023', '1/2/2023', 'California', 'Oak', 'Fresno', '93794', '34', '934', '7014413');
-INSERT INTO Merchandise (item_number, item_description, available_sizes, date_last_restock, date_next_restock, supplier_state, supplier_street, supplier_city, supplier_zip_code, creator_id, supplier_id, total_in_stock) VALUES ('54', 'Neenftuoeikeef', 'XL', '12/5/2022', '3/27/2023', 'Tennessee', 'Graedel', 'Chattanooga', '37416', '57', '751', '156150');
-INSERT INTO Merchandise (item_number, item_description, available_sizes, date_last_restock, date_next_restock, supplier_state, supplier_street, supplier_city, supplier_zip_code, creator_id, supplier_id, total_in_stock) VALUES ('55', 'Gzrtbnswwkmgaj', 'M', '3/19/2023', '3/11/2023', 'Pennsylvania', 'Sunbrook', 'New Castle', '16107', '26', '809', '295223');
-INSERT INTO Merchandise (item_number, item_description, available_sizes, date_last_restock, date_next_restock, supplier_state, supplier_street, supplier_city, supplier_zip_code, creator_id, supplier_id, total_in_stock) VALUES ('56', 'Coyznvbyztfzdk', 'L', '2/13/2023', '7/23/2022', 'Kentucky', 'Lunder', 'Louisville', '40287', '90', '215', '3030069');
-INSERT INTO Merchandise (item_number, item_description, available_sizes, date_last_restock, date_next_restock, supplier_state, supplier_street, supplier_city, supplier_zip_code, creator_id, supplier_id, total_in_stock) VALUES ('57', 'Qwohkstdpgncqg', '3XL', '6/4/2022', '11/14/2022', 'Indiana', 'Dunning', 'Fort Wayne', '46867', '52', '302', '8221773');
-INSERT INTO Merchandise (item_number, item_description, available_sizes, date_last_restock, date_next_restock, supplier_state, supplier_street, supplier_city, supplier_zip_code, creator_id, supplier_id, total_in_stock) VALUES ('58', 'Saftqdghtjozke', 'XL', '11/28/2022', '5/15/2022', 'Texas', 'Packers', 'Houston', '77025', '69', '416', '6818803');
-INSERT INTO Merchandise (item_number, item_description, available_sizes, date_last_restock, date_next_restock, supplier_state, supplier_street, supplier_city, supplier_zip_code, creator_id, supplier_id, total_in_stock) VALUES ('59', 'Rkzuerygfwfvoy', 'XS', '10/11/2022', '12/24/2022', 'Alabama', 'Colorado', 'Birmingham', '35242', '25', '143', '8714286');
-INSERT INTO Merchandise (item_number, item_description, available_sizes, date_last_restock, date_next_restock, supplier_state, supplier_street, supplier_city, supplier_zip_code, creator_id, supplier_id, total_in_stock) VALUES ('60', 'Ugfjjaovlyhtnc', 'S', '2/11/2023', '11/11/2022', 'Kansas', 'Mcbride', 'Kansas City', '66105', '27', '843', '684031');
-INSERT INTO Merchandise (item_number, item_description, available_sizes, date_last_restock, date_next_restock, supplier_state, supplier_street, supplier_city, supplier_zip_code, creator_id, supplier_id, total_in_stock) VALUES ('61', 'Wrvdbxydwzskla', 'L', '6/1/2022', '8/3/2022', 'Louisiana', 'North', 'New Orleans', '70165', '43', '230', '6090318');
-INSERT INTO Merchandise (item_number, item_description, available_sizes, date_last_restock, date_next_restock, supplier_state, supplier_street, supplier_city, supplier_zip_code, creator_id, supplier_id, total_in_stock) VALUES ('62', 'Qdezjcoeolumjd', 'M', '6/13/2022', '9/5/2022', 'Idaho', 'Killdeer', 'Boise', '83705', '80', '184', '9885691');
-INSERT INTO Merchandise (item_number, item_description, available_sizes, date_last_restock, date_next_restock, supplier_state, supplier_street, supplier_city, supplier_zip_code, creator_id, supplier_id, total_in_stock) VALUES ('63', 'Oabnbczetpqffo', 'M', '6/21/2022', '11/30/2022', 'California', 'Springs', 'Moreno Valley', '92555', '97', '847', '6947589');
-INSERT INTO Merchandise (item_number, item_description, available_sizes, date_last_restock, date_next_restock, supplier_state, supplier_street, supplier_city, supplier_zip_code, creator_id, supplier_id, total_in_stock) VALUES ('64', 'Ktpnbgcfphcwva', 'XS', '7/27/2022', '7/6/2022', 'Florida', 'Maple Wood', 'Saint Petersburg', '33742', '90', '117', '6122240');
-INSERT INTO Merchandise (item_number, item_description, available_sizes, date_last_restock, date_next_restock, supplier_state, supplier_street, supplier_city, supplier_zip_code, creator_id, supplier_id, total_in_stock) VALUES ('65', 'Cxbzqnnroawrnk', '3XL', '10/16/2022', '8/11/2022', 'Iowa', 'Artisan', 'Des Moines', '50320', '81', '792', '9831804');
-INSERT INTO Merchandise (item_number, item_description, available_sizes, date_last_restock, date_next_restock, supplier_state, supplier_street, supplier_city, supplier_zip_code, creator_id, supplier_id, total_in_stock) VALUES ('66', 'Jvsauypzurahpk', 'M', '4/1/2023', '3/2/2023', 'New York', 'Cambridge', 'Brooklyn', '11220', '37', '614', '8381419');
-INSERT INTO Merchandise (item_number, item_description, available_sizes, date_last_restock, date_next_restock, supplier_state, supplier_street, supplier_city, supplier_zip_code, creator_id, supplier_id, total_in_stock) VALUES ('67', 'Heuowgzayegunx', '2XL', '12/28/2022', '5/13/2022', 'Connecticut', 'Marquette', 'West Hartford', '06127', '77', '451', '7014413');
-INSERT INTO Merchandise (item_number, item_description, available_sizes, date_last_restock, date_next_restock, supplier_state, supplier_street, supplier_city, supplier_zip_code, creator_id, supplier_id, total_in_stock) VALUES ('68', 'Sdxvcazlgwofrt', 'L', '3/29/2023', '7/29/2022', 'Texas', 'Derek', 'Beaumont', '77713', '87', '709', '3410385');
-INSERT INTO Merchandise (item_number, item_description, available_sizes, date_last_restock, date_next_restock, supplier_state, supplier_street, supplier_city, supplier_zip_code, creator_id, supplier_id, total_in_stock) VALUES ('69', 'Dpllxxhawyxxha', 'S', '6/12/2022', '4/22/2022', 'New York', 'Riverside', 'Albany', '12242', '11', '245', '6122240');
-INSERT INTO Merchandise (item_number, item_description, available_sizes, date_last_restock, date_next_restock, supplier_state, supplier_street, supplier_city, supplier_zip_code, creator_id, supplier_id, total_in_stock) VALUES ('70', 'Tctosnwxdocfbl', 'XS', '6/21/2022', '7/13/2022', 'Virginia', 'Sutteridge', 'Sterling', '20167', '76', '130', '8437903');
-INSERT INTO Merchandise (item_number, item_description, available_sizes, date_last_restock, date_next_restock, supplier_state, supplier_street, supplier_city, supplier_zip_code, creator_id, supplier_id, total_in_stock) VALUES ('71', 'Pjbldpxzeyzyeq', 'S', '9/28/2022', '5/3/2022', 'Louisiana', 'Larry', 'New Orleans', '70149', '53', '637', '3956000');
-INSERT INTO Merchandise (item_number, item_description, available_sizes, date_last_restock, date_next_restock, supplier_state, supplier_street, supplier_city, supplier_zip_code, creator_id, supplier_id, total_in_stock) VALUES ('72', 'Cabhtyfoajobyd', 'XL', '5/24/2022', '5/31/2022', 'Pennsylvania', '8th', 'Lancaster', '17605', '80', '482', '5402698');
-INSERT INTO Merchandise (item_number, item_description, available_sizes, date_last_restock, date_next_restock, supplier_state, supplier_street, supplier_city, supplier_zip_code, creator_id, supplier_id, total_in_stock) VALUES ('73', 'Juvqqhrlylbvpx', '3XL', '3/10/2023', '12/29/2022', 'California', 'Sugar', 'Van Nuys', '91406', '6', '789', '7085796');
-INSERT INTO Merchandise (item_number, item_description, available_sizes, date_last_restock, date_next_restock, supplier_state, supplier_street, supplier_city, supplier_zip_code, creator_id, supplier_id, total_in_stock) VALUES ('74', 'Afhlwgbrtryspq', '3XL', '2/16/2023', '10/6/2022', 'West Virginia', 'Duke', 'Charleston', '25305', '25', '893', '8221773');
-INSERT INTO Merchandise (item_number, item_description, available_sizes, date_last_restock, date_next_restock, supplier_state, supplier_street, supplier_city, supplier_zip_code, creator_id, supplier_id, total_in_stock) VALUES ('75', 'Eugpskomsbpukb', 'M', '12/12/2022', '10/17/2022', 'Florida', 'Huxley', 'Port Charlotte', '33954', '81', '360', '439517');
-INSERT INTO Merchandise (item_number, item_description, available_sizes, date_last_restock, date_next_restock, supplier_state, supplier_street, supplier_city, supplier_zip_code, creator_id, supplier_id, total_in_stock) VALUES ('76', 'Dpydixfktkbqyl', '3XL', '6/9/2022', '5/29/2022', 'Michigan', 'Bobwhite', 'Flint', '48505', '25', '83', '9122102');
-INSERT INTO Merchandise (item_number, item_description, available_sizes, date_last_restock, date_next_restock, supplier_state, supplier_street, supplier_city, supplier_zip_code, creator_id, supplier_id, total_in_stock) VALUES ('77', 'Qhsvwdibvypuda', 'L', '12/25/2022', '10/27/2022', 'District of Columbia', 'Utah', 'Washington', '20540', '8', '61', '1166009');
-INSERT INTO Merchandise (item_number, item_description, available_sizes, date_last_restock, date_next_restock, supplier_state, supplier_street, supplier_city, supplier_zip_code, creator_id, supplier_id, total_in_stock) VALUES ('78', 'Kdwoyjcxdyukmp', 'L', '6/14/2022', '10/10/2022', 'Colorado', 'Trailsway', 'Arvada', '80005', '91', '41', '3275664');
-INSERT INTO Merchandise (item_number, item_description, available_sizes, date_last_restock, date_next_restock, supplier_state, supplier_street, supplier_city, supplier_zip_code, creator_id, supplier_id, total_in_stock) VALUES ('79', 'Oeaseockswvowm', '2XL', '3/27/2023', '1/12/2023', 'Texas', '1st', 'Houston', '77288', '53', '866', '64712');
-INSERT INTO Merchandise (item_number, item_description, available_sizes, date_last_restock, date_next_restock, supplier_state, supplier_street, supplier_city, supplier_zip_code, creator_id, supplier_id, total_in_stock) VALUES ('80', 'Ppstybgxcnstfe', 'L', '9/12/2022', '11/9/2022', 'Florida', 'Shopko', 'Miami', '33124', '43', '208', '637526');
-INSERT INTO Merchandise (item_number, item_description, available_sizes, date_last_restock, date_next_restock, supplier_state, supplier_street, supplier_city, supplier_zip_code, creator_id, supplier_id, total_in_stock) VALUES ('81', 'Nwrmuwbzbgrmlk', 'M', '8/17/2022', '6/21/2022', 'Virginia', 'Crownhardt', 'Roanoke', '24040', '92', '6', '6090318');
-INSERT INTO Merchandise (item_number, item_description, available_sizes, date_last_restock, date_next_restock, supplier_state, supplier_street, supplier_city, supplier_zip_code, creator_id, supplier_id, total_in_stock) VALUES ('82', 'Hjrkuzetortcxb', '2XL', '1/2/2023', '2/14/2023', 'Tennessee', 'Crowley', 'Johnson City', '37605', '66', '643', '2778835');
-INSERT INTO Merchandise (item_number, item_description, available_sizes, date_last_restock, date_next_restock, supplier_state, supplier_street, supplier_city, supplier_zip_code, creator_id, supplier_id, total_in_stock) VALUES ('83', 'Trdszvwfipkvtu', 'XL', '6/25/2022', '4/3/2023', 'California', 'Sunnyside', 'Oceanside', '92056', '70', '650', '2096427');
-INSERT INTO Merchandise (item_number, item_description, available_sizes, date_last_restock, date_next_restock, supplier_state, supplier_street, supplier_city, supplier_zip_code, creator_id, supplier_id, total_in_stock) VALUES ('84', 'Bglivcnwinkhyc', 'XS', '5/2/2022', '1/17/2023', 'Texas', 'Mayfield', 'Austin', '78715', '16', '652', '9734144');
-INSERT INTO Merchandise (item_number, item_description, available_sizes, date_last_restock, date_next_restock, supplier_state, supplier_street, supplier_city, supplier_zip_code, creator_id, supplier_id, total_in_stock) VALUES ('85', 'Fclrzgqrlcjede', 'S', '9/12/2022', '6/21/2022', 'Texas', 'Swallow', 'Fort Worth', '76134', '99', '849', '6947589');
-INSERT INTO Merchandise (item_number, item_description, available_sizes, date_last_restock, date_next_restock, supplier_state, supplier_street, supplier_city, supplier_zip_code, creator_id, supplier_id, total_in_stock) VALUES ('86', 'Rjeocbddmdwcyt', 'S', '10/28/2022', '6/13/2022', 'Ohio', 'Lunder', 'Cleveland', '44197', '24', '712', '7085796');
-INSERT INTO Merchandise (item_number, item_description, available_sizes, date_last_restock, date_next_restock, supplier_state, supplier_street, supplier_city, supplier_zip_code, creator_id, supplier_id, total_in_stock) VALUES ('87', 'Xxyaxhbsankdgc', 'L', '8/16/2022', '12/19/2022', 'Oklahoma', 'Riverside', 'Tulsa', '74170', '52', '678', '2651939');
-INSERT INTO Merchandise (item_number, item_description, available_sizes, date_last_restock, date_next_restock, supplier_state, supplier_street, supplier_city, supplier_zip_code, creator_id, supplier_id, total_in_stock) VALUES ('88', 'Fththxsdxwisdi', 'M', '3/15/2023', '6/27/2022', 'Louisiana', 'Emmet', 'New Orleans', '70149', '79', '674', '2385889');
-INSERT INTO Merchandise (item_number, item_description, available_sizes, date_last_restock, date_next_restock, supplier_state, supplier_street, supplier_city, supplier_zip_code, creator_id, supplier_id, total_in_stock) VALUES ('89', 'Sumdyidylpgprg', 'L', '2/5/2023', '5/5/2022', 'Alabama', 'Graedel', 'Mobile', '36616', '33', '862', '9301956');
-INSERT INTO Merchandise (item_number, item_description, available_sizes, date_last_restock, date_next_restock, supplier_state, supplier_street, supplier_city, supplier_zip_code, creator_id, supplier_id, total_in_stock) VALUES ('90', 'Jrpbnhhmeotyxf', 'M', '9/28/2022', '7/8/2022', 'Kentucky', 'Transport', 'Lexington', '40510', '64', '21', '7185154');
-INSERT INTO Merchandise (item_number, item_description, available_sizes, date_last_restock, date_next_restock, supplier_state, supplier_street, supplier_city, supplier_zip_code, creator_id, supplier_id, total_in_stock) VALUES ('91', 'Ouxhkdrzomsewg', 'S', '12/15/2022', '5/10/2022', 'Illinois', 'Stuart', 'Springfield', '62776', '86', '585', '2786836');
-INSERT INTO Merchandise (item_number, item_description, available_sizes, date_last_restock, date_next_restock, supplier_state, supplier_street, supplier_city, supplier_zip_code, creator_id, supplier_id, total_in_stock) VALUES ('92', 'Qkcfohrblbmjhk', 'XL', '8/31/2022', '6/22/2022', 'Florida', 'Porter', 'Vero Beach', '32969', '79', '803', '5738038');
-INSERT INTO Merchandise (item_number, item_description, available_sizes, date_last_restock, date_next_restock, supplier_state, supplier_street, supplier_city, supplier_zip_code, creator_id, supplier_id, total_in_stock) VALUES ('93', 'Fmjbtmwqcvqoeo', '2XL', '10/16/2022', '6/29/2022', 'Illinois', 'Milwaukee', 'Peoria', '61605', '89', '68', '4558469');
-INSERT INTO Merchandise (item_number, item_description, available_sizes, date_last_restock, date_next_restock, supplier_state, supplier_street, supplier_city, supplier_zip_code, creator_id, supplier_id, total_in_stock) VALUES ('94', 'Juhdsfomicvjdh', 'L', '11/12/2022', '7/15/2022', 'North Carolina', 'Independence', 'Charlotte', '28256', '74', '96', '4816842');
-INSERT INTO Merchandise (item_number, item_description, available_sizes, date_last_restock, date_next_restock, supplier_state, supplier_street, supplier_city, supplier_zip_code, creator_id, supplier_id, total_in_stock) VALUES ('95', 'Kqverwrzpxlvla', '3XL', '10/12/2022', '2/21/2023', 'Texas', 'Merry', 'Houston', '77050', '55', '890', '295223');
-INSERT INTO Merchandise (item_number, item_description, available_sizes, date_last_restock, date_next_restock, supplier_state, supplier_street, supplier_city, supplier_zip_code, creator_id, supplier_id, total_in_stock) VALUES ('96', 'Gegtlvfeovsgha', 'M', '10/15/2022', '3/11/2023', 'Utah', 'Anderson', 'Salt Lake City', '84189', '61', '32', '3410385');
-INSERT INTO Merchandise (item_number, item_description, available_sizes, date_last_restock, date_next_restock, supplier_state, supplier_street, supplier_city, supplier_zip_code, creator_id, supplier_id, total_in_stock) VALUES ('97', 'Gpvrxnnxxuqzoo', 'XL', '6/13/2022', '2/22/2023', 'Maryland', 'Moose', 'Bethesda', '20892', '98', '149', '3088033');
-INSERT INTO Merchandise (item_number, item_description, available_sizes, date_last_restock, date_next_restock, supplier_state, supplier_street, supplier_city, supplier_zip_code, creator_id, supplier_id, total_in_stock) VALUES ('98', 'Ozykwutduhywyw', 'L', '9/29/2022', '3/15/2023', 'Ohio', 'Novick', 'Cincinnati', '45208', '49', '596', '5983354');
-INSERT INTO Merchandise (item_number, item_description, available_sizes, date_last_restock, date_next_restock, supplier_state, supplier_street, supplier_city, supplier_zip_code, creator_id, supplier_id, total_in_stock) VALUES ('99', 'Cnxlbmgjhjdspx', '3XL', '6/10/2022', '1/31/2023', 'New Hampshire', 'Fulton', 'Manchester', '03105', '80', '792', '7606159');
-INSERT INTO Merchandise (item_number, item_description, available_sizes, date_last_restock, date_next_restock, supplier_state, supplier_street, supplier_city, supplier_zip_code, creator_id, supplier_id, total_in_stock) VALUES ('100', 'Pdkpzhcwwvevzm', 'XL', '1/10/2023', '8/27/2022', 'California', 'Fuller', 'Los Angeles', '90071', '60', '707', '8437903');
+INSERT INTO Users(user_id,username,password,date_made,phone_number,first_name,last_name,card_number,cvv,expiration_date,street,city,state,zip_code) VALUES (1,'cradki0','yVxaAxkT','2022-10-14 15:08:34','480-542-7545','Efren','Carlyle',409734391,695,'6/4/2022','Merry','Apache Junction','Arizona',85219);
+INSERT INTO Users(user_id,username,password,date_made,phone_number,first_name,last_name,card_number,cvv,expiration_date,street,city,state,zip_code) VALUES (2,'cmixer1','7O3Gi8','2022-12-08 17:25:57','203-138-7580','Javier','Charline',887279590,799,'3/18/2023','High Crossing','Norwalk','Connecticut',06859);
+INSERT INTO Users(user_id,username,password,date_made,phone_number,first_name,last_name,card_number,cvv,expiration_date,street,city,state,zip_code) VALUES (3,'cgullefant2','yxHjaM','2022-06-02 13:03:36','585-998-3637','Cassi','Cordelia',998168637,373,'12/25/2022','Paget','Rochester','New York',14614);
+INSERT INTO Users(user_id,username,password,date_made,phone_number,first_name,last_name,card_number,cvv,expiration_date,street,city,state,zip_code) VALUES (4,'lbrittan3','unkaqXWqy','2022-08-27 21:32:50','804-672-8954','Gallard','Leonore',617387126,569,'12/17/2022','Cody','Richmond','Virginia',23289);
+INSERT INTO Users(user_id,username,password,date_made,phone_number,first_name,last_name,card_number,cvv,expiration_date,street,city,state,zip_code) VALUES (5,'dginley4','TtGXuTSLQf','2022-05-02 00:06:19','804-754-6066','Dahlia','Drugi',264180382,396,'7/29/2022','Mallard','Richmond','Virginia',23293);
+INSERT INTO Users(user_id,username,password,date_made,phone_number,first_name,last_name,card_number,cvv,expiration_date,street,city,state,zip_code) VALUES (6,'gcaush5','gQEJuVdk','2022-12-13 17:12:24','406-101-3082','Davin','Guenevere',222399141,764,'5/2/2022','Jackson','Missoula','Montana',59806);
+INSERT INTO Users(user_id,username,password,date_made,phone_number,first_name,last_name,card_number,cvv,expiration_date,street,city,state,zip_code) VALUES (7,'gpourveer6','iIZDwuwG','2022-07-12 11:32:21','228-499-3416','Timoteo','Georges',863018286,591,'7/12/2022','Oakridge','Biloxi','Mississippi',39534);
+INSERT INTO Users(user_id,username,password,date_made,phone_number,first_name,last_name,card_number,cvv,expiration_date,street,city,state,zip_code) VALUES (8,'eclac7','3bIUQc1M6alr','2022-08-30 18:25:30','253-558-3207','Tobin','Eadie',581059394,144,'3/9/2023','Summit','Seattle','Washington',98166);
+INSERT INTO Users(user_id,username,password,date_made,phone_number,first_name,last_name,card_number,cvv,expiration_date,street,city,state,zip_code) VALUES (9,'cbatho8','B7hYdhH','2023-03-14 04:08:37','212-339-2074','Glenda','Corrie',747658970,225,'3/11/2023','Hoard','New York City','New York',10292);
+INSERT INTO Users(user_id,username,password,date_made,phone_number,first_name,last_name,card_number,cvv,expiration_date,street,city,state,zip_code) VALUES (10,'egepheart9','j4AImEDxsFKZ','2023-02-02 17:20:23','361-378-1579','Josie','Ellerey',096081883,921,'5/10/2022','Eggendart','Corpus Christi','Texas',78405);
+INSERT INTO Users(user_id,username,password,date_made,phone_number,first_name,last_name,card_number,cvv,expiration_date,street,city,state,zip_code) VALUES (11,'cemlena','S8NQTJC5e1ns','2023-03-23 20:05:00','916-869-8057','Nonnah','Carline',683838799,192,'10/16/2022','Jenna','Sacramento','California',95838);
+INSERT INTO Users(user_id,username,password,date_made,phone_number,first_name,last_name,card_number,cvv,expiration_date,street,city,state,zip_code) VALUES (12,'wwressellb','sP2NXO','2022-06-24 02:28:47','717-357-5941','Livvie','Willdon',263453491,928,'1/15/2023','Glacier Hill','Harrisburg','Pennsylvania',17110);
+INSERT INTO Users(user_id,username,password,date_made,phone_number,first_name,last_name,card_number,cvv,expiration_date,street,city,state,zip_code) VALUES (13,'jneubiginc','LFEK4aB4','2022-11-19 04:52:18','406-419-3244','Meggie','Jerri',378802170,322,'8/22/2022','Crowley','Bozeman','Montana',59771);
+INSERT INTO Users(user_id,username,password,date_made,phone_number,first_name,last_name,card_number,cvv,expiration_date,street,city,state,zip_code) VALUES (14,'kismirniogloud','Vf1KMXNJZ','2022-11-29 18:09:46','917-832-9495','Pattie','Kerry',413739184,721,'11/10/2022','Logan','New York City','New York',10110);
+INSERT INTO Users(user_id,username,password,date_made,phone_number,first_name,last_name,card_number,cvv,expiration_date,street,city,state,zip_code) VALUES (15,'mmashale','FxGpmuU','2022-05-28 19:46:05','240-102-1394','Aaren','Molli',633624419,817,'1/20/2023','Steensland','Bowie','Maryland',20719);
+INSERT INTO Users(user_id,username,password,date_made,phone_number,first_name,last_name,card_number,cvv,expiration_date,street,city,state,zip_code) VALUES (16,'lmccromleyf','W67A2PKnjFEZ','2022-12-24 10:28:36','503-979-4345','Josie','Letizia',723722130,312,'6/26/2022','Schiller','Portland','Oregon',97211);
+INSERT INTO Users(user_id,username,password,date_made,phone_number,first_name,last_name,card_number,cvv,expiration_date,street,city,state,zip_code) VALUES (17,'ctrubshawg','duCExa','2022-12-22 03:35:25','972-860-5269','Harper','Charlotte',424879691,290,'9/5/2022','Cascade','Dallas','Texas',75226);
+INSERT INTO Users(user_id,username,password,date_made,phone_number,first_name,last_name,card_number,cvv,expiration_date,street,city,state,zip_code) VALUES (18,'lmurrisonh','1AQSgCkt','2022-11-26 16:42:45','865-760-2010','Ryun','Lovell',789536102,638,'2/3/2023','David','Knoxville','Tennessee',37919);
+INSERT INTO Users(user_id,username,password,date_made,phone_number,first_name,last_name,card_number,cvv,expiration_date,street,city,state,zip_code) VALUES (19,'dpaigei','JlCAX5nB','2023-01-04 13:13:08','719-293-5297','Homere','Demetri',892034537,260,'3/21/2023','Acker','Colorado Springs','Colorado',80920);
+INSERT INTO Users(user_id,username,password,date_made,phone_number,first_name,last_name,card_number,cvv,expiration_date,street,city,state,zip_code) VALUES (20,'sloviej','FCoSWIS1qe','2023-03-09 18:34:14','602-330-2570','Darrick','Selina',251847806,744,'9/27/2022','Duke','Phoenix','Arizona',85035);
+INSERT INTO Users(user_id,username,password,date_made,phone_number,first_name,last_name,card_number,cvv,expiration_date,street,city,state,zip_code) VALUES (21,'cdockrillk','BmjbxXj4x3Pm','2023-03-26 08:49:52','704-638-3830','Lion','Carl',188811074,259,'2/3/2023','Loomis','Charlotte','North Carolina',28278);
+INSERT INTO Users(user_id,username,password,date_made,phone_number,first_name,last_name,card_number,cvv,expiration_date,street,city,state,zip_code) VALUES (22,'shayterl','dV3bUS62','2022-11-09 18:50:03','845-309-9598','Marigold','Shaun',953693487,524,'1/14/2023','Warrior','White Plains','New York',10606);
+INSERT INTO Users(user_id,username,password,date_made,phone_number,first_name,last_name,card_number,cvv,expiration_date,street,city,state,zip_code) VALUES (23,'bsparkem','EH2nlCm','2022-08-21 04:50:27','619-912-6595','Lory','Buddie',802022043,820,'12/29/2022','Fulton','San Diego','California',92160);
+INSERT INTO Users(user_id,username,password,date_made,phone_number,first_name,last_name,card_number,cvv,expiration_date,street,city,state,zip_code) VALUES (24,'mdanitn','jgRuBVci','2022-09-03 19:33:03','904-395-2876','Tildie','Marjory',788994519,387,'2/27/2023','Brentwood','Jacksonville','Florida',32236);
+INSERT INTO Users(user_id,username,password,date_made,phone_number,first_name,last_name,card_number,cvv,expiration_date,street,city,state,zip_code) VALUES (25,'agregorowiczo','YCgCM129zp45','2022-09-13 12:20:23','904-418-6774','Ewell','Almira',858842419,419,'5/31/2022','Elmside','Jacksonville','Florida',32209);
+INSERT INTO Users(user_id,username,password,date_made,phone_number,first_name,last_name,card_number,cvv,expiration_date,street,city,state,zip_code) VALUES (26,'leloip','cvDKe2S0','2022-05-02 07:27:32','813-348-1346','Antonino','Lyndel',417910476,242,'12/5/2022','Express','Tampa','Florida',33620);
+INSERT INTO Users(user_id,username,password,date_made,phone_number,first_name,last_name,card_number,cvv,expiration_date,street,city,state,zip_code) VALUES (27,'gwadleyq','29pAaoT9t0','2023-03-08 07:46:29','563-284-0864','Udall','Gunilla',284534956,882,'4/2/2023','Lerdahl','Davenport','Iowa',52809);
+INSERT INTO Users(user_id,username,password,date_made,phone_number,first_name,last_name,card_number,cvv,expiration_date,street,city,state,zip_code) VALUES (28,'nlittletonr','XrGrgUg','2022-04-19 20:26:20','571-863-9818','Colver','Nicolle',456697109,289,'4/22/2022','Merry','Arlington','Virginia',22244);
+INSERT INTO Users(user_id,username,password,date_made,phone_number,first_name,last_name,card_number,cvv,expiration_date,street,city,state,zip_code) VALUES (29,'sbeterisss','rHZqqPYFY3D7','2022-06-11 19:32:27','504-392-2584','Angel','Skye',646637926,173,'12/27/2022','Raven','New Orleans','Louisiana',70149);
+INSERT INTO Users(user_id,username,password,date_made,phone_number,first_name,last_name,card_number,cvv,expiration_date,street,city,state,zip_code) VALUES (30,'fsanbrookt','6W4UojN8','2022-09-26 12:24:07','414-694-7606','Ronnie','Filide',316542690,918,'10/6/2022','4th','Milwaukee','Wisconsin',53285);
+INSERT INTO Users(user_id,username,password,date_made,phone_number,first_name,last_name,card_number,cvv,expiration_date,street,city,state,zip_code) VALUES (31,'crylattu','ZFbtlIW','2023-02-08 04:58:05','757-289-9866','Avrit','Coretta',285244738,369,'3/23/2023','Lukken','Hampton','Virginia',23663);
+INSERT INTO Users(user_id,username,password,date_made,phone_number,first_name,last_name,card_number,cvv,expiration_date,street,city,state,zip_code) VALUES (32,'lpatershallv','n0M3IaLh','2022-06-20 10:42:01','386-138-2170','Gwenni','Lissie',683078698,768,'9/5/2022','Dawn','Daytona Beach','Florida',32128);
+INSERT INTO Users(user_id,username,password,date_made,phone_number,first_name,last_name,card_number,cvv,expiration_date,street,city,state,zip_code) VALUES (33,'hclearsw','rHJ6RC9','2022-11-13 13:47:02','816-865-4418','Sidonia','Hayyim',561249520,728,'6/13/2022','Jenifer','Shawnee Mission','Kansas',66205);
+INSERT INTO Users(user_id,username,password,date_made,phone_number,first_name,last_name,card_number,cvv,expiration_date,street,city,state,zip_code) VALUES (34,'bfrancktonx','tcFNiwO','2022-06-10 08:59:23','720-694-2644','Moishe','Bryce',226953118,100,'2/4/2023','Kim','Denver','Colorado',80223);
+INSERT INTO Users(user_id,username,password,date_made,phone_number,first_name,last_name,card_number,cvv,expiration_date,street,city,state,zip_code) VALUES (35,'kschettiniy','oLL34dkIGzl','2023-01-13 12:13:21','202-348-2338','Der','Karlis',615529604,882,'3/3/2023','Grayhawk','Washington','District of Columbia',20238);
+INSERT INTO Users(user_id,username,password,date_made,phone_number,first_name,last_name,card_number,cvv,expiration_date,street,city,state,zip_code) VALUES (36,'rlorencz','8OGDlVZU','2022-06-26 22:28:31','813-133-1879','Lelia','Ruggiero',094292333,899,'12/11/2022','Russell','Tampa','Florida',33620);
+INSERT INTO Users(user_id,username,password,date_made,phone_number,first_name,last_name,card_number,cvv,expiration_date,street,city,state,zip_code) VALUES (37,'aabade10','O1LSWTlD8sAL','2023-04-07 10:59:30','626-414-4336','Winna','Aylmer',276688178,179,'9/14/2022','Old Shore','Pasadena','California',91117);
+INSERT INTO Users(user_id,username,password,date_made,phone_number,first_name,last_name,card_number,cvv,expiration_date,street,city,state,zip_code) VALUES (38,'vbambrugh11','TAHd33KJeqG8','2022-12-25 20:11:46','206-377-1254','Winnie','Virge',390809708,282,'10/31/2022','Reinke','Seattle','Washington',98185);
+INSERT INTO Users(user_id,username,password,date_made,phone_number,first_name,last_name,card_number,cvv,expiration_date,street,city,state,zip_code) VALUES (39,'acurrin12','f2hCQ9KM4','2023-04-02 12:08:33','803-217-9816','Nahum','Anetta',056645639,150,'4/28/2022','Park Meadow','Columbia','South Carolina',29208);
+INSERT INTO Users(user_id,username,password,date_made,phone_number,first_name,last_name,card_number,cvv,expiration_date,street,city,state,zip_code) VALUES (40,'fadmans13','gwOES2u','2022-07-02 23:34:13','971-223-2985','Dagmar','Ferguson',653716911,352,'6/23/2022','Texas','Portland','Oregon',97271);
+INSERT INTO Users(user_id,username,password,date_made,phone_number,first_name,last_name,card_number,cvv,expiration_date,street,city,state,zip_code) VALUES (41,'krussi14','E2rm71','2022-06-18 16:02:45','310-308-1164','Emmit','Karolina',879164365,470,'10/25/2022','Center','Inglewood','California',90398);
+INSERT INTO Users(user_id,username,password,date_made,phone_number,first_name,last_name,card_number,cvv,expiration_date,street,city,state,zip_code) VALUES (42,'rrizzardini15','kRc54OI','2022-10-29 18:10:16','952-620-6238','Drucie','Randolph',861186802,655,'7/21/2022','Redwing','Young America','Minnesota',55573);
+INSERT INTO Users(user_id,username,password,date_made,phone_number,first_name,last_name,card_number,cvv,expiration_date,street,city,state,zip_code) VALUES (43,'avoysey16','mQ9hJxXTx','2022-06-12 02:12:53','804-316-0760','Roseanna','Amalie',511236003,146,'1/6/2023','Nancy','Richmond','Virginia',23213);
+INSERT INTO Users(user_id,username,password,date_made,phone_number,first_name,last_name,card_number,cvv,expiration_date,street,city,state,zip_code) VALUES (44,'adogg17','QItppK','2023-01-12 18:24:18','704-659-4000','Torrey','Ali',300293948,368,'10/3/2022','Lakeland','Gastonia','North Carolina',28055);
+INSERT INTO Users(user_id,username,password,date_made,phone_number,first_name,last_name,card_number,cvv,expiration_date,street,city,state,zip_code) VALUES (45,'gkaveney18','zO4HtLTm6Vv','2022-04-26 20:19:29','253-361-2946','Meryl','Gwendolen',664471271,972,'5/17/2022','Service','Tacoma','Washington',98447);
+INSERT INTO Users(user_id,username,password,date_made,phone_number,first_name,last_name,card_number,cvv,expiration_date,street,city,state,zip_code) VALUES (46,'bexeter19','9n5UGX5','2022-08-26 00:00:09','803-903-6215','Baudoin','Bamby',705392325,319,'6/22/2022','Dryden','Aiken','South Carolina',29805);
+INSERT INTO Users(user_id,username,password,date_made,phone_number,first_name,last_name,card_number,cvv,expiration_date,street,city,state,zip_code) VALUES (47,'achallen1a','b7YbCgG5A','2022-10-02 07:41:33','901-592-3944','Georgianne','Andros',543602797,867,'1/4/2023','Kingsford','Memphis','Tennessee',38119);
+INSERT INTO Users(user_id,username,password,date_made,phone_number,first_name,last_name,card_number,cvv,expiration_date,street,city,state,zip_code) VALUES (48,'dmiddle1b','sbxgrf','2022-07-27 14:37:07','208-471-0399','Willy','Devin',325585236,70,'10/22/2022','Kinsman','Boise','Idaho',83727);
+INSERT INTO Users(user_id,username,password,date_made,phone_number,first_name,last_name,card_number,cvv,expiration_date,street,city,state,zip_code) VALUES (49,'mhawthorne1c','9yz5ztKI0E','2022-07-31 05:24:29','864-287-2351','Rene','Morris',979008580,320,'8/1/2022','Eagle Crest','Greenville','South Carolina',29615);
+INSERT INTO Users(user_id,username,password,date_made,phone_number,first_name,last_name,card_number,cvv,expiration_date,street,city,state,zip_code) VALUES (50,'ksherer1d','8a9B27','2023-03-11 03:55:19','702-311-1164','Rosy','Krystal',721094306,803,'3/22/2023','Continental','Las Vegas','Nevada',89160);
+INSERT INTO Users(user_id,username,password,date_made,phone_number,first_name,last_name,card_number,cvv,expiration_date,street,city,state,zip_code) VALUES (51,'nwinridge1e','aMi7oA','2022-09-20 14:06:16','317-755-7670','Callie','Neila',962807573,899,'12/15/2022','Roxbury','Indianapolis','Indiana',46221);
+INSERT INTO Users(user_id,username,password,date_made,phone_number,first_name,last_name,card_number,cvv,expiration_date,street,city,state,zip_code) VALUES (52,'lskamell1f','CDfY2Nj','2023-04-12 03:03:42','309-368-2776','Gaspard','Lannie',536001000,3,'9/27/2022','High Crossing','Peoria','Illinois',61605);
+INSERT INTO Users(user_id,username,password,date_made,phone_number,first_name,last_name,card_number,cvv,expiration_date,street,city,state,zip_code) VALUES (53,'dgagie1g','bqYpFA2jw','2022-10-13 03:51:51','810-525-2465','Willow','Dyann',072748492,236,'10/15/2022','Mockingbird','Flint','Michigan',48555);
+INSERT INTO Users(user_id,username,password,date_made,phone_number,first_name,last_name,card_number,cvv,expiration_date,street,city,state,zip_code) VALUES (54,'tbraunthal1h','FFOrGp1b','2023-01-26 18:07:20','530-254-8818','Reg','Tanya',673325159,563,'11/19/2022','New Castle','South Lake Tahoe','California',96154);
+INSERT INTO Users(user_id,username,password,date_made,phone_number,first_name,last_name,card_number,cvv,expiration_date,street,city,state,zip_code) VALUES (55,'gabrahams1i','hj9Z1X','2022-09-13 16:59:18','515-573-3555','Pansie','Giffer',184220318,729,'6/5/2022','Derek','Des Moines','Iowa',50981);
+INSERT INTO Users(user_id,username,password,date_made,phone_number,first_name,last_name,card_number,cvv,expiration_date,street,city,state,zip_code) VALUES (56,'lhumbles1j','QpvFLBuRZ','2022-09-21 22:26:10','203-184-5477','Jard','Lauryn',531701010,935,'7/2/2022','Lyons','New Haven','Connecticut',06520);
+INSERT INTO Users(user_id,username,password,date_made,phone_number,first_name,last_name,card_number,cvv,expiration_date,street,city,state,zip_code) VALUES (57,'vchaimson1k','h98TQ3S','2022-06-23 03:58:16','812-156-7332','Tammie','Virginie',311080557,310,'3/13/2023','Michigan','Evansville','Indiana',47719);
+INSERT INTO Users(user_id,username,password,date_made,phone_number,first_name,last_name,card_number,cvv,expiration_date,street,city,state,zip_code) VALUES (58,'bollivier1l','Flps7Ss2','2023-03-19 04:44:32','716-639-3368','Valentine','Birch',349829014,540,'2/25/2023','2nd','Buffalo','New York',14205);
+INSERT INTO Users(user_id,username,password,date_made,phone_number,first_name,last_name,card_number,cvv,expiration_date,street,city,state,zip_code) VALUES (59,'mbaskerfield1m','qUZk0CyqaYL','2022-06-20 22:50:25','337-394-9779','Sapphire','Mellisa',240201821,527,'7/12/2022','Di Loreto','Lake Charles','Louisiana',70616);
+INSERT INTO Users(user_id,username,password,date_made,phone_number,first_name,last_name,card_number,cvv,expiration_date,street,city,state,zip_code) VALUES (60,'zhehnke1n','gOeXfpmjtQ','2022-12-15 03:34:19','202-867-4930','Hank','Zoe',637701153,647,'7/25/2022','Mesta','Washington','District of Columbia',20022);
+INSERT INTO Users(user_id,username,password,date_made,phone_number,first_name,last_name,card_number,cvv,expiration_date,street,city,state,zip_code) VALUES (61,'nspaughton1o','y02G9Uk0','2022-09-05 10:18:17','234-886-6565','Raven','Neddy',883835571,511,'7/1/2022','Havey','Akron','Ohio',44393);
+INSERT INTO Users(user_id,username,password,date_made,phone_number,first_name,last_name,card_number,cvv,expiration_date,street,city,state,zip_code) VALUES (62,'lferriday1p','KAOZxIR','2022-12-02 15:58:04','915-403-9653','Yorgos','Leann',137250565,611,'4/5/2023','Quincy','El Paso','Texas',79911);
+INSERT INTO Users(user_id,username,password,date_made,phone_number,first_name,last_name,card_number,cvv,expiration_date,street,city,state,zip_code) VALUES (63,'enutkins1q','mWbwyl','2022-12-16 11:47:06','915-918-5687','Marcela','Elijah',929702132,168,'8/19/2022','Old Gate','El Paso','Texas',79994);
+INSERT INTO Users(user_id,username,password,date_made,phone_number,first_name,last_name,card_number,cvv,expiration_date,street,city,state,zip_code) VALUES (64,'tgitthouse1r','sED1gq','2023-03-18 03:10:35','573-532-2281','Tamiko','Traver',547985496,853,'1/21/2023','Debra','Jefferson City','Missouri',65110);
+INSERT INTO Users(user_id,username,password,date_made,phone_number,first_name,last_name,card_number,cvv,expiration_date,street,city,state,zip_code) VALUES (65,'ccrookshank1s','eTne5e','2022-06-28 19:52:22','806-189-6542','Eulalie','Caren',682625050,711,'3/13/2023','Melody','Amarillo','Texas',79116);
+INSERT INTO Users(user_id,username,password,date_made,phone_number,first_name,last_name,card_number,cvv,expiration_date,street,city,state,zip_code) VALUES (66,'rdomingues1t','G1A4kogubPB','2023-03-24 23:42:51','571-355-5084','Nicola','Reade',748628569,798,'4/18/2022','Doe Crossing','Sterling','Virginia',20167);
+INSERT INTO Users(user_id,username,password,date_made,phone_number,first_name,last_name,card_number,cvv,expiration_date,street,city,state,zip_code) VALUES (67,'kaprahamian1u','oLWfHFXQiz','2023-04-14 14:43:10','302-147-1819','Darrick','Kennith',835488035,272,'5/22/2022','Loftsgordon','Newark','Delaware',19714);
+INSERT INTO Users(user_id,username,password,date_made,phone_number,first_name,last_name,card_number,cvv,expiration_date,street,city,state,zip_code) VALUES (68,'kilden1v','i9cZRTJzvE6c','2022-07-12 21:34:19','850-581-3544','Morrie','Karita',767398651,162,'12/5/2022','New Castle','Tallahassee','Florida',32399);
+INSERT INTO Users(user_id,username,password,date_made,phone_number,first_name,last_name,card_number,cvv,expiration_date,street,city,state,zip_code) VALUES (69,'dleblanc1w','cynlTA32U','2022-12-24 03:50:50','513-786-9416','Edy','Darla',947061090,975,'11/7/2022','Roxbury','Columbus','Ohio',43215);
+INSERT INTO Users(user_id,username,password,date_made,phone_number,first_name,last_name,card_number,cvv,expiration_date,street,city,state,zip_code) VALUES (70,'vranscomb1x','mCWhgc57bFY','2023-03-12 14:59:16','702-923-6152','Fern','Valma',873274925,809,'11/17/2022','Jenifer','Las Vegas','Nevada',89150);
+INSERT INTO Users(user_id,username,password,date_made,phone_number,first_name,last_name,card_number,cvv,expiration_date,street,city,state,zip_code) VALUES (71,'smacmarcuis1y','fDXmQZ2Kn6B','2022-05-04 21:26:22','260-753-9069','Agneta','Salvatore',937597424,270,'12/27/2022','Miller','Fort Wayne','Indiana',46852);
+INSERT INTO Users(user_id,username,password,date_made,phone_number,first_name,last_name,card_number,cvv,expiration_date,street,city,state,zip_code) VALUES (72,'jadamovitz1z','tc0L1F73','2022-10-14 14:49:00','804-975-7620','Hercules','Jorie',901604580,966,'12/1/2022','Jana','Richmond','Virginia',23289);
+INSERT INTO Users(user_id,username,password,date_made,phone_number,first_name,last_name,card_number,cvv,expiration_date,street,city,state,zip_code) VALUES (73,'fheugel20','y7OTEV','2022-07-25 14:41:49','916-314-1210','Retha','Felicia',121679773,38,'2/16/2023','Grayhawk','Sacramento','California',94273);
+INSERT INTO Users(user_id,username,password,date_made,phone_number,first_name,last_name,card_number,cvv,expiration_date,street,city,state,zip_code) VALUES (74,'mcorcut21','PW1rpV','2023-03-02 20:46:05','801-591-1724','Ernaline','Merrile',524671387,749,'3/7/2023','Huxley','Salt Lake City','Utah',84135);
+INSERT INTO Users(user_id,username,password,date_made,phone_number,first_name,last_name,card_number,cvv,expiration_date,street,city,state,zip_code) VALUES (75,'tguard22','lsPQLK','2022-12-30 07:39:20','505-644-3819','Jasmine','Tilda',825081565,882,'7/2/2022','Buhler','Albuquerque','New Mexico',87105);
+INSERT INTO Users(user_id,username,password,date_made,phone_number,first_name,last_name,card_number,cvv,expiration_date,street,city,state,zip_code) VALUES (76,'isilly23','H2gCui','2022-06-08 07:44:24','480-325-1890','Corabella','Iorgos',193906354,722,'9/8/2022','Oak Valley','Mesa','Arizona',85215);
+INSERT INTO Users(user_id,username,password,date_made,phone_number,first_name,last_name,card_number,cvv,expiration_date,street,city,state,zip_code) VALUES (77,'mnewhouse24','9UpzTXIzoBye','2023-02-02 16:25:22','904-127-3282','Douglas','Melodee',400521478,820,'7/29/2022','Emmet','Jacksonville','Florida',32236);
+INSERT INTO Users(user_id,username,password,date_made,phone_number,first_name,last_name,card_number,cvv,expiration_date,street,city,state,zip_code) VALUES (78,'gvicioso25','JpfPkJd','2022-12-09 10:23:45','310-769-9840','Ora','Geraldine',620020762,212,'7/24/2022','Prairie Rose','Santa Monica','California',90410);
+INSERT INTO Users(user_id,username,password,date_made,phone_number,first_name,last_name,card_number,cvv,expiration_date,street,city,state,zip_code) VALUES (79,'deveril26','hZUnahUbK9L','2023-02-08 20:33:17','916-187-1418','Sheila-kathryn','Dallis',836641458,349,'7/31/2022','Sherman','Sacramento','California',95833);
+INSERT INTO Users(user_id,username,password,date_made,phone_number,first_name,last_name,card_number,cvv,expiration_date,street,city,state,zip_code) VALUES (80,'lwinfindale27','x1sr7NuWB73E','2022-09-27 10:13:20','513-641-9501','Shirlene','Lindy',752339569,5,'11/16/2022','Schlimgen','Cincinnati','Ohio',45203);
+INSERT INTO Users(user_id,username,password,date_made,phone_number,first_name,last_name,card_number,cvv,expiration_date,street,city,state,zip_code) VALUES (81,'ibysh28','mDDujPjZrw','2023-02-02 03:25:28','619-706-8575','Nannie','Ivar',914888836,313,'6/18/2022','Bayside','San Diego','California',92115);
+INSERT INTO Users(user_id,username,password,date_made,phone_number,first_name,last_name,card_number,cvv,expiration_date,street,city,state,zip_code) VALUES (82,'kpolet29','wyuokwEPWZ5','2023-01-05 04:39:55','352-513-2703','Matthias','Krissie',218626092,835,'1/2/2023','Mallory','Ocala','Florida',34474);
+INSERT INTO Users(user_id,username,password,date_made,phone_number,first_name,last_name,card_number,cvv,expiration_date,street,city,state,zip_code) VALUES (83,'clangeley2a','MyihWN','2022-05-10 13:20:32','650-142-5493','Virginia','Caroline',230150739,997,'4/3/2023','Lake View','Mountain View','California',94042);
+INSERT INTO Users(user_id,username,password,date_made,phone_number,first_name,last_name,card_number,cvv,expiration_date,street,city,state,zip_code) VALUES (84,'brain2b','c2IAGO3uzX','2022-04-28 00:22:33','336-864-1812','Thalia','Bard',880622280,754,'7/16/2022','Maple Wood','High Point','North Carolina',27264);
+INSERT INTO Users(user_id,username,password,date_made,phone_number,first_name,last_name,card_number,cvv,expiration_date,street,city,state,zip_code) VALUES (85,'dtitchen2c','Mq6Xuh03TgDZ','2023-02-05 18:41:17','650-553-0507','Cecilla','Dani',194853309,141,'1/7/2023','John Wall','San Jose','California',95113);
+INSERT INTO Users(user_id,username,password,date_made,phone_number,first_name,last_name,card_number,cvv,expiration_date,street,city,state,zip_code) VALUES (86,'anatalie2d','e4A9CqR4QlO','2022-06-02 17:53:59','727-544-3612','Rosamund','Alvy',857267896,810,'10/31/2022','Dixon','Saint Petersburg','Florida',33731);
+INSERT INTO Users(user_id,username,password,date_made,phone_number,first_name,last_name,card_number,cvv,expiration_date,street,city,state,zip_code) VALUES (87,'jgeibel2e','IccrB55bN87s','2022-12-27 12:01:35','239-419-7896','Julee','Julie',585017198,92,'8/19/2022','Ruskin','Naples','Florida',33963);
+INSERT INTO Users(user_id,username,password,date_made,phone_number,first_name,last_name,card_number,cvv,expiration_date,street,city,state,zip_code) VALUES (88,'dharner2f','t77E0Wxd5z','2022-11-20 10:00:37','214-365-7856','Ingamar','Dani',798001718,212,'12/6/2022','Caliangt','Dallas','Texas',75367);
+INSERT INTO Users(user_id,username,password,date_made,phone_number,first_name,last_name,card_number,cvv,expiration_date,street,city,state,zip_code) VALUES (89,'hslocombe2g','Ih8heBdd','2023-03-13 21:51:50','857-140-9557','Audry','Hedi',895100708,952,'7/23/2022','Graedel','Watertown','Massachusetts',02472);
+INSERT INTO Users(user_id,username,password,date_made,phone_number,first_name,last_name,card_number,cvv,expiration_date,street,city,state,zip_code) VALUES (90,'jgimeno2h','xaP9zrn','2022-05-22 10:36:07','304-991-1532','Roxie','Jewelle',958750570,216,'1/11/2023','Mcbride','Huntington','West Virginia',25705);
+INSERT INTO Users(user_id,username,password,date_made,phone_number,first_name,last_name,card_number,cvv,expiration_date,street,city,state,zip_code) VALUES (91,'dcoombes2i','nb2wyHHwJkv7','2023-02-10 13:20:03','713-564-9315','Roddy','Dorothee',077508023,736,'6/19/2022','Shoshone','Houston','Texas',77015);
+INSERT INTO Users(user_id,username,password,date_made,phone_number,first_name,last_name,card_number,cvv,expiration_date,street,city,state,zip_code) VALUES (92,'kmacmorland2j','6LeoTb6QM','2022-12-10 10:46:33','520-484-7588','Linda','Krispin',644741911,275,'7/24/2022','Tennessee','Tucson','Arizona',85710);
+INSERT INTO Users(user_id,username,password,date_made,phone_number,first_name,last_name,card_number,cvv,expiration_date,street,city,state,zip_code) VALUES (93,'nmourant2k','WDJAfn','2022-06-25 23:26:49','806-556-4139','Hermia','Nissie',571269870,399,'4/5/2023','Dayton','Amarillo','Texas',79171);
+INSERT INTO Users(user_id,username,password,date_made,phone_number,first_name,last_name,card_number,cvv,expiration_date,street,city,state,zip_code) VALUES (94,'rbortoluzzi2l','113vUBVGRr','2022-10-29 04:58:14','828-442-3841','Mitchel','Rosalynd',857351875,528,'2/6/2023','Schlimgen','Asheville','North Carolina',28815);
+INSERT INTO Users(user_id,username,password,date_made,phone_number,first_name,last_name,card_number,cvv,expiration_date,street,city,state,zip_code) VALUES (95,'pspanswick2m','ONEm44','2023-02-18 17:25:26','701-863-4843','Ann-marie','Patton',981745963,372,'4/7/2023','Anthes','Grand Forks','North Dakota',58207);
+INSERT INTO Users(user_id,username,password,date_made,phone_number,first_name,last_name,card_number,cvv,expiration_date,street,city,state,zip_code) VALUES (96,'jeastop2n','0f90yE','2022-04-19 15:28:22','305-616-2389','Andrea','Juliet',367429971,66,'2/15/2023','Dryden','Miami','Florida',33169);
+INSERT INTO Users(user_id,username,password,date_made,phone_number,first_name,last_name,card_number,cvv,expiration_date,street,city,state,zip_code) VALUES (97,'fnunan2o','oWbgIJ7CTh7o','2022-12-01 03:45:35','716-994-6494','Zebulon','Florenza',072836654,117,'7/15/2022','Lerdahl','Buffalo','New York',14233);
+INSERT INTO Users(user_id,username,password,date_made,phone_number,first_name,last_name,card_number,cvv,expiration_date,street,city,state,zip_code) VALUES (98,'kkarlmann2p','0OdsRtlTyv86','2022-12-09 17:12:32','860-892-5240','Ronna','Klemens',862725386,639,'5/19/2022','Fisk','Hartford','Connecticut',06140);
+INSERT INTO Users(user_id,username,password,date_made,phone_number,first_name,last_name,card_number,cvv,expiration_date,street,city,state,zip_code) VALUES (99,'psutherley2q','xVWWK1EpOE','2022-05-15 21:44:00','215-515-7513','Hendrick','Paulina',951463873,325,'11/2/2022','Scofield','Philadelphia','Pennsylvania',19125);
+INSERT INTO Users(user_id,username,password,date_made,phone_number,first_name,last_name,card_number,cvv,expiration_date,street,city,state,zip_code) VALUES (100,'jfeitosa2r','bf6wDfsCoI','2022-06-19 21:03:42','510-809-5591','Tori','Jordon',974059900,220,'9/24/2022','Columbus','Berkeley','California',94712);
 
---# Orders
-INSERT INTO Orders (order_number, item_number, price, customer_name) VALUES ('1', '58', '$3.56', 'Opalina Thorneloe');
-INSERT INTO Orders (order_number, item_number, price, customer_name) VALUES ('2', '100', '$7.08', 'Gertrud Lorey');
-INSERT INTO Orders (order_number, item_number, price, customer_name) VALUES ('3', '31', '$5.74', 'Zebedee Randles');
-INSERT INTO Orders (order_number, item_number, price, customer_name) VALUES ('4', '24', '$5.46', 'Lorette Ferrieroi');
-INSERT INTO Orders (order_number, item_number, price, customer_name) VALUES ('5', '73', '$5.59', 'Chick Divisek');
-INSERT INTO Orders (order_number, item_number, price, customer_name) VALUES ('6', '4', '$5.61', 'Rosene Walewski');
-INSERT INTO Orders (order_number, item_number, price, customer_name) VALUES ('7', '35', '$6.43', 'Judd Botcherby');
-INSERT INTO Orders (order_number, item_number, price, customer_name) VALUES ('8', '30', '$4.33', 'Haroun Long');
-INSERT INTO Orders (order_number, item_number, price, customer_name) VALUES ('9', '13', '$8.11', 'Anatollo Hannaby');
-INSERT INTO Orders (order_number, item_number, price, customer_name) VALUES ('10', '24', '$7.05', 'Braden Gerner');
-INSERT INTO Orders (order_number, item_number, price, customer_name) VALUES ('11', '28', '$2.98', 'Illa MacVean');
-INSERT INTO Orders (order_number, item_number, price, customer_name) VALUES ('12', '37', '$4.25', 'Randolph Matthaus');
-INSERT INTO Orders (order_number, item_number, price, customer_name) VALUES ('13', '66', '$8.36', 'Daryle Hourihan');
-INSERT INTO Orders (order_number, item_number, price, customer_name) VALUES ('14', '80', '$9.28', 'Sonja Drennan');
-INSERT INTO Orders (order_number, item_number, price, customer_name) VALUES ('15', '14', '$8.04', 'Siusan Greally');
-INSERT INTO Orders (order_number, item_number, price, customer_name) VALUES ('16', '33', '$1.95', 'Julie Matthiesen');
-INSERT INTO Orders (order_number, item_number, price, customer_name) VALUES ('17', '27', '$9.97', 'Shep Harrild');
-INSERT INTO Orders (order_number, item_number, price, customer_name) VALUES ('18', '88', '$1.87', 'Audrey Quickenden');
-INSERT INTO Orders (order_number, item_number, price, customer_name) VALUES ('19', '83', '$3.20', 'Fleur Balaisot');
-INSERT INTO Orders (order_number, item_number, price, customer_name) VALUES ('20', '73', '$2.46', 'Esta Mount');
-INSERT INTO Orders (order_number, item_number, price, customer_name) VALUES ('21', '26', '$9.29', 'Bastian Ruslen');
-INSERT INTO Orders (order_number, item_number, price, customer_name) VALUES ('22', '11', '$1.71', 'Sinclare Richold');
-INSERT INTO Orders (order_number, item_number, price, customer_name) VALUES ('23', '33', '$9.21', 'Karilynn Calcut');
-INSERT INTO Orders (order_number, item_number, price, customer_name) VALUES ('24', '35', '$8.11', 'Cordy Marde');
-INSERT INTO Orders (order_number, item_number, price, customer_name) VALUES ('25', '91', '$7.22', 'Michal Grouer');
-INSERT INTO Orders (order_number, item_number, price, customer_name) VALUES ('26', '70', '$7.44', 'Franklyn Cavy');
-INSERT INTO Orders (order_number, item_number, price, customer_name) VALUES ('27', '71', '$3.04', 'Isabel Glanders');
-INSERT INTO Orders (order_number, item_number, price, customer_name) VALUES ('28', '96', '$4.96', 'Olympe Pavlik');
-INSERT INTO Orders (order_number, item_number, price, customer_name) VALUES ('29', '73', '$3.44', 'Tabor Kilian');
-INSERT INTO Orders (order_number, item_number, price, customer_name) VALUES ('30', '66', '$8.23', 'Martica Kermath');
-INSERT INTO Orders (order_number, item_number, price, customer_name) VALUES ('31', '65', '$3.68', 'Darcey Macvey');
-INSERT INTO Orders (order_number, item_number, price, customer_name) VALUES ('32', '63', '$9.89', 'Magdalene Seeborne');
-INSERT INTO Orders (order_number, item_number, price, customer_name) VALUES ('33', '38', '$2.64', 'Lynett Todaro');
-INSERT INTO Orders (order_number, item_number, price, customer_name) VALUES ('34', '52', '$2.72', 'Garald Crispe');
-INSERT INTO Orders (order_number, item_number, price, customer_name) VALUES ('35', '55', '$5.08', 'Ambrosius Fanstone');
-INSERT INTO Orders (order_number, item_number, price, customer_name) VALUES ('36', '76', '$9.62', 'Fifi Heak');
-INSERT INTO Orders (order_number, item_number, price, customer_name) VALUES ('37', '11', '$7.40', 'Hardy Heibel');
-INSERT INTO Orders (order_number, item_number, price, customer_name) VALUES ('38', '39', '$0.14', 'Nelly Climie');
-INSERT INTO Orders (order_number, item_number, price, customer_name) VALUES ('39', '93', '$7.73', 'Florance Lemonby');
-INSERT INTO Orders (order_number, item_number, price, customer_name) VALUES ('40', '67', '$4.72', 'Jonathan Garnson');
-INSERT INTO Orders (order_number, item_number, price, customer_name) VALUES ('41', '38', '$2.81', 'Burt Mousley');
-INSERT INTO Orders (order_number, item_number, price, customer_name) VALUES ('42', '99', '$7.91', 'Noell Camili');
-INSERT INTO Orders (order_number, item_number, price, customer_name) VALUES ('43', '21', '$7.72', 'Giacinta Giacomelli');
-INSERT INTO Orders (order_number, item_number, price, customer_name) VALUES ('44', '28', '$8.98', 'Kelcy Studd');
-INSERT INTO Orders (order_number, item_number, price, customer_name) VALUES ('45', '16', '$2.00', 'Codi Mould');
-INSERT INTO Orders (order_number, item_number, price, customer_name) VALUES ('46', '71', '$4.36', 'Ettie Randals');
-INSERT INTO Orders (order_number, item_number, price, customer_name) VALUES ('47', '62', '$3.99', 'Hurleigh Mollon');
-INSERT INTO Orders (order_number, item_number, price, customer_name) VALUES ('48', '89', '$0.62', 'Theobald Blower');
-INSERT INTO Orders (order_number, item_number, price, customer_name) VALUES ('49', '99', '$5.34', 'Johannah Pinnock');
-INSERT INTO Orders (order_number, item_number, price, customer_name) VALUES ('50', '28', '$9.65', 'Tamas Heninghem');
-INSERT INTO Orders (order_number, item_number, price, customer_name) VALUES ('51', '10', '$2.67', 'Field Paulson');
-INSERT INTO Orders (order_number, item_number, price, customer_name) VALUES ('52', '63', '$0.89', 'Karoly Markovich');
-INSERT INTO Orders (order_number, item_number, price, customer_name) VALUES ('53', '66', '$6.66', 'Clywd Boothman');
-INSERT INTO Orders (order_number, item_number, price, customer_name) VALUES ('54', '42', '$3.97', 'Phylys Boyer');
-INSERT INTO Orders (order_number, item_number, price, customer_name) VALUES ('55', '88', '$8.31', 'Olvan Barwell');
-INSERT INTO Orders (order_number, item_number, price, customer_name) VALUES ('56', '73', '$4.70', 'Gannie Eckersall');
-INSERT INTO Orders (order_number, item_number, price, customer_name) VALUES ('57', '78', '$4.90', 'Kaylil Eles');
-INSERT INTO Orders (order_number, item_number, price, customer_name) VALUES ('58', '1', '$4.34', 'Leanna Clouter');
-INSERT INTO Orders (order_number, item_number, price, customer_name) VALUES ('59', '86', '$5.54', 'Codee Fulkes');
-INSERT INTO Orders (order_number, item_number, price, customer_name) VALUES ('60', '44', '$9.06', 'Jonas Powlesland');
-INSERT INTO Orders (order_number, item_number, price, customer_name) VALUES ('61', '42', '$0.61', 'Alice Iacomelli');
-INSERT INTO Orders (order_number, item_number, price, customer_name) VALUES ('62', '71', '$2.19', 'Virginie Claesens');
-INSERT INTO Orders (order_number, item_number, price, customer_name) VALUES ('63', '74', '$4.64', 'Maxine Pain');
-INSERT INTO Orders (order_number, item_number, price, customer_name) VALUES ('64', '80', '$0.34', 'Conan Cattrell');
-INSERT INTO Orders (order_number, item_number, price, customer_name) VALUES ('65', '99', '$3.73', 'Lyndsey Gladhill');
-INSERT INTO Orders (order_number, item_number, price, customer_name) VALUES ('66', '97', '$5.71', 'Tildi Ayre');
-INSERT INTO Orders (order_number, item_number, price, customer_name) VALUES ('67', '65', '$5.45', 'Garrard Keating');
-INSERT INTO Orders (order_number, item_number, price, customer_name) VALUES ('68', '78', '$5.36', 'Tova Mila');
-INSERT INTO Orders (order_number, item_number, price, customer_name) VALUES ('69', '7', '$0.60', 'Doralyn Itshak');
-INSERT INTO Orders (order_number, item_number, price, customer_name) VALUES ('70', '19', '$8.92', 'Jo Longhorn');
-INSERT INTO Orders (order_number, item_number, price, customer_name) VALUES ('71', '30', '$3.54', 'Farah Fraczak');
-INSERT INTO Orders (order_number, item_number, price, customer_name) VALUES ('72', '74', '$3.91', 'Weber Kahen');
-INSERT INTO Orders (order_number, item_number, price, customer_name) VALUES ('73', '7', '$2.28', 'Nomi Lindores');
-INSERT INTO Orders (order_number, item_number, price, customer_name) VALUES ('74', '39', '$7.75', 'Addie Mazillius');
-INSERT INTO Orders (order_number, item_number, price, customer_name) VALUES ('75', '53', '$3.43', 'Sol Conville');
-INSERT INTO Orders (order_number, item_number, price, customer_name) VALUES ('76', '98', '$2.25', 'Joli Gauchier');
-INSERT INTO Orders (order_number, item_number, price, customer_name) VALUES ('77', '8', '$0.44', 'Claretta Bradain');
-INSERT INTO Orders (order_number, item_number, price, customer_name) VALUES ('78', '91', '$1.72', 'Murdoch Grindrod');
-INSERT INTO Orders (order_number, item_number, price, customer_name) VALUES ('79', '18', '$4.52', 'Rose Hatherill');
-INSERT INTO Orders (order_number, item_number, price, customer_name) VALUES ('80', '46', '$4.59', 'Lorain Davidovsky');
-INSERT INTO Orders (order_number, item_number, price, customer_name) VALUES ('81', '13', '$7.75', 'Herschel McCromley');
-INSERT INTO Orders (order_number, item_number, price, customer_name) VALUES ('82', '10', '$0.72', 'Ynes Cardall');
-INSERT INTO Orders (order_number, item_number, price, customer_name) VALUES ('83', '67', '$2.45', 'Penrod Hauger');
-INSERT INTO Orders (order_number, item_number, price, customer_name) VALUES ('84', '37', '$9.70', 'Johann Duckett');
-INSERT INTO Orders (order_number, item_number, price, customer_name) VALUES ('85', '61', '$9.15', 'Heinrick Fehners');
-INSERT INTO Orders (order_number, item_number, price, customer_name) VALUES ('86', '34', '$7.50', 'Rollin Medgewick');
-INSERT INTO Orders (order_number, item_number, price, customer_name) VALUES ('87', '4', '$8.74', 'Barr Keeves');
-INSERT INTO Orders (order_number, item_number, price, customer_name) VALUES ('88', '60', '$6.57', 'Curry Booth');
-INSERT INTO Orders (order_number, item_number, price, customer_name) VALUES ('89', '55', '$3.99', 'Eustacia Giacopini');
-INSERT INTO Orders (order_number, item_number, price, customer_name) VALUES ('90', '44', '$2.43', 'Jamaal Dyet');
-INSERT INTO Orders (order_number, item_number, price, customer_name) VALUES ('91', '2', '$4.52', 'Nevsa Coughtrey');
-INSERT INTO Orders (order_number, item_number, price, customer_name) VALUES ('92', '63', '$0.18', 'Carlye Putton');
-INSERT INTO Orders (order_number, item_number, price, customer_name) VALUES ('93', '31', '$5.28', 'Traci Gerson');
-INSERT INTO Orders (order_number, item_number, price, customer_name) VALUES ('94', '29', '$6.52', 'Sigmund Beckitt');
-INSERT INTO Orders (order_number, item_number, price, customer_name) VALUES ('95', '89', '$0.62', 'Kenna Willford');
-INSERT INTO Orders (order_number, item_number, price, customer_name) VALUES ('96', '55', '$1.45', 'Ursa Lambrick');
-INSERT INTO Orders (order_number, item_number, price, customer_name) VALUES ('97', '86', '$8.02', 'Elinore Weare');
-INSERT INTO Orders (order_number, item_number, price, customer_name) VALUES ('98', '47', '$0.50', 'Kermit Scoble');
-INSERT INTO Orders (order_number, item_number, price, customer_name) VALUES ('99', '17', '$2.50', 'Sheila Maides');
-INSERT INTO Orders (order_number, item_number, price, customer_name) VALUES ('100', '88', '$8.79', 'Zorine Maddick');
+INSERT INTO Administrators (admin_id, email_address, phone_number, first_name, last_name) VALUES ('63', 'hgarrod0@nsw.gov.au', '271-722-4526', 'Heloise', 'Garrod');
+INSERT INTO Administrators (admin_id, email_address, phone_number, first_name, last_name) VALUES ('58', 'rerskine1@columbia.edu', '999-984-1235', 'Ruby', 'Erskine');
+INSERT INTO Administrators (admin_id, email_address, phone_number, first_name, last_name) VALUES ('13', 'kgoldsby2@pbs.org', '381-936-1810', 'Kesley', 'Goldsby');
+INSERT INTO Administrators (admin_id, email_address, phone_number, first_name, last_name) VALUES ('14', 'rmcvanamy3@smh.com.au', '880-349-4079', 'Raine', 'McVanamy');
+INSERT INTO Administrators (admin_id, email_address, phone_number, first_name, last_name) VALUES ('60', 'mnorthen4@mozilla.com', '815-217-5094', 'Malinde', 'Northen');
+INSERT INTO Administrators (admin_id, email_address, phone_number, first_name, last_name) VALUES ('7', 'kosmon5@wordpress.com', '853-326-8607', 'Kat', 'Osmon');
+INSERT INTO Administrators (admin_id, email_address, phone_number, first_name, last_name) VALUES ('48', 'hbellas6@ibm.com', '192-656-8316', 'Hyacinth', 'Bellas');
+INSERT INTO Administrators (admin_id, email_address, phone_number, first_name, last_name) VALUES ('3', 'gharriott7@friendfeed.com', '861-454-1562', 'Gilemette', 'Harriott');
+INSERT INTO Administrators (admin_id, email_address, phone_number, first_name, last_name) VALUES ('24', 'tlindenfeld8@example.com', '474-438-2409', 'Timothea', 'Lindenfeld');
+INSERT INTO Administrators (admin_id, email_address, phone_number, first_name, last_name) VALUES ('6', 'tmcrorie9@livejournal.com', '207-349-5012', 'Thalia', 'McRorie');
+INSERT INTO Administrators (admin_id, email_address, phone_number, first_name, last_name) VALUES ('10', 'rlapishb@nymag.com', '200-935-0539', 'Retha', 'Lapish');
+INSERT INTO Administrators (admin_id, email_address, phone_number, first_name, last_name) VALUES ('68', 'gjeunec@springer.com', '229-427-3945', 'Grethel', 'Jeune');
+INSERT INTO Administrators (admin_id, email_address, phone_number, first_name, last_name) VALUES ('49', 'smakind@arstechnica.com', '908-708-3264', 'Salomon', 'Makin');
+INSERT INTO Administrators (admin_id, email_address, phone_number, first_name, last_name) VALUES ('84', 'fpeirpointe@theatlantic.com', '109-986-2027', 'Frank', 'Peirpoint');
+INSERT INTO Administrators (admin_id, email_address, phone_number, first_name, last_name) VALUES ('73', 'tbaintonh@friendfeed.com', '507-314-7405', 'Tobey', 'Bainton');
+INSERT INTO Administrators (admin_id, email_address, phone_number, first_name, last_name) VALUES ('2', 'psticklesi@issuu.com', '163-547-0467', 'Patti', 'Stickles');
+INSERT INTO Administrators (admin_id, email_address, phone_number, first_name, last_name) VALUES ('33', 'csimeonej@github.com', '929-937-4521', 'Clementina', 'Simeone');
+INSERT INTO Administrators (admin_id, email_address, phone_number, first_name, last_name) VALUES ('37', 'soultramk@yale.edu', '570-975-6493', 'Sindee', 'Oultram');
+INSERT INTO Administrators (admin_id, email_address, phone_number, first_name, last_name) VALUES ('82', 'jstoadel@bigcartel.com', '561-988-0917', 'Johanna', 'Stoade');
+INSERT INTO Administrators (admin_id, email_address, phone_number, first_name, last_name) VALUES ('99', 'rjollandn@sciencedirect.com', '267-862-2844', 'Rickey', 'Jolland');
+INSERT INTO Administrators (admin_id, email_address, phone_number, first_name, last_name) VALUES ('80', 'jsemkeno@google.it', '178-865-1635', 'Joly', 'Semken');
+INSERT INTO Administrators (admin_id, email_address, phone_number, first_name, last_name) VALUES ('21', 'cduggonq@cdbaby.com', '962-694-1404', 'Camala', 'Duggon');
+INSERT INTO Administrators (admin_id, email_address, phone_number, first_name, last_name) VALUES ('1', 'crufflesr@w3.org', '462-766-6663', 'Clerc', 'Ruffles');
+INSERT INTO Administrators (admin_id, email_address, phone_number, first_name, last_name) VALUES ('90', 'jwynetts@issuu.com', '826-475-3492', 'Jamesy', 'Wynett');
+INSERT INTO Administrators (admin_id, email_address, phone_number, first_name, last_name) VALUES ('96', 'ofennicku@businessinsider.com', '665-952-5282', 'Obed', 'Fennick');
+INSERT INTO Administrators (admin_id, email_address, phone_number, first_name, last_name) VALUES ('5', 'hchattellw@oaic.gov.au', '534-209-2628', 'Harriott', 'Chattell');
+INSERT INTO Administrators (admin_id, email_address, phone_number, first_name, last_name) VALUES ('30', 'bfulcherx@booking.com', '740-106-7386', 'Benedikta', 'Fulcher');
+INSERT INTO Administrators (admin_id, email_address, phone_number, first_name, last_name) VALUES ('43', 'nscriveny@ow.ly', '314-568-0141', 'Nichols', 'Scriven');
+INSERT INTO Administrators (admin_id, email_address, phone_number, first_name, last_name) VALUES ('42', 'bgoffordz@howstuffworks.com', '383-121-1124', 'Biddie', 'Gofford');
+INSERT INTO Administrators (admin_id, email_address, phone_number, first_name, last_name) VALUES ('70', 'erawle10@usa.gov', '399-739-5512', 'Everett', 'Rawle');
+INSERT INTO Administrators (admin_id, email_address, phone_number, first_name, last_name) VALUES ('69', 'ltassell11@reddit.com', '498-713-6706', 'Lemmie', 'Tassell');
+INSERT INTO Administrators (admin_id, email_address, phone_number, first_name, last_name) VALUES ('28', 'arickaert12@google.com', '148-873-8069', 'Adara', 'Rickaert');
+INSERT INTO Administrators (admin_id, email_address, phone_number, first_name, last_name) VALUES ('17', 'sderoos13@de.vu', '950-846-8695', 'Sheba', 'De Roos');
+INSERT INTO Administrators (admin_id, email_address, phone_number, first_name, last_name) VALUES ('98', 'bbuddles14@weibo.com', '474-221-2625', 'Berty', 'Buddles');
+INSERT INTO Administrators (admin_id, email_address, phone_number, first_name, last_name) VALUES ('57', 'ptuffell15@privacy.gov.au', '380-765-7744', 'Pollyanna', 'Tuffell');
+INSERT INTO Administrators (admin_id, email_address, phone_number, first_name, last_name) VALUES ('88', 'emaccambridge16@wix.com', '724-955-2218', 'Ernest', 'MacCambridge');
+INSERT INTO Administrators (admin_id, email_address, phone_number, first_name, last_name) VALUES ('92', 'cshewry18@ted.com', '336-184-5442', 'Caryl', 'Shewry');
+INSERT INTO Administrators (admin_id, email_address, phone_number, first_name, last_name) VALUES ('15', 'epostlewhite19@pbs.org', '425-104-3768', 'Elisha', 'Postlewhite');
+INSERT INTO Administrators (admin_id, email_address, phone_number, first_name, last_name) VALUES ('8', 'cpatching1a@wunderground.com', '131-501-4338', 'Chloette', 'Patching');
+INSERT INTO Administrators (admin_id, email_address, phone_number, first_name, last_name) VALUES ('38', 'tcraigmile1b@seattletimes.com', '931-657-2248', 'Torey', 'Craigmile');
+INSERT INTO Administrators (admin_id, email_address, phone_number, first_name, last_name) VALUES ('64', 'icordeiro1c@fda.gov', '189-195-1621', 'Iris', 'Cordeiro');
+INSERT INTO Administrators (admin_id, email_address, phone_number, first_name, last_name) VALUES ('54', 'pmallock1d@homestead.com', '667-480-4801', 'Pen', 'Mallock');
+INSERT INTO Administrators (admin_id, email_address, phone_number, first_name, last_name) VALUES ('40', 'rdalessandro1e@guardian.co.uk', '494-654-4747', 'Rhianna', 'Alessandro');
+INSERT INTO Administrators (admin_id, email_address, phone_number, first_name, last_name) VALUES ('27', 'ebeeze1g@linkedin.com', '709-424-4876', 'Erskine', 'Beeze');
 
---# Playlists
-INSERT INTO Playlists (name, likes, date_made, duration, episode_number, playlist_name, user_id) VALUES ('PlaylistIRqNR', '1909253', '6/15/2022', '28', '48', 'Playlist1OamY', '73');
-INSERT INTO Playlists (name, likes, date_made, duration, episode_number, playlist_name, user_id) VALUES ('Playlist7nQbO', '2940528', '1/30/2023', '470', '23', 'PlaylistObpaP', '38');
-INSERT INTO Playlists (name, likes, date_made, duration, episode_number, playlist_name, user_id) VALUES ('PlaylistYZwrm', '1145597', '5/5/2022', '327', '13', 'Playlist9unPL', '94');
-INSERT INTO Playlists (name, likes, date_made, duration, episode_number, playlist_name, user_id) VALUES ('PlaylistzJu5d', '274155', '6/19/2022', '179', '26', 'PlaylistTTFcA', '23');
-INSERT INTO Playlists (name, likes, date_made, duration, episode_number, playlist_name, user_id) VALUES ('Playlist8J8tP', '9042134', '2/28/2023', '476', '55', 'Playlist1kRpX', '88');
-INSERT INTO Playlists (name, likes, date_made, duration, episode_number, playlist_name, user_id) VALUES ('PlaylistLrwQz', '7839729', '5/7/2022', '4', '91', 'Playlist1bZlX', '51');
-INSERT INTO Playlists (name, likes, date_made, duration, episode_number, playlist_name, user_id) VALUES ('Playlisttj2Aa', '3393064', '7/9/2022', '378', '77', 'Playlist4cbI5', '16');
-INSERT INTO Playlists (name, likes, date_made, duration, episode_number, playlist_name, user_id) VALUES ('PlaylistAChcU', '2777271', '3/2/2023', '208', '31', 'PlaylistFwxb1', '23');
-INSERT INTO Playlists (name, likes, date_made, duration, episode_number, playlist_name, user_id) VALUES ('PlaylistZP5q8', '6880608', '10/7/2022', '88', '85', 'PlaylisteuGS9', '53');
-INSERT INTO Playlists (name, likes, date_made, duration, episode_number, playlist_name, user_id) VALUES ('PlaylistXnYeK', '8456309', '2/22/2023', '118', '33', 'Playlistgzm5c', '92');
-INSERT INTO Playlists (name, likes, date_made, duration, episode_number, playlist_name, user_id) VALUES ('PlaylistcKbaO', '72619', '12/17/2022', '207', '22', 'PlaylistRxg52', '9');
-INSERT INTO Playlists (name, likes, date_made, duration, episode_number, playlist_name, user_id) VALUES ('PlaylistNonVy', '4274981', '4/17/2022', '180', '43', 'Playlistzmbdf', '76');
-INSERT INTO Playlists (name, likes, date_made, duration, episode_number, playlist_name, user_id) VALUES ('PlaylistHHd54', '382922', '2/11/2023', '8', '100', 'PlaylistvYR3f', '2');
-INSERT INTO Playlists (name, likes, date_made, duration, episode_number, playlist_name, user_id) VALUES ('PlaylistYU47P', '6063919', '1/8/2023', '25', '93', 'Playlistqxip8', '67');
-INSERT INTO Playlists (name, likes, date_made, duration, episode_number, playlist_name, user_id) VALUES ('PlaylistXoSn4', '1634431', '3/15/2023', '223', '82', 'PlaylistYZslo', '80');
-INSERT INTO Playlists (name, likes, date_made, duration, episode_number, playlist_name, user_id) VALUES ('Playlist4xnXI', '2240427', '6/22/2022', '122', '45', 'Playlist0N8ax', '36');
-INSERT INTO Playlists (name, likes, date_made, duration, episode_number, playlist_name, user_id) VALUES ('PlaylistzBN4J', '6510629', '5/19/2022', '58', '98', 'PlaylistaeaL9', '97');
-INSERT INTO Playlists (name, likes, date_made, duration, episode_number, playlist_name, user_id) VALUES ('Playlistb3Z8s', '3964267', '3/11/2023', '195', '23', 'PlaylistF0hvn', '42');
-INSERT INTO Playlists (name, likes, date_made, duration, episode_number, playlist_name, user_id) VALUES ('PlaylistTrh64', '9519699', '6/4/2022', '16', '49', 'PlaylistyKXGj', '70');
-INSERT INTO Playlists (name, likes, date_made, duration, episode_number, playlist_name, user_id) VALUES ('PlaylistQY05y', '7546293', '4/16/2022', '140', '22', 'PlaylistElr4Z', '86');
-INSERT INTO Playlists (name, likes, date_made, duration, episode_number, playlist_name, user_id) VALUES ('PlaylistRCuJv', '5917267', '12/30/2022', '309', '95', 'Playlist4GIz5', '28');
-INSERT INTO Playlists (name, likes, date_made, duration, episode_number, playlist_name, user_id) VALUES ('PlaylistT9XMx', '493023', '2/10/2023', '135', '82', 'PlaylistPPWsg', '11');
-INSERT INTO Playlists (name, likes, date_made, duration, episode_number, playlist_name, user_id) VALUES ('PlaylistIFXhr', '775180', '5/31/2022', '483', '77', 'PlaylistExw99', '77');
-INSERT INTO Playlists (name, likes, date_made, duration, episode_number, playlist_name, user_id) VALUES ('PlaylistFnJ7Y', '6850555', '3/7/2023', '384', '38', 'PlaylistYjHwm', '6');
-INSERT INTO Playlists (name, likes, date_made, duration, episode_number, playlist_name, user_id) VALUES ('PlaylistdDANX', '9691439', '8/20/2022', '106', '22', 'Playlistews3y', '2');
-INSERT INTO Playlists (name, likes, date_made, duration, episode_number, playlist_name, user_id) VALUES ('PlaylistOAPF1', '5570365', '4/30/2022', '262', '80', 'PlaylistTKagl', '3');
-INSERT INTO Playlists (name, likes, date_made, duration, episode_number, playlist_name, user_id) VALUES ('PlaylistsRr02', '9183865', '7/27/2022', '2', '22', 'PlaylistXt5l2', '52');
-INSERT INTO Playlists (name, likes, date_made, duration, episode_number, playlist_name, user_id) VALUES ('Playlist1AOWu', '3255270', '3/26/2023', '71', '61', 'PlaylistKGRio', '93');
-INSERT INTO Playlists (name, likes, date_made, duration, episode_number, playlist_name, user_id) VALUES ('Playlistm96vU', '621987', '12/27/2022', '208', '90', 'PlaylistbmKST', '30');
-INSERT INTO Playlists (name, likes, date_made, duration, episode_number, playlist_name, user_id) VALUES ('PlaylistqhNbK', '719594', '9/12/2022', '327', '8', 'PlaylistioFj4', '13');
-INSERT INTO Playlists (name, likes, date_made, duration, episode_number, playlist_name, user_id) VALUES ('PlaylistvX0Vj', '2035199', '11/12/2022', '51', '58', 'PlaylistTgnwD', '17');
-INSERT INTO Playlists (name, likes, date_made, duration, episode_number, playlist_name, user_id) VALUES ('Playlistup3eP', '3983136', '8/16/2022', '478', '81', 'PlaylistAwS7V', '88');
-INSERT INTO Playlists (name, likes, date_made, duration, episode_number, playlist_name, user_id) VALUES ('PlaylistxLLVU', '753455', '4/27/2022', '260', '57', 'Playlist3QRA0', '93');
-INSERT INTO Playlists (name, likes, date_made, duration, episode_number, playlist_name, user_id) VALUES ('PlaylistRiqyl', '541607', '3/9/2023', '356', '22', 'Playlist5cBPG', '50');
-INSERT INTO Playlists (name, likes, date_made, duration, episode_number, playlist_name, user_id) VALUES ('PlaylistJ5g8x', '2163616', '9/24/2022', '241', '8', 'PlaylistwM2u3', '65');
-INSERT INTO Playlists (name, likes, date_made, duration, episode_number, playlist_name, user_id) VALUES ('PlaylistF2JR6', '7403286', '7/20/2022', '87', '55', 'PlaylisthbPWA', '92');
-INSERT INTO Playlists (name, likes, date_made, duration, episode_number, playlist_name, user_id) VALUES ('PlaylistQPAwE', '9695303', '11/2/2022', '72', '18', 'Playlisttdj0f', '50');
-INSERT INTO Playlists (name, likes, date_made, duration, episode_number, playlist_name, user_id) VALUES ('Playlist0wzSN', '848614', '11/7/2022', '136', '3', 'Playlistlools', '53');
-INSERT INTO Playlists (name, likes, date_made, duration, episode_number, playlist_name, user_id) VALUES ('PlaylistuQaYk', '1610658', '4/6/2023', '258', '13', 'PlaylistSi6g0', '46');
-INSERT INTO Playlists (name, likes, date_made, duration, episode_number, playlist_name, user_id) VALUES ('PlaylistKWr4l', '5320479', '6/4/2022', '97', '29', 'Playlist01WyM', '68');
-INSERT INTO Playlists (name, likes, date_made, duration, episode_number, playlist_name, user_id) VALUES ('PlaylistWLTD2', '4118070', '9/25/2022', '16', '56', 'Playlistke1kL', '83');
-INSERT INTO Playlists (name, likes, date_made, duration, episode_number, playlist_name, user_id) VALUES ('Playlistxyb5h', '5562059', '3/21/2023', '411', '33', 'PlaylistvxTWh', '46');
-INSERT INTO Playlists (name, likes, date_made, duration, episode_number, playlist_name, user_id) VALUES ('PlaylistWq1uO', '8961517', '2/27/2023', '24', '80', 'PlaylistINUGN', '47');
-INSERT INTO Playlists (name, likes, date_made, duration, episode_number, playlist_name, user_id) VALUES ('Playlist1ur3m', '1422559', '7/23/2022', '332', '41', 'PlaylistfEwtN', '99');
-INSERT INTO Playlists (name, likes, date_made, duration, episode_number, playlist_name, user_id) VALUES ('PlaylistADvJH', '3885353', '4/8/2023', '461', '46', 'PlaylisteE1Jn', '33');
-INSERT INTO Playlists (name, likes, date_made, duration, episode_number, playlist_name, user_id) VALUES ('PlaylistTIqN1', '8671556', '2/26/2023', '378', '80', 'PlaylistEqeiv', '35');
-INSERT INTO Playlists (name, likes, date_made, duration, episode_number, playlist_name, user_id) VALUES ('PlaylistC08HZ', '210335', '7/3/2022', '156', '4', 'PlaylistQeJIz', '5');
-INSERT INTO Playlists (name, likes, date_made, duration, episode_number, playlist_name, user_id) VALUES ('Playlist1PQUS', '2446983', '3/3/2023', '499', '42', 'PlaylistMpv0Y', '70');
-INSERT INTO Playlists (name, likes, date_made, duration, episode_number, playlist_name, user_id) VALUES ('Playlist97THY', '3777331', '9/24/2022', '100', '93', 'PlaylistLt0FR', '55');
-INSERT INTO Playlists (name, likes, date_made, duration, episode_number, playlist_name, user_id) VALUES ('PlaylistEHYGF', '8282265', '5/20/2022', '136', '95', 'PlaylisthKzp0', '97');
-INSERT INTO Playlists (name, likes, date_made, duration, episode_number, playlist_name, user_id) VALUES ('PlaylistXEnIV', '6684424', '10/24/2022', '174', '24', 'PlaylistCkS9h', '21');
-INSERT INTO Playlists (name, likes, date_made, duration, episode_number, playlist_name, user_id) VALUES ('PlaylistYSxgr', '6073001', '4/17/2022', '304', '58', 'PlaylistHK6ph', '51');
-INSERT INTO Playlists (name, likes, date_made, duration, episode_number, playlist_name, user_id) VALUES ('PlaylistpGFNL', '7566837', '10/16/2022', '473', '59', 'Playlist1uCwF', '15');
-INSERT INTO Playlists (name, likes, date_made, duration, episode_number, playlist_name, user_id) VALUES ('Playlist8I7B9', '5395799', '1/5/2023', '96', '65', 'PlaylistmdN4I', '44');
-INSERT INTO Playlists (name, likes, date_made, duration, episode_number, playlist_name, user_id) VALUES ('PlaylistITy7F', '5290688', '5/18/2022', '136', '96', 'Playlist1BSGB', '68');
-INSERT INTO Playlists (name, likes, date_made, duration, episode_number, playlist_name, user_id) VALUES ('PlaylistaE3l4', '1134932', '4/5/2023', '486', '31', 'PlaylistnWvUm', '32');
-INSERT INTO Playlists (name, likes, date_made, duration, episode_number, playlist_name, user_id) VALUES ('PlaylistdnFzQ', '4633326', '12/24/2022', '167', '84', 'PlaylistOpxsU', '85');
-INSERT INTO Playlists (name, likes, date_made, duration, episode_number, playlist_name, user_id) VALUES ('Playlistxnwjv', '5121592', '8/3/2022', '39', '19', 'Playlistjb25J', '90');
-INSERT INTO Playlists (name, likes, date_made, duration, episode_number, playlist_name, user_id) VALUES ('PlaylistSY7Qd', '4550055', '1/16/2023', '458', '34', 'PlaylistdRBjC', '47');
-INSERT INTO Playlists (name, likes, date_made, duration, episode_number, playlist_name, user_id) VALUES ('PlaylistQGmxM', '9466473', '4/5/2023', '321', '27', 'PlaylistpjjZb', '79');
-INSERT INTO Playlists (name, likes, date_made, duration, episode_number, playlist_name, user_id) VALUES ('Playlistp85pI', '9767292', '12/23/2022', '13', '8', 'PlaylistZ1AeO', '11');
-INSERT INTO Playlists (name, likes, date_made, duration, episode_number, playlist_name, user_id) VALUES ('PlaylisthoTvF', '7305111', '1/8/2023', '142', '67', 'PlaylistbNgyS', '20');
-INSERT INTO Playlists (name, likes, date_made, duration, episode_number, playlist_name, user_id) VALUES ('PlaylistLtfvF', '4978797', '2/13/2023', '88', '48', 'PlaylistKoKEh', '46');
-INSERT INTO Playlists (name, likes, date_made, duration, episode_number, playlist_name, user_id) VALUES ('PlaylistZibJP', '8879324', '6/29/2022', '378', '52', 'PlaylistXd85h', '98');
-INSERT INTO Playlists (name, likes, date_made, duration, episode_number, playlist_name, user_id) VALUES ('PlaylistUDjUK', '4964559', '10/13/2022', '323', '78', 'PlaylistzJVP3', '88');
-INSERT INTO Playlists (name, likes, date_made, duration, episode_number, playlist_name, user_id) VALUES ('Playlist3LJ6f', '34621', '5/7/2022', '334', '35', 'Playlistz9W4s', '66');
-INSERT INTO Playlists (name, likes, date_made, duration, episode_number, playlist_name, user_id) VALUES ('Playlistv9diZ', '8678289', '4/18/2022', '423', '26', 'PlaylistxRm4F', '52');
-INSERT INTO Playlists (name, likes, date_made, duration, episode_number, playlist_name, user_id) VALUES ('PlaylistsuWBw', '3556591', '3/18/2023', '369', '89', 'PlaylistKPqek', '15');
-INSERT INTO Playlists (name, likes, date_made, duration, episode_number, playlist_name, user_id) VALUES ('PlaylistolmjW', '8211999', '1/24/2023', '225', '91', 'PlaylistVKpPT', '26');
-INSERT INTO Playlists (name, likes, date_made, duration, episode_number, playlist_name, user_id) VALUES ('PlaylistyFenj', '819939', '5/25/2022', '404', '92', 'PlaylistI0T78', '94');
-INSERT INTO Playlists (name, likes, date_made, duration, episode_number, playlist_name, user_id) VALUES ('Playlist4FwDu', '1125765', '10/19/2022', '254', '37', 'PlaylistAPhy8', '69');
-INSERT INTO Playlists (name, likes, date_made, duration, episode_number, playlist_name, user_id) VALUES ('PlaylistfQr8t', '6216384', '1/18/2023', '163', '60', 'PlaylistldBUv', '76');
-INSERT INTO Playlists (name, likes, date_made, duration, episode_number, playlist_name, user_id) VALUES ('PlaylistcxGY9', '1972520', '4/17/2022', '250', '1', 'PlaylistGORjK', '39');
-INSERT INTO Playlists (name, likes, date_made, duration, episode_number, playlist_name, user_id) VALUES ('PlaylistcvSKV', '8287799', '2/3/2023', '323', '7', 'PlaylistBpqKy', '4');
-INSERT INTO Playlists (name, likes, date_made, duration, episode_number, playlist_name, user_id) VALUES ('Playlistb0Zeo', '2079786', '7/15/2022', '300', '53', 'Playlist77Nmh', '3');
-INSERT INTO Playlists (name, likes, date_made, duration, episode_number, playlist_name, user_id) VALUES ('Playlist5bvRW', '690647', '7/13/2022', '313', '17', 'PlaylistzTdf5', '29');
-INSERT INTO Playlists (name, likes, date_made, duration, episode_number, playlist_name, user_id) VALUES ('PlaylistBLtb9', '5591612', '12/7/2022', '282', '30', 'PlaylistiQabk', '88');
-INSERT INTO Playlists (name, likes, date_made, duration, episode_number, playlist_name, user_id) VALUES ('Playlist1gAAR', '7790684', '6/14/2022', '346', '62', 'PlaylistB10U4', '34');
-INSERT INTO Playlists (name, likes, date_made, duration, episode_number, playlist_name, user_id) VALUES ('PlaylistC3aDv', '3160815', '7/4/2022', '94', '27', 'PlaylistXDEjP', '33');
-INSERT INTO Playlists (name, likes, date_made, duration, episode_number, playlist_name, user_id) VALUES ('PlaylistmLRg2', '1160060', '3/25/2023', '433', '39', 'PlaylistSJ35N', '84');
-INSERT INTO Playlists (name, likes, date_made, duration, episode_number, playlist_name, user_id) VALUES ('Playlist0XMBG', '2428485', '10/22/2022', '358', '95', 'Playlist1lzCW', '60');
-INSERT INTO Playlists (name, likes, date_made, duration, episode_number, playlist_name, user_id) VALUES ('PlaylistPjXnC', '1009551', '10/21/2022', '117', '15', 'PlaylistX9Rfz', '63');
-INSERT INTO Playlists (name, likes, date_made, duration, episode_number, playlist_name, user_id) VALUES ('PlaylistG4YuZ', '9356600', '5/16/2022', '285', '100', 'PlaylistiY4Rm', '28');
-INSERT INTO Playlists (name, likes, date_made, duration, episode_number, playlist_name, user_id) VALUES ('Playlistfk1cZ', '292989', '1/3/2023', '72', '20', 'PlaylistqEf6S', '16');
-INSERT INTO Playlists (name, likes, date_made, duration, episode_number, playlist_name, user_id) VALUES ('PlaylistTizgc', '8973492', '4/17/2022', '304', '85', 'PlaylistjNzH2', '83');
-INSERT INTO Playlists (name, likes, date_made, duration, episode_number, playlist_name, user_id) VALUES ('Playlisti99HJ', '1424054', '4/10/2023', '374', '10', 'PlaylistUCoHW', '40');
-INSERT INTO Playlists (name, likes, date_made, duration, episode_number, playlist_name, user_id) VALUES ('PlaylistMpjqW', '3407550', '8/2/2022', '11', '12', 'PlaylistjlJXW', '2');
-INSERT INTO Playlists (name, likes, date_made, duration, episode_number, playlist_name, user_id) VALUES ('Playlist2oBhr', '7442429', '9/19/2022', '260', '92', 'Playlistnuo1J', '66');
-INSERT INTO Playlists (name, likes, date_made, duration, episode_number, playlist_name, user_id) VALUES ('PlaylistGCfZd', '1838919', '5/4/2022', '359', '62', 'PlaylistTfuVM', '82');
-INSERT INTO Playlists (name, likes, date_made, duration, episode_number, playlist_name, user_id) VALUES ('PlaylistFHCKF', '3765695', '4/5/2023', '231', '23', 'PlaylistJOFS9', '81');
-INSERT INTO Playlists (name, likes, date_made, duration, episode_number, playlist_name, user_id) VALUES ('Playlist4CDZj', '5298852', '9/1/2022', '92', '75', 'Playlist43p2E', '87');
-INSERT INTO Playlists (name, likes, date_made, duration, episode_number, playlist_name, user_id) VALUES ('Playlist5PuoT', '8623958', '8/25/2022', '363', '66', 'PlaylistiNofc', '46');
-INSERT INTO Playlists (name, likes, date_made, duration, episode_number, playlist_name, user_id) VALUES ('PlaylistDOH3L', '8383063', '5/7/2022', '32', '98', 'PlaylistiVB62', '33');
-INSERT INTO Playlists (name, likes, date_made, duration, episode_number, playlist_name, user_id) VALUES ('PlaylistAoP6l', '3919492', '1/4/2023', '78', '20', 'PlaylistMsVfy', '37');
-INSERT INTO Playlists (name, likes, date_made, duration, episode_number, playlist_name, user_id) VALUES ('PlaylistIwgPj', '6637731', '1/16/2023', '333', '4', 'Playlist7MFXY', '35');
-INSERT INTO Playlists (name, likes, date_made, duration, episode_number, playlist_name, user_id) VALUES ('PlaylistdIJRv', '4119301', '3/14/2023', '353', '51', 'PlaylistXcYpl', '72');
-INSERT INTO Playlists (name, likes, date_made, duration, episode_number, playlist_name, user_id) VALUES ('PlaylistzWBYX', '6477956', '5/10/2022', '93', '13', 'PlaylistlILNo', '61');
-INSERT INTO Playlists (name, likes, date_made, duration, episode_number, playlist_name, user_id) VALUES ('PlaylistLF4pp', '3855462', '1/7/2023', '29', '60', 'PlaylistvHXZ5', '36');
-INSERT INTO Playlists (name, likes, date_made, duration, episode_number, playlist_name, user_id) VALUES ('PlaylistFFCpm', '9384465', '1/20/2023', '456', '17', 'Playlist6RLrG', '73');
-INSERT INTO Playlists (name, likes, date_made, duration, episode_number, playlist_name, user_id) VALUES ('PlaylistHUnOu', '4996392', '2/14/2023', '285', '2', 'PlaylistIcpGE', '74');
+INSERT INTO Playlists(name,likes,date_made,duration,episode_number,playlist_name,user_id) VALUES ('Playlist9e4Mz',5077044,'2022-08-31 13:56:29',425,33,'PlaylistXLKnj',12);
+INSERT INTO Playlists(name,likes,date_made,duration,episode_number,playlist_name,user_id) VALUES ('PlaylistFup7U',4915047,'2022-09-09 18:47:12',480,89,'PlaylistCk2F1',35);
+INSERT INTO Playlists(name,likes,date_made,duration,episode_number,playlist_name,user_id) VALUES ('Playlist6RnSx',8858125,'2022-10-09 07:30:44',154,4,'PlaylistKvYJD',85);
+INSERT INTO Playlists(name,likes,date_made,duration,episode_number,playlist_name,user_id) VALUES ('PlaylistO7arT',443811,'2022-09-29 21:16:22',251,53,'PlaylistMQpTV',51);
+INSERT INTO Playlists(name,likes,date_made,duration,episode_number,playlist_name,user_id) VALUES ('Playlist594TK',933558,'2022-11-12 00:02:22',498,31,'Playlist2KnKT',94);
+INSERT INTO Playlists(name,likes,date_made,duration,episode_number,playlist_name,user_id) VALUES ('PlaylistTArg1',5219687,'2022-10-18 11:07:24',288,50,'PlaylistA4ohi',17);
+INSERT INTO Playlists(name,likes,date_made,duration,episode_number,playlist_name,user_id) VALUES ('Playlist3yCVX',1764615,'2022-08-07 01:13:24',356,73,'Playlist2FvxT',44);
+INSERT INTO Playlists(name,likes,date_made,duration,episode_number,playlist_name,user_id) VALUES ('PlaylistuWwr2',7006109,'2022-12-26 05:53:36',70,90,'PlaylistteluJ',83);
+INSERT INTO Playlists(name,likes,date_made,duration,episode_number,playlist_name,user_id) VALUES ('PlaylistStfG3',4824019,'2022-08-17 23:45:45',284,26,'Playlist3pBxf',41);
+INSERT INTO Playlists(name,likes,date_made,duration,episode_number,playlist_name,user_id) VALUES ('PlaylistSUwe5',7084735,'2023-03-30 04:52:37',93,21,'PlaylistleIAR',71);
+INSERT INTO Playlists(name,likes,date_made,duration,episode_number,playlist_name,user_id) VALUES ('Playlist5kwHZ',3225474,'2023-02-13 22:34:00',253,97,'Playlist3w0HE',21);
+INSERT INTO Playlists(name,likes,date_made,duration,episode_number,playlist_name,user_id) VALUES ('PlaylistLa3eC',7915778,'2022-06-09 14:07:45',377,36,'PlaylistlXOw7',74);
+INSERT INTO Playlists(name,likes,date_made,duration,episode_number,playlist_name,user_id) VALUES ('PlaylistD1vmc',837103,'2022-12-07 10:28:58',184,100,'Playlist6U7ii',2);
+INSERT INTO Playlists(name,likes,date_made,duration,episode_number,playlist_name,user_id) VALUES ('PlaylistaAdBt',4427545,'2022-06-14 21:16:29',13,82,'PlaylistfMYsR',55);
+INSERT INTO Playlists(name,likes,date_made,duration,episode_number,playlist_name,user_id) VALUES ('PlaylistfkZDw',5168396,'2023-04-13 08:48:00',399,33,'Playlist6E2zB',20);
+INSERT INTO Playlists(name,likes,date_made,duration,episode_number,playlist_name,user_id) VALUES ('Playlist6PH09',5894457,'2023-02-12 03:13:01',293,48,'PlaylistdaqVj',96);
+INSERT INTO Playlists(name,likes,date_made,duration,episode_number,playlist_name,user_id) VALUES ('Playlists3nuw',6017185,'2022-06-27 12:10:04',193,69,'PlaylistQFTnR',95);
+INSERT INTO Playlists(name,likes,date_made,duration,episode_number,playlist_name,user_id) VALUES ('PlaylistmrIGV',640855,'2022-11-27 12:39:27',384,45,'PlaylistObUXx',83);
+INSERT INTO Playlists(name,likes,date_made,duration,episode_number,playlist_name,user_id) VALUES ('PlaylistWloPu',7078483,'2022-04-26 13:57:33',367,73,'PlaylisttFfRg',94);
+INSERT INTO Playlists(name,likes,date_made,duration,episode_number,playlist_name,user_id) VALUES ('PlaylistxCtdZ',6562245,'2022-10-14 05:22:36',425,81,'PlaylistFuDTd',81);
+INSERT INTO Playlists(name,likes,date_made,duration,episode_number,playlist_name,user_id) VALUES ('PlaylistQ3Fsz',9890617,'2022-07-18 09:53:15',326,93,'PlaylistripSW',24);
+INSERT INTO Playlists(name,likes,date_made,duration,episode_number,playlist_name,user_id) VALUES ('PlaylistwOfcm',9431545,'2022-10-11 03:43:15',340,38,'PlaylistDhMMA',56);
+INSERT INTO Playlists(name,likes,date_made,duration,episode_number,playlist_name,user_id) VALUES ('PlaylistFO6ON',3519367,'2022-06-17 04:23:16',473,92,'Playlist9IxmQ',34);
+INSERT INTO Playlists(name,likes,date_made,duration,episode_number,playlist_name,user_id) VALUES ('PlaylistMQh1b',37232,'2023-02-13 07:33:59',416,22,'PlaylistexhQP',22);
+INSERT INTO Playlists(name,likes,date_made,duration,episode_number,playlist_name,user_id) VALUES ('PlaylistmKpKr',9185629,'2022-12-09 19:49:01',221,26,'PlaylistAwyPF',68);
+INSERT INTO Playlists(name,likes,date_made,duration,episode_number,playlist_name,user_id) VALUES ('PlaylistHdIpw',7361218,'2022-05-20 13:31:05',421,38,'PlaylistWvx7l',82);
+INSERT INTO Playlists(name,likes,date_made,duration,episode_number,playlist_name,user_id) VALUES ('PlaylistrhXJS',5651181,'2022-06-23 14:12:58',17,82,'Playlist40EKf',37);
+INSERT INTO Playlists(name,likes,date_made,duration,episode_number,playlist_name,user_id) VALUES ('Playlisto42G0',3436801,'2022-04-26 12:43:06',373,66,'PlaylistOOLeq',59);
+INSERT INTO Playlists(name,likes,date_made,duration,episode_number,playlist_name,user_id) VALUES ('PlaylistMiGtB',9687093,'2022-04-17 01:11:00',197,88,'PlaylistFDyBz',74);
+INSERT INTO Playlists(name,likes,date_made,duration,episode_number,playlist_name,user_id) VALUES ('PlaylistuSwPb',8563998,'2022-08-16 01:01:44',463,13,'PlaylistGXYvj',17);
+INSERT INTO Playlists(name,likes,date_made,duration,episode_number,playlist_name,user_id) VALUES ('PlaylistmWrCK',1605332,'2022-09-28 09:57:48',296,41,'Playlistifmfj',69);
+INSERT INTO Playlists(name,likes,date_made,duration,episode_number,playlist_name,user_id) VALUES ('PlaylistWXdzh',7257771,'2022-12-23 20:25:57',258,56,'PlaylistkfeEv',97);
+INSERT INTO Playlists(name,likes,date_made,duration,episode_number,playlist_name,user_id) VALUES ('PlaylistCsutE',3949463,'2022-06-01 14:27:54',332,14,'PlaylistHSM0O',1);
+INSERT INTO Playlists(name,likes,date_made,duration,episode_number,playlist_name,user_id) VALUES ('PlaylistEo9cB',5114200,'2022-11-30 09:22:40',285,58,'PlaylistB1EDC',75);
+INSERT INTO Playlists(name,likes,date_made,duration,episode_number,playlist_name,user_id) VALUES ('Playlist5PevY',9271630,'2022-12-28 19:21:59',4,18,'PlaylistlmoIU',35);
+INSERT INTO Playlists(name,likes,date_made,duration,episode_number,playlist_name,user_id) VALUES ('Playlistq3NPA',5505122,'2022-05-21 19:51:50',24,75,'PlaylistvxQ9Y',36);
+INSERT INTO Playlists(name,likes,date_made,duration,episode_number,playlist_name,user_id) VALUES ('PlaylistluwUL',504377,'2022-11-24 19:08:35',278,52,'PlaylistMqUIy',1);
+INSERT INTO Playlists(name,likes,date_made,duration,episode_number,playlist_name,user_id) VALUES ('PlaylistbS7QM',8227655,'2022-04-25 00:50:51',381,82,'PlaylistjacQT',70);
+INSERT INTO Playlists(name,likes,date_made,duration,episode_number,playlist_name,user_id) VALUES ('PlaylistKGo7H',5576101,'2022-06-05 08:02:02',176,45,'PlaylistkAt89',72);
+INSERT INTO Playlists(name,likes,date_made,duration,episode_number,playlist_name,user_id) VALUES ('PlaylistGUyVO',4174354,'2022-08-07 18:40:21',19,20,'PlaylistOyjYJ',22);
+INSERT INTO Playlists(name,likes,date_made,duration,episode_number,playlist_name,user_id) VALUES ('PlaylistBpmGi',7428489,'2022-12-22 03:44:51',476,27,'Playlist1zBg9',2);
+INSERT INTO Playlists(name,likes,date_made,duration,episode_number,playlist_name,user_id) VALUES ('PlaylistpTONE',1361332,'2022-12-06 04:20:40',308,96,'PlaylistvACsf',18);
+INSERT INTO Playlists(name,likes,date_made,duration,episode_number,playlist_name,user_id) VALUES ('PlaylistNNsKO',4459043,'2022-10-31 05:24:01',249,6,'PlaylistDsYNo',36);
+INSERT INTO Playlists(name,likes,date_made,duration,episode_number,playlist_name,user_id) VALUES ('PlaylistJS37i',6477819,'2023-01-25 21:18:03',402,99,'PlaylistbgmY9',94);
+INSERT INTO Playlists(name,likes,date_made,duration,episode_number,playlist_name,user_id) VALUES ('PlaylistRQX33',6603941,'2022-04-30 04:01:44',250,84,'Playlist5SO7w',87);
+INSERT INTO Playlists(name,likes,date_made,duration,episode_number,playlist_name,user_id) VALUES ('PlaylistonNNW',6582996,'2022-11-02 13:07:28',469,47,'PlaylistiMBgg',63);
+INSERT INTO Playlists(name,likes,date_made,duration,episode_number,playlist_name,user_id) VALUES ('PlaylistddrWx',558718,'2023-01-13 22:57:38',262,80,'PlaylistPGvVP',99);
+INSERT INTO Playlists(name,likes,date_made,duration,episode_number,playlist_name,user_id) VALUES ('PlaylistWHnpM',6534974,'2022-05-15 06:22:19',499,36,'PlaylistXt9CI',44);
+INSERT INTO Playlists(name,likes,date_made,duration,episode_number,playlist_name,user_id) VALUES ('PlaylistjmrSG',218250,'2022-12-03 10:13:22',37,64,'Playlistq80mB',50);
+INSERT INTO Playlists(name,likes,date_made,duration,episode_number,playlist_name,user_id) VALUES ('Playlistm3GaY',6506723,'2023-02-02 10:34:51',450,19,'PlaylistFnuyT',72);
+INSERT INTO Playlists(name,likes,date_made,duration,episode_number,playlist_name,user_id) VALUES ('Playlistg30Wn',3962021,'2022-08-18 12:59:30',89,42,'PlaylistaXnLX',58);
+INSERT INTO Playlists(name,likes,date_made,duration,episode_number,playlist_name,user_id) VALUES ('PlaylistZ77A8',8439569,'2022-09-17 12:47:19',124,15,'PlaylistWkJi8',93);
+INSERT INTO Playlists(name,likes,date_made,duration,episode_number,playlist_name,user_id) VALUES ('PlaylisthJaX2',6137150,'2022-07-12 22:12:48',408,48,'Playlistm9mmS',17);
+INSERT INTO Playlists(name,likes,date_made,duration,episode_number,playlist_name,user_id) VALUES ('PlaylistUWxdk',3404619,'2022-06-18 23:51:39',107,55,'PlaylistdELu1',90);
+INSERT INTO Playlists(name,likes,date_made,duration,episode_number,playlist_name,user_id) VALUES ('PlaylistKcXK5',1356329,'2023-04-09 21:01:50',329,1,'PlaylistrRqXt',1);
+INSERT INTO Playlists(name,likes,date_made,duration,episode_number,playlist_name,user_id) VALUES ('PlaylistrCd9W',9259619,'2022-04-24 08:10:52',434,27,'PlaylistEQju4',90);
+INSERT INTO Playlists(name,likes,date_made,duration,episode_number,playlist_name,user_id) VALUES ('Playlistq5CEe',9842716,'2022-07-15 22:44:38',335,23,'Playlist4tN8F',99);
+INSERT INTO Playlists(name,likes,date_made,duration,episode_number,playlist_name,user_id) VALUES ('PlaylistoZFHL',3220988,'2022-08-11 20:59:39',34,11,'PlaylistAS0oJ',2);
+INSERT INTO Playlists(name,likes,date_made,duration,episode_number,playlist_name,user_id) VALUES ('PlaylistydcYY',9980797,'2023-01-27 02:52:33',363,48,'Playlist5eD8O',31);
+INSERT INTO Playlists(name,likes,date_made,duration,episode_number,playlist_name,user_id) VALUES ('PlaylistKcStP',3727700,'2022-12-11 19:19:58',2,76,'Playlists1gER',98);
+INSERT INTO Playlists(name,likes,date_made,duration,episode_number,playlist_name,user_id) VALUES ('PlaylistogPOQ',5442189,'2022-11-24 11:30:47',294,59,'Playlist9Xbm3',22);
+INSERT INTO Playlists(name,likes,date_made,duration,episode_number,playlist_name,user_id) VALUES ('PlaylistTOcRr',2105021,'2022-09-14 07:27:03',372,43,'Playlisthp0Bc',73);
+INSERT INTO Playlists(name,likes,date_made,duration,episode_number,playlist_name,user_id) VALUES ('PlaylistXaYdE',3485963,'2022-05-13 18:03:23',29,73,'PlaylistPTOO1',21);
+INSERT INTO Playlists(name,likes,date_made,duration,episode_number,playlist_name,user_id) VALUES ('PlaylistvXwcp',1618372,'2022-07-22 22:32:01',162,85,'PlaylistxEzUH',8);
+INSERT INTO Playlists(name,likes,date_made,duration,episode_number,playlist_name,user_id) VALUES ('PlaylistW4cnK',4344026,'2023-01-11 06:50:23',498,90,'Playlistgk8Kd',54);
+INSERT INTO Playlists(name,likes,date_made,duration,episode_number,playlist_name,user_id) VALUES ('PlaylistY4Bba',2901353,'2023-03-11 06:49:05',231,57,'PlaylistkeQQC',23);
+INSERT INTO Playlists(name,likes,date_made,duration,episode_number,playlist_name,user_id) VALUES ('Playlistugfzy',1776423,'2023-03-03 23:01:06',242,64,'PlaylistiLtIL',5);
+INSERT INTO Playlists(name,likes,date_made,duration,episode_number,playlist_name,user_id) VALUES ('Playlist00NNC',7234567,'2022-07-12 22:08:46',395,66,'PlaylistdyMw7',19);
+INSERT INTO Playlists(name,likes,date_made,duration,episode_number,playlist_name,user_id) VALUES ('PlaylistDFLRR',2780002,'2022-04-28 09:19:47',362,47,'Playlist1i1ew',87);
+INSERT INTO Playlists(name,likes,date_made,duration,episode_number,playlist_name,user_id) VALUES ('PlaylistJiM30',8990544,'2023-02-20 11:08:44',343,74,'PlaylistKOYKR',56);
+INSERT INTO Playlists(name,likes,date_made,duration,episode_number,playlist_name,user_id) VALUES ('PlaylistWaAow',2174350,'2022-10-05 02:28:15',95,94,'Playlist9JPNG',8);
+INSERT INTO Playlists(name,likes,date_made,duration,episode_number,playlist_name,user_id) VALUES ('PlaylistjtWL7',199271,'2022-11-02 17:12:10',189,78,'PlaylistR8Llh',72);
+INSERT INTO Playlists(name,likes,date_made,duration,episode_number,playlist_name,user_id) VALUES ('PlaylistSHSpz',8825652,'2022-08-11 02:35:50',7,91,'PlaylistCMvFT',18);
+INSERT INTO Playlists(name,likes,date_made,duration,episode_number,playlist_name,user_id) VALUES ('PlaylistWGcsr',4121673,'2022-07-27 17:45:43',256,46,'PlaylistX9OwD',95);
+INSERT INTO Playlists(name,likes,date_made,duration,episode_number,playlist_name,user_id) VALUES ('PlaylistvBwrX',1705271,'2022-11-01 18:57:38',287,47,'PlaylisthfNQ5',23);
+INSERT INTO Playlists(name,likes,date_made,duration,episode_number,playlist_name,user_id) VALUES ('Playlist4hFin',7597115,'2022-06-26 07:15:08',408,53,'PlaylistaDrbK',54);
+INSERT INTO Playlists(name,likes,date_made,duration,episode_number,playlist_name,user_id) VALUES ('PlaylistNwFey',7184433,'2022-11-16 13:30:22',69,1,'PlaylistabNYg',35);
+INSERT INTO Playlists(name,likes,date_made,duration,episode_number,playlist_name,user_id) VALUES ('PlaylistMw4Hw',1625354,'2022-12-23 13:50:25',362,10,'Playlistmk0d1',83);
+INSERT INTO Playlists(name,likes,date_made,duration,episode_number,playlist_name,user_id) VALUES ('PlaylistVU0q3',6845463,'2023-03-29 06:39:16',486,12,'PlaylistG51kC',39);
+INSERT INTO Playlists(name,likes,date_made,duration,episode_number,playlist_name,user_id) VALUES ('PlaylistzO4fg',6692782,'2022-11-09 13:31:22',200,8,'PlaylistZmSgC',33);
+INSERT INTO Playlists(name,likes,date_made,duration,episode_number,playlist_name,user_id) VALUES ('PlaylistPnJPh',3640823,'2023-04-07 02:26:13',211,20,'Playlistmybti',12);
+INSERT INTO Playlists(name,likes,date_made,duration,episode_number,playlist_name,user_id) VALUES ('PlaylistCu1bc',1970129,'2023-02-05 13:08:41',54,48,'PlaylistwoBmu',93);
+INSERT INTO Playlists(name,likes,date_made,duration,episode_number,playlist_name,user_id) VALUES ('PlaylistvDR8O',7118027,'2022-08-16 05:01:24',153,5,'PlaylistbXkIX',21);
+INSERT INTO Playlists(name,likes,date_made,duration,episode_number,playlist_name,user_id) VALUES ('PlaylistpW9lb',6877176,'2023-04-08 03:14:12',398,9,'PlaylistodI8J',70);
+INSERT INTO Playlists(name,likes,date_made,duration,episode_number,playlist_name,user_id) VALUES ('PlaylistCCrJW',4059236,'2022-12-01 06:38:42',14,96,'PlaylistYx3xe',85);
+INSERT INTO Playlists(name,likes,date_made,duration,episode_number,playlist_name,user_id) VALUES ('PlaylistGrGfq',2244549,'2023-04-03 15:37:28',440,50,'Playlist7th6j',53);
+INSERT INTO Playlists(name,likes,date_made,duration,episode_number,playlist_name,user_id) VALUES ('PlaylistDI0Bm',2199100,'2023-01-12 09:22:07',102,44,'PlaylistWJnrH',57);
+INSERT INTO Playlists(name,likes,date_made,duration,episode_number,playlist_name,user_id) VALUES ('PlaylisttSC2T',990324,'2022-05-26 18:15:49',295,15,'PlaylistWWn2I',1);
+INSERT INTO Playlists(name,likes,date_made,duration,episode_number,playlist_name,user_id) VALUES ('PlaylistJ9hOl',4737359,'2022-06-04 18:15:15',339,98,'Playlist8hrCU',31);
+INSERT INTO Playlists(name,likes,date_made,duration,episode_number,playlist_name,user_id) VALUES ('Playlist33nhN',8982078,'2022-06-24 16:29:40',66,21,'PlaylistmzJpx',48);
+INSERT INTO Playlists(name,likes,date_made,duration,episode_number,playlist_name,user_id) VALUES ('Playlistl5SDT',5999284,'2022-06-05 13:00:11',339,75,'Playlist3KbYV',5);
+INSERT INTO Playlists(name,likes,date_made,duration,episode_number,playlist_name,user_id) VALUES ('PlaylistANcTu',8909301,'2022-08-16 00:18:12',498,25,'Playlistpzz18',37);
+INSERT INTO Playlists(name,likes,date_made,duration,episode_number,playlist_name,user_id) VALUES ('PlaylistHBzMh',6701547,'2022-04-21 15:38:10',27,82,'Playlistqj3gK',21);
+INSERT INTO Playlists(name,likes,date_made,duration,episode_number,playlist_name,user_id) VALUES ('PlaylistWziNB',744492,'2022-08-21 04:02:32',297,26,'PlaylistLk6vk',75);
+INSERT INTO Playlists(name,likes,date_made,duration,episode_number,playlist_name,user_id) VALUES ('PlaylistJO2uB',3775985,'2023-03-05 19:13:30',442,78,'Playlist6LX6E',76);
+INSERT INTO Playlists(name,likes,date_made,duration,episode_number,playlist_name,user_id) VALUES ('PlaylistWPkkK',6871612,'2022-12-15 19:09:34',59,66,'PlaylisttfcgL',71);
+INSERT INTO Playlists(name,likes,date_made,duration,episode_number,playlist_name,user_id) VALUES ('PlaylistcoJTi',653859,'2022-04-17 15:18:11',111,70,'Playlist8lrBj',57);
+INSERT INTO Playlists(name,likes,date_made,duration,episode_number,playlist_name,user_id) VALUES ('PlaylistDTnBE',8415468,'2022-07-02 11:37:21',3,8,'Playlistac8GQ',53);
+INSERT INTO Playlists(name,likes,date_made,duration,episode_number,playlist_name,user_id) VALUES ('PlaylistDVJHK',7186768,'2022-04-16 10:16:27',370,67,'PlaylistazaRg',10);
+INSERT INTO Playlists(name,likes,date_made,duration,episode_number,playlist_name,user_id) VALUES ('PlaylistHJfHE',6930391,'2022-11-22 15:52:27',390,29,'PlaylistUHiVl',93);
 
---# Podcasts
-INSERT INTO Podcasts (name, release_date, number_of_episodes, genre_name, episode_number, creator_id) VALUES ('Podcast231', '10/1/2022', '4052858', 'Adventure|Animation|Children|Drama', '50', '18');
-INSERT INTO Podcasts (name, release_date, number_of_episodes, genre_name, episode_number, creator_id) VALUES ('Podcast271', '2/11/2023', '7573403', 'Drama', '51', '5');
-INSERT INTO Podcasts (name, release_date, number_of_episodes, genre_name, episode_number, creator_id) VALUES ('Podcast997', '6/11/2022', '4469474', 'Drama', '16', '61');
-INSERT INTO Podcasts (name, release_date, number_of_episodes, genre_name, episode_number, creator_id) VALUES ('Podcast753', '1/5/2023', '6980570', 'Documentary', '66', '83');
-INSERT INTO Podcasts (name, release_date, number_of_episodes, genre_name, episode_number, creator_id) VALUES ('Podcast655', '10/22/2022', '2941026', 'Drama|Musical', '35', '43');
-INSERT INTO Podcasts (name, release_date, number_of_episodes, genre_name, episode_number, creator_id) VALUES ('Podcast527', '3/7/2023', '5379463', 'Drama', '31', '96');
-INSERT INTO Podcasts (name, release_date, number_of_episodes, genre_name, episode_number, creator_id) VALUES ('Podcast576', '8/7/2022', '5369367', 'Drama', '56', '73');
-INSERT INTO Podcasts (name, release_date, number_of_episodes, genre_name, episode_number, creator_id) VALUES ('Podcast857', '12/8/2022', '5902771', 'Comedy', '23', '4');
-INSERT INTO Podcasts (name, release_date, number_of_episodes, genre_name, episode_number, creator_id) VALUES ('Podcast423', '10/1/2022', '8247168', 'Documentary', '39', '92');
-INSERT INTO Podcasts (name, release_date, number_of_episodes, genre_name, episode_number, creator_id) VALUES ('Podcast847', '3/11/2023', '4793068', 'Comedy', '3', '55');
-INSERT INTO Podcasts (name, release_date, number_of_episodes, genre_name, episode_number, creator_id) VALUES ('Podcast517', '10/27/2022', '2601006', 'Crime', '25', '81');
-INSERT INTO Podcasts (name, release_date, number_of_episodes, genre_name, episode_number, creator_id) VALUES ('Podcast066', '6/19/2022', '6075694', 'Drama', '73', '30');
-INSERT INTO Podcasts (name, release_date, number_of_episodes, genre_name, episode_number, creator_id) VALUES ('Podcast651', '4/21/2022', '9120167', 'Adventure|Animation|Children|Drama|Fantasy', '21', '44');
-INSERT INTO Podcasts (name, release_date, number_of_episodes, genre_name, episode_number, creator_id) VALUES ('Podcast180', '3/17/2023', '2869185', 'Drama', '54', '59');
-INSERT INTO Podcasts (name, release_date, number_of_episodes, genre_name, episode_number, creator_id) VALUES ('Podcast582', '1/24/2023', '1094198', 'Drama', '83', '7');
-INSERT INTO Podcasts (name, release_date, number_of_episodes, genre_name, episode_number, creator_id) VALUES ('Podcast065', '6/10/2022', '2563738', 'Comedy|Drama', '77', '63');
-INSERT INTO Podcasts (name, release_date, number_of_episodes, genre_name, episode_number, creator_id) VALUES ('Podcast224', '3/20/2023', '1268762', 'Crime', '87', '62');
-INSERT INTO Podcasts (name, release_date, number_of_episodes, genre_name, episode_number, creator_id) VALUES ('Podcast015', '4/26/2022', '167898', 'Action|Drama', '29', '30');
-INSERT INTO Podcasts (name, release_date, number_of_episodes, genre_name, episode_number, creator_id) VALUES ('Podcast723', '5/19/2022', '3222776', 'Drama', '4', '37');
-INSERT INTO Podcasts (name, release_date, number_of_episodes, genre_name, episode_number, creator_id) VALUES ('Podcast357', '4/6/2023', '3828822', 'Comedy|Drama|Romance', '40', '58');
-INSERT INTO Podcasts (name, release_date, number_of_episodes, genre_name, episode_number, creator_id) VALUES ('Podcast533', '10/22/2022', '3167271', 'Drama', '77', '76');
-INSERT INTO Podcasts (name, release_date, number_of_episodes, genre_name, episode_number, creator_id) VALUES ('Podcast315', '8/27/2022', '2704578', 'Comedy|Romance', '31', '32');
-INSERT INTO Podcasts (name, release_date, number_of_episodes, genre_name, episode_number, creator_id) VALUES ('Podcast186', '11/17/2022', '9243786', 'Horror|Sci-Fi|Thriller', '46', '19');
-INSERT INTO Podcasts (name, release_date, number_of_episodes, genre_name, episode_number, creator_id) VALUES ('Podcast938', '4/21/2022', '7905472', 'Adventure', '15', '56');
-INSERT INTO Podcasts (name, release_date, number_of_episodes, genre_name, episode_number, creator_id) VALUES ('Podcast946', '1/25/2023', '5272937', 'Drama', '71', '53');
-INSERT INTO Podcasts (name, release_date, number_of_episodes, genre_name, episode_number, creator_id) VALUES ('Podcast239', '6/20/2022', '6412757', 'Adventure|Fantasy|Thriller', '18', '42');
-INSERT INTO Podcasts (name, release_date, number_of_episodes, genre_name, episode_number, creator_id) VALUES ('Podcast905', '6/5/2022', '4661777', 'Documentary', '82', '77');
-INSERT INTO Podcasts (name, release_date, number_of_episodes, genre_name, episode_number, creator_id) VALUES ('Podcast744', '5/21/2022', '4459267', 'Drama', '99', '58');
-INSERT INTO Podcasts (name, release_date, number_of_episodes, genre_name, episode_number, creator_id) VALUES ('Podcast236', '6/20/2022', '6189014', 'Horror|Sci-Fi|Thriller', '16', '24');
-INSERT INTO Podcasts (name, release_date, number_of_episodes, genre_name, episode_number, creator_id) VALUES ('Podcast899', '3/2/2023', '7995673', 'Drama', '62', '7');
-INSERT INTO Podcasts (name, release_date, number_of_episodes, genre_name, episode_number, creator_id) VALUES ('Podcast498', '4/19/2022', '3124262', 'Drama|War', '79', '76');
-INSERT INTO Podcasts (name, release_date, number_of_episodes, genre_name, episode_number, creator_id) VALUES ('Podcast928', '5/15/2022', '7287497', 'Drama|Musical|Romance', '15', '61');
-INSERT INTO Podcasts (name, release_date, number_of_episodes, genre_name, episode_number, creator_id) VALUES ('Podcast282', '12/14/2022', '5102857', 'Drama|Mystery|Sci-Fi|Thriller', '77', '15');
-INSERT INTO Podcasts (name, release_date, number_of_episodes, genre_name, episode_number, creator_id) VALUES ('Podcast012', '11/24/2022', '5212915', 'Action|Horror|Sci-Fi|Thriller', '21', '18');
-INSERT INTO Podcasts (name, release_date, number_of_episodes, genre_name, episode_number, creator_id) VALUES ('Podcast039', '8/12/2022', '6149873', 'Crime|Drama', '1', '54');
-INSERT INTO Podcasts (name, release_date, number_of_episodes, genre_name, episode_number, creator_id) VALUES ('Podcast519', '12/11/2022', '4712664', 'Fantasy|Horror|Thriller', '47', '68');
-INSERT INTO Podcasts (name, release_date, number_of_episodes, genre_name, episode_number, creator_id) VALUES ('Podcast018', '5/10/2022', '2712621', 'Action|Animation|Children|Sci-Fi', '71', '13');
-INSERT INTO Podcasts (name, release_date, number_of_episodes, genre_name, episode_number, creator_id) VALUES ('Podcast202', '9/9/2022', '87928', 'Drama|Musical|Romance', '61', '67');
-INSERT INTO Podcasts (name, release_date, number_of_episodes, genre_name, episode_number, creator_id) VALUES ('Podcast806', '4/4/2023', '8073071', 'Drama', '58', '63');
-INSERT INTO Podcasts (name, release_date, number_of_episodes, genre_name, episode_number, creator_id) VALUES ('Podcast929', '5/19/2022', '7876466', 'Action|Horror|Sci-Fi|Thriller', '89', '92');
-INSERT INTO Podcasts (name, release_date, number_of_episodes, genre_name, episode_number, creator_id) VALUES ('Podcast783', '5/22/2022', '6452993', 'Comedy|Drama', '28', '71');
-INSERT INTO Podcasts (name, release_date, number_of_episodes, genre_name, episode_number, creator_id) VALUES ('Podcast678', '12/31/2022', '5520406', 'Drama', '56', '45');
-INSERT INTO Podcasts (name, release_date, number_of_episodes, genre_name, episode_number, creator_id) VALUES ('Podcast647', '9/30/2022', '1905081', 'Drama', '13', '69');
-INSERT INTO Podcasts (name, release_date, number_of_episodes, genre_name, episode_number, creator_id) VALUES ('Podcast753', '6/2/2022', '530413', 'Drama|Mystery|Sci-Fi|Thriller', '20', '63');
-INSERT INTO Podcasts (name, release_date, number_of_episodes, genre_name, episode_number, creator_id) VALUES ('Podcast438', '9/4/2022', '209311', 'Drama|Romance', '65', '60');
-INSERT INTO Podcasts (name, release_date, number_of_episodes, genre_name, episode_number, creator_id) VALUES ('Podcast252', '11/9/2022', '1873721', 'Action|Drama', '6', '49');
-INSERT INTO Podcasts (name, release_date, number_of_episodes, genre_name, episode_number, creator_id) VALUES ('Podcast934', '2/21/2023', '8740537', 'Drama', '14', '17');
-INSERT INTO Podcasts (name, release_date, number_of_episodes, genre_name, episode_number, creator_id) VALUES ('Podcast146', '1/11/2023', '9039027', 'Mystery', '98', '71');
-INSERT INTO Podcasts (name, release_date, number_of_episodes, genre_name, episode_number, creator_id) VALUES ('Podcast430', '4/6/2023', '8927134', 'Comedy|Sci-Fi', '8', '4');
-INSERT INTO Podcasts (name, release_date, number_of_episodes, genre_name, episode_number, creator_id) VALUES ('Podcast290', '11/11/2022', '5680749', 'Comedy|Drama', '56', '38');
-INSERT INTO Podcasts (name, release_date, number_of_episodes, genre_name, episode_number, creator_id) VALUES ('Podcast643', '12/3/2022', '5528907', 'Comedy|Drama', '32', '97');
-INSERT INTO Podcasts (name, release_date, number_of_episodes, genre_name, episode_number, creator_id) VALUES ('Podcast467', '7/6/2022', '3744612', 'Drama|Horror|Romance', '73', '87');
-INSERT INTO Podcasts (name, release_date, number_of_episodes, genre_name, episode_number, creator_id) VALUES ('Podcast970', '2/1/2023', '2086901', 'Adventure|Animation|Children|Drama', '31', '6');
-INSERT INTO Podcasts (name, release_date, number_of_episodes, genre_name, episode_number, creator_id) VALUES ('Podcast045', '12/2/2022', '6223935', 'Comedy|Drama', '35', '45');
-INSERT INTO Podcasts (name, release_date, number_of_episodes, genre_name, episode_number, creator_id) VALUES ('Podcast293', '3/6/2023', '2270355', 'Drama|Romance|War', '67', '59');
-INSERT INTO Podcasts (name, release_date, number_of_episodes, genre_name, episode_number, creator_id) VALUES ('Podcast331', '3/20/2023', '3533007', 'Comedy', '29', '92');
-INSERT INTO Podcasts (name, release_date, number_of_episodes, genre_name, episode_number, creator_id) VALUES ('Podcast648', '2/7/2023', '6705430', 'Comedy|Drama|Romance', '28', '77');
-INSERT INTO Podcasts (name, release_date, number_of_episodes, genre_name, episode_number, creator_id) VALUES ('Podcast117', '6/15/2022', '5832118', 'Crime|Drama|Film-Noir|Thriller', '90', '99');
-INSERT INTO Podcasts (name, release_date, number_of_episodes, genre_name, episode_number, creator_id) VALUES ('Podcast001', '4/3/2023', '5309851', 'Comedy', '17', '62');
-INSERT INTO Podcasts (name, release_date, number_of_episodes, genre_name, episode_number, creator_id) VALUES ('Podcast384', '8/19/2022', '5621416', 'Drama|War', '99', '55');
-INSERT INTO Podcasts (name, release_date, number_of_episodes, genre_name, episode_number, creator_id) VALUES ('Podcast937', '2/18/2023', '6168827', 'Drama|Musical', '81', '73');
-INSERT INTO Podcasts (name, release_date, number_of_episodes, genre_name, episode_number, creator_id) VALUES ('Podcast350', '2/27/2023', '97972', 'Drama', '56', '55');
-INSERT INTO Podcasts (name, release_date, number_of_episodes, genre_name, episode_number, creator_id) VALUES ('Podcast006', '6/2/2022', '1369319', 'Drama', '100', '50');
-INSERT INTO Podcasts (name, release_date, number_of_episodes, genre_name, episode_number, creator_id) VALUES ('Podcast203', '2/13/2023', '2034337', '(no genres listed)', '55', '5');
-INSERT INTO Podcasts (name, release_date, number_of_episodes, genre_name, episode_number, creator_id) VALUES ('Podcast302', '6/7/2022', '9023968', 'Comedy', '77', '13');
-INSERT INTO Podcasts (name, release_date, number_of_episodes, genre_name, episode_number, creator_id) VALUES ('Podcast755', '8/10/2022', '537789', 'Horror|Sci-Fi', '63', '55');
-INSERT INTO Podcasts (name, release_date, number_of_episodes, genre_name, episode_number, creator_id) VALUES ('Podcast934', '2/27/2023', '1044930', 'Drama', '90', '75');
-INSERT INTO Podcasts (name, release_date, number_of_episodes, genre_name, episode_number, creator_id) VALUES ('Podcast339', '4/29/2022', '194253', 'Horror|Sci-Fi|Thriller', '31', '30');
-INSERT INTO Podcasts (name, release_date, number_of_episodes, genre_name, episode_number, creator_id) VALUES ('Podcast525', '7/22/2022', '3967653', 'Drama|Romance', '93', '37');
-INSERT INTO Podcasts (name, release_date, number_of_episodes, genre_name, episode_number, creator_id) VALUES ('Podcast703', '8/30/2022', '306121', 'Comedy', '78', '89');
-INSERT INTO Podcasts (name, release_date, number_of_episodes, genre_name, episode_number, creator_id) VALUES ('Podcast950', '12/19/2022', '7211762', 'Animation|Children|Fantasy', '43', '55');
-INSERT INTO Podcasts (name, release_date, number_of_episodes, genre_name, episode_number, creator_id) VALUES ('Podcast237', '11/5/2022', '4302872', 'Drama', '35', '53');
-INSERT INTO Podcasts (name, release_date, number_of_episodes, genre_name, episode_number, creator_id) VALUES ('Podcast369', '9/12/2022', '5551278', 'Comedy|Romance', '99', '40');
-INSERT INTO Podcasts (name, release_date, number_of_episodes, genre_name, episode_number, creator_id) VALUES ('Podcast117', '6/14/2022', '3848287', 'Comedy|Crime', '56', '4');
-INSERT INTO Podcasts (name, release_date, number_of_episodes, genre_name, episode_number, creator_id) VALUES ('Podcast829', '10/28/2022', '9400801', 'Drama', '91', '65');
-INSERT INTO Podcasts (name, release_date, number_of_episodes, genre_name, episode_number, creator_id) VALUES ('Podcast432', '6/4/2022', '1001079', 'Drama', '91', '66');
-INSERT INTO Podcasts (name, release_date, number_of_episodes, genre_name, episode_number, creator_id) VALUES ('Podcast134', '3/30/2023', '7613319', 'Drama|Mystery', '81', '63');
-INSERT INTO Podcasts (name, release_date, number_of_episodes, genre_name, episode_number, creator_id) VALUES ('Podcast656', '3/17/2023', '236066', 'Comedy|Romance', '87', '26');
-INSERT INTO Podcasts (name, release_date, number_of_episodes, genre_name, episode_number, creator_id) VALUES ('Podcast682', '2/2/2023', '4837096', 'Drama|Romance', '9', '54');
-INSERT INTO Podcasts (name, release_date, number_of_episodes, genre_name, episode_number, creator_id) VALUES ('Podcast251', '2/24/2023', '5449735', 'Drama|War', '12', '95');
-INSERT INTO Podcasts (name, release_date, number_of_episodes, genre_name, episode_number, creator_id) VALUES ('Podcast480', '9/1/2022', '7435166', 'Comedy|Romance', '81', '89');
-INSERT INTO Podcasts (name, release_date, number_of_episodes, genre_name, episode_number, creator_id) VALUES ('Podcast112', '11/24/2022', '4117886', 'Documentary', '42', '77');
-INSERT INTO Podcasts (name, release_date, number_of_episodes, genre_name, episode_number, creator_id) VALUES ('Podcast858', '4/16/2022', '613936', 'Drama', '19', '21');
-INSERT INTO Podcasts (name, release_date, number_of_episodes, genre_name, episode_number, creator_id) VALUES ('Podcast810', '5/28/2022', '6784408', 'Drama', '65', '73');
-INSERT INTO Podcasts (name, release_date, number_of_episodes, genre_name, episode_number, creator_id) VALUES ('Podcast176', '8/8/2022', '6462468', 'Crime|Drama', '71', '87');
-INSERT INTO Podcasts (name, release_date, number_of_episodes, genre_name, episode_number, creator_id) VALUES ('Podcast292', '9/29/2022', '4634984', 'Drama|Romance', '50', '90');
-INSERT INTO Podcasts (name, release_date, number_of_episodes, genre_name, episode_number, creator_id) VALUES ('Podcast555', '2/1/2023', '6876716', 'Comedy', '34', '13');
-INSERT INTO Podcasts (name, release_date, number_of_episodes, genre_name, episode_number, creator_id) VALUES ('Podcast793', '1/15/2023', '4982556', 'Action|Sci-Fi|War', '76', '28');
-INSERT INTO Podcasts (name, release_date, number_of_episodes, genre_name, episode_number, creator_id) VALUES ('Podcast583', '10/23/2022', '4896525', 'Documentary', '45', '62');
-INSERT INTO Podcasts (name, release_date, number_of_episodes, genre_name, episode_number, creator_id) VALUES ('Podcast737', '1/25/2023', '7673435', 'Comedy', '56', '32');
-INSERT INTO Podcasts (name, release_date, number_of_episodes, genre_name, episode_number, creator_id) VALUES ('Podcast726', '9/21/2022', '5303487', 'Drama|Romance', '17', '18');
-INSERT INTO Podcasts (name, release_date, number_of_episodes, genre_name, episode_number, creator_id) VALUES ('Podcast009', '7/15/2022', '8331240', 'Action|Animation|Children|Sci-Fi', '37', '100');
-INSERT INTO Podcasts (name, release_date, number_of_episodes, genre_name, episode_number, creator_id) VALUES ('Podcast167', '11/11/2022', '3871459', 'Drama', '29', '51');
-INSERT INTO Podcasts (name, release_date, number_of_episodes, genre_name, episode_number, creator_id) VALUES ('Podcast272', '9/22/2022', '235643', 'Drama|Mystery', '78', '4');
-INSERT INTO Podcasts (name, release_date, number_of_episodes, genre_name, episode_number, creator_id) VALUES ('Podcast290', '6/5/2022', '1625913', 'Action|Comedy|Thriller', '98', '65');
-INSERT INTO Podcasts (name, release_date, number_of_episodes, genre_name, episode_number, creator_id) VALUES ('Podcast802', '9/30/2022', '1900650', 'Drama', '10', '48');
-INSERT INTO Podcasts (name, release_date, number_of_episodes, genre_name, episode_number, creator_id) VALUES ('Podcast464', '11/14/2022', '1710734', 'Action|Sci-Fi|Thriller', '16', '99');
-INSERT INTO Podcasts (name, release_date, number_of_episodes, genre_name, episode_number, creator_id) VALUES ('Podcast662', '11/8/2022', '1847757', 'Action|Animation|Comedy', '36', '69');
-INSERT INTO Podcasts (name, release_date, number_of_episodes, genre_name, episode_number, creator_id) VALUES ('Podcast899', '6/28/2022', '7495549', 'Crime|Drama|Film-Noir|Thriller', '100', '86');
-INSERT INTO Podcasts (name, release_date, number_of_episodes, genre_name, episode_number, creator_id) VALUES ('Podcast987', '3/24/2023', '7916793', 'Horror|Mystery|Thriller', '70', '23');
-
---# Statistics
 INSERT INTO Statistics (creator_id, total_listens, total_likes, total_followers, total_episodes) VALUES ('96', '8148017', '3019233', '9451678', '3250148');
 INSERT INTO Statistics (creator_id, total_listens, total_likes, total_followers, total_episodes) VALUES ('3', '3800859', '6163241', '28515', '1260558');
 INSERT INTO Statistics (creator_id, total_listens, total_likes, total_followers, total_episodes) VALUES ('48', '2252531', '7852114', '950268', '4383920');
@@ -1222,14 +777,9 @@ INSERT INTO Statistics (creator_id, total_listens, total_likes, total_followers,
 INSERT INTO Statistics (creator_id, total_listens, total_likes, total_followers, total_episodes) VALUES ('10', '6661326', '9287213', '5897167', '6630779');
 INSERT INTO Statistics (creator_id, total_listens, total_likes, total_followers, total_episodes) VALUES ('44', '6242680', '6389914', '9953571', '5577696');
 INSERT INTO Statistics (creator_id, total_listens, total_likes, total_followers, total_episodes) VALUES ('59', '7176758', '1399998', '8191440', '4659220');
-INSERT INTO Statistics (creator_id, total_listens, total_likes, total_followers, total_episodes) VALUES ('97', '4915638', '5563951', '6588946', '7391864');
 INSERT INTO Statistics (creator_id, total_listens, total_likes, total_followers, total_episodes) VALUES ('76', '8674455', '9745580', '1461914', '2013924');
-INSERT INTO Statistics (creator_id, total_listens, total_likes, total_followers, total_episodes) VALUES ('68', '8190907', '8754764', '8553075', '404728');
-INSERT INTO Statistics (creator_id, total_listens, total_likes, total_followers, total_episodes) VALUES ('65', '4336893', '8745084', '4289768', '1734684');
-INSERT INTO Statistics (creator_id, total_listens, total_likes, total_followers, total_episodes) VALUES ('48', '4979892', '1403409', '5665397', '591599');
 INSERT INTO Statistics (creator_id, total_listens, total_likes, total_followers, total_episodes) VALUES ('11', '8261622', '1859635', '2836459', '5153198');
 INSERT INTO Statistics (creator_id, total_listens, total_likes, total_followers, total_episodes) VALUES ('64', '5853432', '3666909', '3973467', '8217319');
-INSERT INTO Statistics (creator_id, total_listens, total_likes, total_followers, total_episodes) VALUES ('26', '3275408', '4848743', '5727788', '2287091');
 INSERT INTO Statistics (creator_id, total_listens, total_likes, total_followers, total_episodes) VALUES ('6', '5482377', '5855755', '8126444', '7148888');
 INSERT INTO Statistics (creator_id, total_listens, total_likes, total_followers, total_episodes) VALUES ('43', '2350486', '8498644', '9333252', '5530602');
 INSERT INTO Statistics (creator_id, total_listens, total_likes, total_followers, total_episodes) VALUES ('57', '1038987', '6930445', '3591752', '4058839');
@@ -1240,1174 +790,426 @@ INSERT INTO Statistics (creator_id, total_listens, total_likes, total_followers,
 INSERT INTO Statistics (creator_id, total_listens, total_likes, total_followers, total_episodes) VALUES ('87', '5218949', '5049650', '4498389', '6485410');
 INSERT INTO Statistics (creator_id, total_listens, total_likes, total_followers, total_episodes) VALUES ('29', '3754341', '8337377', '7053924', '4605533');
 INSERT INTO Statistics (creator_id, total_listens, total_likes, total_followers, total_episodes) VALUES ('28', '9788777', '786105', '7371225', '7977002');
-INSERT INTO Statistics (creator_id, total_listens, total_likes, total_followers, total_episodes) VALUES ('63', '302324', '682005', '861733', '918695');
-INSERT INTO Statistics (creator_id, total_listens, total_likes, total_followers, total_episodes) VALUES ('58', '2987053', '8368895', '6740435', '1542473');
-INSERT INTO Statistics (creator_id, total_listens, total_likes, total_followers, total_episodes) VALUES ('78', '7523461', '5839820', '5975234', '5597375');
-INSERT INTO Statistics (creator_id, total_listens, total_likes, total_followers, total_episodes) VALUES ('20', '4793046', '8884215', '8999302', '3946463');
-INSERT INTO Statistics (creator_id, total_listens, total_likes, total_followers, total_episodes) VALUES ('11', '5989913', '4907801', '1998566', '2980402');
-INSERT INTO Statistics (creator_id, total_listens, total_likes, total_followers, total_episodes) VALUES ('59', '465682', '2828236', '6365468', '2799834');
 INSERT INTO Statistics (creator_id, total_listens, total_likes, total_followers, total_episodes) VALUES ('88', '2010011', '8915364', '4590555', '1543916');
-INSERT INTO Statistics (creator_id, total_listens, total_likes, total_followers, total_episodes) VALUES ('56', '7469389', '3114788', '7049276', '5720003');
 INSERT INTO Statistics (creator_id, total_listens, total_likes, total_followers, total_episodes) VALUES ('82', '2444550', '4569388', '3777547', '6942082');
 INSERT INTO Statistics (creator_id, total_listens, total_likes, total_followers, total_episodes) VALUES ('62', '5296524', '6220436', '4836249', '6899771');
 INSERT INTO Statistics (creator_id, total_listens, total_likes, total_followers, total_episodes) VALUES ('55', '3163260', '5426762', '5103648', '3350043');
 INSERT INTO Statistics (creator_id, total_listens, total_likes, total_followers, total_episodes) VALUES ('90', '4518627', '5269611', '5113946', '9387993');
-INSERT INTO Statistics (creator_id, total_listens, total_likes, total_followers, total_episodes) VALUES ('97', '6793157', '5734346', '1472642', '5622834');
 INSERT INTO Statistics (creator_id, total_listens, total_likes, total_followers, total_episodes) VALUES ('83', '6241875', '9935675', '786845', '6461318');
 INSERT INTO Statistics (creator_id, total_listens, total_likes, total_followers, total_episodes) VALUES ('86', '6289598', '4105521', '9630145', '1663737');
 INSERT INTO Statistics (creator_id, total_listens, total_likes, total_followers, total_episodes) VALUES ('7', '6405165', '2190692', '2145112', '8012167');
-INSERT INTO Statistics (creator_id, total_listens, total_likes, total_followers, total_episodes) VALUES ('66', '351237', '4148966', '237675', '1806425');
 INSERT INTO Statistics (creator_id, total_listens, total_likes, total_followers, total_episodes) VALUES ('80', '2907189', '5262259', '3740775', '9591209');
-INSERT INTO Statistics (creator_id, total_listens, total_likes, total_followers, total_episodes) VALUES ('96', '5324422', '6767939', '6163397', '4798587');
 INSERT INTO Statistics (creator_id, total_listens, total_likes, total_followers, total_episodes) VALUES ('69', '1940850', '192597', '4199071', '1634860');
-INSERT INTO Statistics (creator_id, total_listens, total_likes, total_followers, total_episodes) VALUES ('58', '848810', '3100535', '9124277', '9908063');
 INSERT INTO Statistics (creator_id, total_listens, total_likes, total_followers, total_episodes) VALUES ('93', '9600396', '3878021', '3296698', '7787091');
 INSERT INTO Statistics (creator_id, total_listens, total_likes, total_followers, total_episodes) VALUES ('36', '4747372', '6198862', '2293105', '1466087');
-INSERT INTO Statistics (creator_id, total_listens, total_likes, total_followers, total_episodes) VALUES ('69', '1229081', '7146680', '1527724', '2925748');
 INSERT INTO Statistics (creator_id, total_listens, total_likes, total_followers, total_episodes) VALUES ('89', '4549427', '9668040', '9537618', '9085580');
 INSERT INTO Statistics (creator_id, total_listens, total_likes, total_followers, total_episodes) VALUES ('13', '7100344', '8486782', '1746929', '5129121');
-INSERT INTO Statistics (creator_id, total_listens, total_likes, total_followers, total_episodes) VALUES ('96', '3436285', '1895871', '6153784', '3107615');
-INSERT INTO Statistics (creator_id, total_listens, total_likes, total_followers, total_episodes) VALUES ('82', '5172325', '2769756', '5419354', '7001072');
 INSERT INTO Statistics (creator_id, total_listens, total_likes, total_followers, total_episodes) VALUES ('94', '8815112', '6941032', '4711649', '8967398');
-INSERT INTO Statistics (creator_id, total_listens, total_likes, total_followers, total_episodes) VALUES ('63', '8771175', '4913342', '7775539', '8175866');
 INSERT INTO Statistics (creator_id, total_listens, total_likes, total_followers, total_episodes) VALUES ('35', '6804798', '1925378', '7452938', '2594032');
 INSERT INTO Statistics (creator_id, total_listens, total_likes, total_followers, total_episodes) VALUES ('73', '4906314', '9538931', '9293155', '6125570');
 INSERT INTO Statistics (creator_id, total_listens, total_likes, total_followers, total_episodes) VALUES ('24', '5806222', '8865685', '6554985', '9619978');
-INSERT INTO Statistics (creator_id, total_listens, total_likes, total_followers, total_episodes) VALUES ('76', '3419578', '2338227', '8574294', '1148739');
 INSERT INTO Statistics (creator_id, total_listens, total_likes, total_followers, total_episodes) VALUES ('77', '6168172', '587550', '1484524', '5885226');
-INSERT INTO Statistics (creator_id, total_listens, total_likes, total_followers, total_episodes) VALUES ('66', '1553425', '5364408', '9810835', '6035437');
-INSERT INTO Statistics (creator_id, total_listens, total_likes, total_followers, total_episodes) VALUES ('82', '2911246', '9875038', '356481', '3963204');
-INSERT INTO Statistics (creator_id, total_listens, total_likes, total_followers, total_episodes) VALUES ('86', '8100072', '3740554', '5710195', '2543769');
-INSERT INTO Statistics (creator_id, total_listens, total_likes, total_followers, total_episodes) VALUES ('75', '875129', '8274090', '6910893', '7237677');
-INSERT INTO Statistics (creator_id, total_listens, total_likes, total_followers, total_episodes) VALUES ('43', '9884700', '8522635', '3705097', '6288960');
-INSERT INTO Statistics (creator_id, total_listens, total_likes, total_followers, total_episodes) VALUES ('95', '6956375', '3364291', '8267886', '6750688');
-INSERT INTO Statistics (creator_id, total_listens, total_likes, total_followers, total_episodes) VALUES ('81', '7599612', '5641870', '6557290', '1424315');
-INSERT INTO Statistics (creator_id, total_listens, total_likes, total_followers, total_episodes) VALUES ('63', '3981002', '6517911', '8106181', '3421032');
-INSERT INTO Statistics (creator_id, total_listens, total_likes, total_followers, total_episodes) VALUES ('17', '8914764', '3457030', '9839013', '1306692');
-INSERT INTO Statistics (creator_id, total_listens, total_likes, total_followers, total_episodes) VALUES ('75', '7671396', '8160284', '67111', '3340774');
-INSERT INTO Statistics (creator_id, total_listens, total_likes, total_followers, total_episodes) VALUES ('87', '1664907', '9283044', '4765466', '8053380');
-INSERT INTO Statistics (creator_id, total_listens, total_likes, total_followers, total_episodes) VALUES ('54', '8357449', '5100762', '5702002', '9304049');
-INSERT INTO Statistics (creator_id, total_listens, total_likes, total_followers, total_episodes) VALUES ('99', '5953561', '9307557', '9151746', '3329118');
-INSERT INTO Statistics (creator_id, total_listens, total_likes, total_followers, total_episodes) VALUES ('69', '487050', '5634958', '2935631', '5063585');
-INSERT INTO Statistics (creator_id, total_listens, total_likes, total_followers, total_episodes) VALUES ('68', '3787852', '9923222', '824712', '3483419');
-INSERT INTO Statistics (creator_id, total_listens, total_likes, total_followers, total_episodes) VALUES ('55', '8311463', '6095446', '1995514', '6265011');
-INSERT INTO Statistics (creator_id, total_listens, total_likes, total_followers, total_episodes) VALUES ('34', '5762613', '982035', '1522605', '6285396');
-INSERT INTO Statistics (creator_id, total_listens, total_likes, total_followers, total_episodes) VALUES ('10', '1595282', '9246198', '6366105', '450552');
-INSERT INTO Statistics (creator_id, total_listens, total_likes, total_followers, total_episodes) VALUES ('85', '2245495', '183177', '6534004', '9774629');
-INSERT INTO Statistics (creator_id, total_listens, total_likes, total_followers, total_episodes) VALUES ('27', '5953212', '5912162', '5595497', '4138920');
-INSERT INTO Statistics (creator_id, total_listens, total_likes, total_followers, total_episodes) VALUES ('47', '8181124', '4121048', '1179199', '9070139');
-INSERT INTO Statistics (creator_id, total_listens, total_likes, total_followers, total_episodes) VALUES ('67', '6406941', '3113314', '6768003', '9399419');
-INSERT INTO Statistics (creator_id, total_listens, total_likes, total_followers, total_episodes) VALUES ('24', '3543050', '7724350', '7370408', '3884452');
-INSERT INTO Statistics (creator_id, total_listens, total_likes, total_followers, total_episodes) VALUES ('2', '5966594', '1748968', '2844719', '3877931');
-INSERT INTO Statistics (creator_id, total_listens, total_likes, total_followers, total_episodes) VALUES ('51', '4934085', '6184134', '2404972', '4749238');
-INSERT INTO Statistics (creator_id, total_listens, total_likes, total_followers, total_episodes) VALUES ('42', '5688252', '1685283', '1838699', '6217584');
-INSERT INTO Statistics (creator_id, total_listens, total_likes, total_followers, total_episodes) VALUES ('65', '9145119', '4267994', '1545182', '8707163');
-INSERT INTO Statistics (creator_id, total_listens, total_likes, total_followers, total_episodes) VALUES ('88', '2540836', '374003', '4621373', '1192003');
-INSERT INTO Statistics (creator_id, total_listens, total_likes, total_followers, total_episodes) VALUES ('76', '8783007', '7229668', '2568633', '6215481');
-INSERT INTO Statistics (creator_id, total_listens, total_likes, total_followers, total_episodes) VALUES ('90', '2584883', '6910402', '1774528', '2051837');
-INSERT INTO Statistics (creator_id, total_listens, total_likes, total_followers, total_episodes) VALUES ('25', '5222555', '2211615', '2529154', '7963609');
-INSERT INTO Statistics (creator_id, total_listens, total_likes, total_followers, total_episodes) VALUES ('13', '4481846', '9828053', '1330645', '6342750');
 
---# Suppliers
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('1', '65', 'Ridgeway', 'Jackson', 'Mississippi', '39296');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('2', '7', 'Dottie', 'New Orleans', 'Louisiana', '70187');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('3', '27', 'Old Gate', 'Kansas City', 'Missouri', '64187');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('4', '52', 'Hovde', 'Salt Lake City', 'Utah', '84130');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('5', '59', 'Scott', 'Gary', 'Indiana', '46406');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('6', '98', 'Bellgrove', 'Augusta', 'Georgia', '30919');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('7', '71', 'Leroy', 'Des Moines', 'Iowa', '50347');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('8', '6', 'Lotheville', 'Salem', 'Oregon', '97312');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('9', '72', 'Bay', 'Springfield', 'Illinois', '62723');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('10', '52', 'Florence', 'Honolulu', 'Hawaii', '96820');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('11', '94', 'Mccormick', 'Long Beach', 'California', '90810');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('12', '78', 'Kings', 'Pittsburgh', 'Pennsylvania', '15274');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('13', '29', 'Mayer', 'Phoenix', 'Arizona', '85053');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('14', '43', 'Lindbergh', 'Carol Stream', 'Illinois', '60158');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('15', '98', 'Clove', 'Honolulu', 'Hawaii', '96805');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('16', '35', 'Myrtle', 'Springfield', 'Illinois', '62794');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('17', '92', 'Hermina', 'New Haven', 'Connecticut', '06510');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('18', '42', 'Surrey', 'Hot Springs National Park', 'Arkansas', '71914');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('19', '87', 'Calypso', 'Los Angeles', 'California', '90005');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('20', '12', 'Westend', 'Panama City', 'Florida', '32412');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('21', '16', 'Sachtjen', 'Oklahoma City', 'Oklahoma', '73152');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('22', '80', 'Troy', 'Odessa', 'Texas', '79769');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('23', '10', 'Miller', 'Philadelphia', 'Pennsylvania', '19146');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('24', '68', 'Jackson', 'Austin', 'Texas', '78764');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('25', '9', 'Anniversary', 'Shreveport', 'Louisiana', '71130');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('26', '8', 'Superior', 'Austin', 'Texas', '78789');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('27', '41', 'Moulton', 'Scranton', 'Pennsylvania', '18505');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('28', '18', 'Jay', 'Southfield', 'Michigan', '48076');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('29', '72', 'Dapin', 'Minneapolis', 'Minnesota', '55417');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('30', '23', 'Rusk', 'Pensacola', 'Florida', '32526');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('31', '71', 'Lighthouse Bay', 'Denver', 'Colorado', '80235');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('32', '97', 'Golf View', 'Saint Paul', 'Minnesota', '55172');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('33', '79', 'Tomscot', 'Fort Lauderdale', 'Florida', '33330');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('34', '95', 'Fremont', 'Tyler', 'Texas', '75710');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('35', '91', 'Harper', 'Fresno', 'California', '93762');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('36', '82', 'Sloan', 'Amarillo', 'Texas', '79182');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('37', '35', 'Helena', 'Lake Charles', 'Louisiana', '70616');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('38', '25', '8th', 'Pasadena', 'California', '91117');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('39', '56', 'Crowley', 'Dallas', 'Texas', '75397');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('40', '36', 'Cottonwood', 'Lake Worth', 'Florida', '33467');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('41', '28', 'Hanover', 'Norwalk', 'Connecticut', '06859');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('42', '42', 'Tony', 'El Paso', 'Texas', '88546');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('43', '1', 'Manitowish', 'Indianapolis', 'Indiana', '46216');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('44', '50', 'East', 'Redwood City', 'California', '94064');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('45', '56', 'Hanover', 'Savannah', 'Georgia', '31410');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('46', '70', 'Dexter', 'San Jose', 'California', '95194');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('47', '73', 'Sloan', 'Van Nuys', 'California', '91411');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('48', '34', 'Golf', 'Colorado Springs', 'Colorado', '80910');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('49', '44', 'Vernon', 'Houston', 'Texas', '77070');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('50', '59', 'Arizona', 'Garland', 'Texas', '75049');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('51', '37', 'Hermina', 'Tulsa', 'Oklahoma', '74193');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('52', '60', 'Clove', 'Columbus', 'Ohio', '43204');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('53', '55', 'Wayridge', 'Spokane', 'Washington', '99252');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('54', '51', 'Harper', 'San Jose', 'California', '95133');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('55', '50', 'Sheridan', 'Boise', 'Idaho', '83727');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('56', '73', 'Troy', 'Trenton', 'New Jersey', '08638');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('57', '24', 'Emmet', 'Albuquerque', 'New Mexico', '87195');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('58', '32', 'New Castle', 'Sacramento', 'California', '95828');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('59', '6', 'Rockefeller', 'Sacramento', 'California', '94207');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('60', '26', 'Crescent Oaks', 'Montgomery', 'Alabama', '36195');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('61', '38', 'Katie', 'Bronx', 'New York', '10459');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('62', '71', 'Thierer', 'Washington', 'District of Columbia', '20260');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('63', '75', 'Brentwood', 'Baton Rouge', 'Louisiana', '70815');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('64', '14', 'Hoard', 'Los Angeles', 'California', '90035');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('65', '30', 'Sheridan', 'Saint Paul', 'Minnesota', '55172');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('66', '95', 'Independence', 'Brooklyn', 'New York', '11236');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('67', '57', 'Judy', 'San Diego', 'California', '92191');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('68', '38', 'Elgar', 'Washington', 'District of Columbia', '56944');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('69', '13', 'Vermont', 'Van Nuys', 'California', '91411');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('70', '9', 'Fairfield', 'Shreveport', 'Louisiana', '71161');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('71', '38', '7th', 'Richmond', 'Virginia', '23260');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('72', '9', 'Lindbergh', 'Sterling', 'Virginia', '20167');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('73', '48', 'Village', 'Fort Collins', 'Colorado', '80525');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('74', '54', 'Maple Wood', 'San Francisco', 'California', '94177');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('75', '95', 'Pond', 'Charleston', 'West Virginia', '25331');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('76', '76', 'Kedzie', 'Tucson', 'Arizona', '85705');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('77', '63', 'Mariners Cove', 'Kansas City', 'Missouri', '64142');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('78', '6', 'Dorton', 'Oklahoma City', 'Oklahoma', '73190');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('79', '31', 'Blue Bill Park', 'Houston', 'Texas', '77218');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('80', '22', 'Arkansas', 'Reading', 'Pennsylvania', '19610');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('81', '67', '3rd', 'Las Vegas', 'Nevada', '89110');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('82', '57', 'Colorado', 'Wilmington', 'Delaware', '19897');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('83', '39', 'Banding', 'Bronx', 'New York', '10464');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('84', '20', 'Merchant', 'Montgomery', 'Alabama', '36109');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('85', '98', 'School', 'Helena', 'Montana', '59623');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('86', '39', 'Delladonna', 'Clearwater', 'Florida', '33758');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('87', '80', 'Longview', 'Cleveland', 'Ohio', '44197');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('88', '6', 'Meadow Ridge', 'Saint Petersburg', 'Florida', '33715');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('89', '23', 'Dorton', 'Pasadena', 'California', '91109');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('90', '21', 'High Crossing', 'Austin', 'Texas', '78783');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('91', '60', 'Basil', 'Huntington Beach', 'California', '92648');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('92', '21', 'Rockefeller', 'Decatur', 'Illinois', '62525');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('93', '94', 'Dapin', 'New York City', 'New York', '10175');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('94', '90', 'Hermina', 'San Diego', 'California', '92176');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('95', '71', 'Pennsylvania', 'Wichita', 'Kansas', '67220');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('96', '17', 'Hermina', 'Denver', 'Colorado', '80243');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('97', '11', 'Springs', 'Columbus', 'Ohio', '43210');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('98', '42', 'Hudson', 'Pensacola', 'Florida', '32526');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('99', '86', 'Bluestem', 'Cumming', 'Georgia', '30130');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('100', '99', 'Fordem', 'Atlanta', 'Georgia', '30368');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('101', '38', 'Chinook', 'Evansville', 'Indiana', '47732');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('102', '86', 'Dunning', 'Springfield', 'Virginia', '22156');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('103', '45', 'Stone Corner', 'Amarillo', 'Texas', '79182');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('104', '33', 'Raven', 'Tacoma', 'Washington', '98417');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('105', '21', 'Redwing', 'Birmingham', 'Alabama', '35290');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('106', '34', 'Carberry', 'Denver', 'Colorado', '80235');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('107', '31', 'Sauthoff', 'Los Angeles', 'California', '90071');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('108', '30', 'Washington', 'Syracuse', 'New York', '13205');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('109', '4', 'Scoville', 'Fredericksburg', 'Virginia', '22405');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('110', '82', 'Bellgrove', 'Sarasota', 'Florida', '34238');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('111', '61', 'Spohn', 'Lexington', 'Kentucky', '40591');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('112', '45', 'Vidon', 'New York City', 'New York', '10099');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('113', '26', 'Charing Cross', 'Alexandria', 'Louisiana', '71307');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('114', '54', 'Hoard', 'Columbia', 'South Carolina', '29203');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('115', '3', 'Service', 'Louisville', 'Kentucky', '40233');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('116', '10', 'Veith', 'Saint Louis', 'Missouri', '63167');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('117', '1', 'Dayton', 'Charleston', 'West Virginia', '25321');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('118', '90', 'Mcbride', 'New Haven', 'Connecticut', '06520');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('119', '2', 'Dayton', 'Spokane', 'Washington', '99210');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('120', '62', 'Dexter', 'Glendale', 'Arizona', '85305');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('121', '94', 'Granby', 'Jamaica', 'New York', '11436');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('122', '10', 'Haas', 'Saint Joseph', 'Missouri', '64504');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('123', '92', 'Sachtjen', 'Denver', 'Colorado', '80204');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('124', '68', 'Anderson', 'Santa Cruz', 'California', '95064');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('125', '69', 'Scofield', 'Memphis', 'Tennessee', '38197');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('126', '53', 'Heffernan', 'Concord', 'California', '94522');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('127', '91', 'Dunning', 'Tampa', 'Florida', '33633');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('128', '78', 'Upham', 'San Diego', 'California', '92176');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('129', '82', 'South', 'Springfield', 'Illinois', '62723');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('130', '55', 'Buhler', 'San Antonio', 'Texas', '78215');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('131', '96', 'Fremont', 'Palmdale', 'California', '93591');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('132', '32', 'Ryan', 'Washington', 'District of Columbia', '20310');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('133', '21', 'Londonderry', 'San Bernardino', 'California', '92405');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('134', '74', 'Bay', 'Macon', 'Georgia', '31296');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('135', '73', 'Bowman', 'Athens', 'Georgia', '30610');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('136', '46', 'Dryden', 'Greenville', 'South Carolina', '29615');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('137', '41', 'Harbort', 'Dayton', 'Ohio', '45419');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('138', '14', 'Eagle Crest', 'Providence', 'Rhode Island', '02912');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('139', '84', 'Lunder', 'Reno', 'Nevada', '89519');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('140', '1', 'Linden', 'Beaverton', 'Oregon', '97075');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('141', '66', '4th', 'Bloomington', 'Illinois', '61709');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('142', '27', 'Lukken', 'Athens', 'Georgia', '30610');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('143', '28', 'Carpenter', 'Orlando', 'Florida', '32885');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('144', '5', 'Butternut', 'Waterbury', 'Connecticut', '06721');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('145', '7', 'Banding', 'Bronx', 'New York', '10454');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('146', '41', 'Gina', 'Memphis', 'Tennessee', '38197');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('147', '13', 'La Follette', 'Terre Haute', 'Indiana', '47805');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('148', '73', 'Hallows', 'Montgomery', 'Alabama', '36125');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('149', '41', 'South', 'Orlando', 'Florida', '32868');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('150', '81', 'Goodland', 'Wilmington', 'North Carolina', '28410');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('151', '20', 'Waxwing', 'Washington', 'District of Columbia', '20036');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('152', '90', 'Randy', 'Rochester', 'Minnesota', '55905');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('153', '1', 'Stuart', 'Vero Beach', 'Florida', '32969');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('154', '33', 'Anthes', 'Hamilton', 'Ohio', '45020');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('155', '51', 'Loftsgordon', 'Madison', 'Wisconsin', '53785');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('156', '42', 'Mandrake', 'Orlando', 'Florida', '32830');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('157', '77', 'Transport', 'Colorado Springs', 'Colorado', '80951');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('158', '7', 'Glacier Hill', 'Charlotte', 'North Carolina', '28278');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('159', '61', 'Bultman', 'Killeen', 'Texas', '76544');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('160', '98', 'Mariners Cove', 'Albany', 'New York', '12227');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('161', '70', 'Bunker Hill', 'Dayton', 'Ohio', '45426');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('162', '71', 'Texas', 'Kalamazoo', 'Michigan', '49006');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('163', '70', 'Ronald Regan', 'Reading', 'Pennsylvania', '19605');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('164', '28', 'Pond', 'Tucson', 'Arizona', '85715');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('165', '16', 'Ridgeway', 'Colorado Springs', 'Colorado', '80925');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('166', '26', 'Lukken', 'Tyler', 'Texas', '75710');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('167', '46', 'Kingsford', 'Oklahoma City', 'Oklahoma', '73152');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('168', '76', 'Sutherland', 'Stockton', 'California', '95210');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('169', '75', 'Mendota', 'San Antonio', 'Texas', '78220');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('170', '8', 'Vermont', 'Washington', 'District of Columbia', '20073');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('171', '98', 'Nelson', 'Fairbanks', 'Alaska', '99709');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('172', '13', 'Chinook', 'Humble', 'Texas', '77346');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('173', '29', 'Arrowood', 'Baton Rouge', 'Louisiana', '70820');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('174', '42', 'Hollow Ridge', 'Memphis', 'Tennessee', '38181');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('175', '5', 'Orin', 'Austin', 'Texas', '78726');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('176', '80', 'Cody', 'Fresno', 'California', '93704');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('177', '13', 'Muir', 'Charlotte', 'North Carolina', '28235');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('178', '36', 'Main', 'North Hollywood', 'California', '91606');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('179', '20', 'Rigney', 'Houston', 'Texas', '77045');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('180', '38', 'Buhler', 'Appleton', 'Wisconsin', '54915');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('181', '97', 'Cambridge', 'Fort Wayne', 'Indiana', '46825');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('182', '41', 'Jenna', 'Bloomington', 'Illinois', '61709');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('183', '42', 'Reindahl', 'Savannah', 'Georgia', '31422');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('184', '10', 'Paget', 'Jefferson City', 'Missouri', '65110');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('185', '33', 'Barby', 'Omaha', 'Nebraska', '68124');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('186', '63', 'Sloan', 'Indianapolis', 'Indiana', '46207');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('187', '99', 'Clarendon', 'Houston', 'Texas', '77260');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('188', '38', 'Loftsgordon', 'Madison', 'Wisconsin', '53785');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('189', '96', 'Warner', 'Akron', 'Ohio', '44305');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('190', '12', '7th', 'San Diego', 'California', '92191');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('191', '28', 'Florence', 'Winston Salem', 'North Carolina', '27105');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('192', '65', 'Scoville', 'Reno', 'Nevada', '89550');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('193', '37', 'Service', 'Dallas', 'Texas', '75205');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('194', '65', 'Raven', 'Tucson', 'Arizona', '85710');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('195', '16', 'Fallview', 'Palm Bay', 'Florida', '32909');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('196', '45', 'Manitowish', 'Spokane', 'Washington', '99205');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('197', '84', 'Welch', 'Washington', 'District of Columbia', '20260');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('198', '21', 'Lake View', 'Shawnee Mission', 'Kansas', '66225');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('199', '53', 'Dawn', 'Louisville', 'Kentucky', '40225');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('200', '74', 'Melvin', 'Los Angeles', 'California', '90045');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('201', '33', 'Crescent Oaks', 'Minneapolis', 'Minnesota', '55436');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('202', '69', 'Larry', 'Omaha', 'Nebraska', '68105');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('203', '72', 'Harbort', 'Saint Louis', 'Missouri', '63143');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('204', '83', 'Maywood', 'Miami', 'Florida', '33153');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('205', '59', 'Corry', 'San Luis Obispo', 'California', '93407');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('206', '77', 'Butterfield', 'Washington', 'District of Columbia', '20370');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('207', '27', 'Cody', 'Joliet', 'Illinois', '60435');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('208', '37', 'Memorial', 'Fort Smith', 'Arkansas', '72916');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('209', '2', 'International', 'Chico', 'California', '95973');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('210', '25', 'Acker', 'Los Angeles', 'California', '90055');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('211', '99', 'Kim', 'Durham', 'North Carolina', '27705');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('212', '41', 'Scoville', 'Oceanside', 'California', '92056');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('213', '7', 'Continental', 'Reno', 'Nevada', '89550');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('214', '10', 'Autumn Leaf', 'New York City', 'New York', '10270');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('215', '76', 'Oriole', 'San Jose', 'California', '95113');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('216', '94', 'Algoma', 'Los Angeles', 'California', '90015');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('217', '6', 'Jenna', 'Tulsa', 'Oklahoma', '74170');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('218', '27', 'Pearson', 'Fargo', 'North Dakota', '58122');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('219', '69', 'Sullivan', 'Youngstown', 'Ohio', '44511');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('220', '10', 'Blue Bill Park', 'Panama City', 'Florida', '32412');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('221', '36', 'Utah', 'Johnson City', 'Tennessee', '37605');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('222', '58', 'Express', 'Chattanooga', 'Tennessee', '37450');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('223', '48', 'Sommers', 'Atlanta', 'Georgia', '30368');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('224', '78', 'Fallview', 'Rochester', 'New York', '14609');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('225', '92', 'Ramsey', 'Spokane', 'Washington', '99252');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('226', '9', 'Riverside', 'Clearwater', 'Florida', '34629');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('227', '98', 'Stone Corner', 'Jacksonville', 'Florida', '32259');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('228', '53', 'South', 'Atlanta', 'Georgia', '31132');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('229', '80', 'Waxwing', 'Columbus', 'Ohio', '43240');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('230', '61', 'Bonner', 'Troy', 'Michigan', '48098');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('231', '80', 'Waywood', 'Cumming', 'Georgia', '30130');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('232', '21', 'Oak Valley', 'Mobile', 'Alabama', '36628');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('233', '5', 'Utah', 'Daytona Beach', 'Florida', '32118');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('234', '81', 'Cody', 'Fort Lauderdale', 'Florida', '33305');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('235', '1', 'Bellgrove', 'New Haven', 'Connecticut', '06505');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('236', '41', 'Hooker', 'Washington', 'District of Columbia', '20397');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('237', '21', 'Vera', 'Washington', 'District of Columbia', '20456');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('238', '76', 'Dexter', 'Houston', 'Texas', '77260');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('239', '20', 'Sachs', 'Naples', 'Florida', '33963');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('240', '100', 'Upham', 'Lansing', 'Michigan', '48956');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('241', '16', 'Stone Corner', 'Roanoke', 'Virginia', '24004');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('242', '65', 'Kedzie', 'Cape Coral', 'Florida', '33915');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('243', '33', 'Brentwood', 'Miami', 'Florida', '33233');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('244', '97', 'Elgar', 'Santa Cruz', 'California', '95064');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('245', '17', 'Laurel', 'Kansas City', 'Missouri', '64142');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('246', '7', 'Corscot', 'Kansas City', 'Missouri', '64153');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('247', '93', 'Memorial', 'Tacoma', 'Washington', '98442');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('248', '54', 'Troy', 'Los Angeles', 'California', '90005');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('249', '78', 'Kedzie', 'Denver', 'Colorado', '80217');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('250', '36', 'Mariners Cove', 'Pinellas Park', 'Florida', '34665');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('251', '53', 'Claremont', 'New York City', 'New York', '10009');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('252', '7', 'Erie', 'Brooklyn', 'New York', '11210');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('253', '12', 'Village Green', 'Tacoma', 'Washington', '98411');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('254', '14', 'Butterfield', 'Denver', 'Colorado', '80228');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('255', '77', 'Veith', 'Phoenix', 'Arizona', '85025');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('256', '84', 'Daystar', 'Dallas', 'Texas', '75221');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('257', '63', 'Barby', 'Louisville', 'Kentucky', '40225');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('258', '5', 'Ridgeview', 'New Brunswick', 'New Jersey', '08922');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('259', '45', 'Susan', 'Modesto', 'California', '95354');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('260', '18', 'Independence', 'San Mateo', 'California', '94405');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('261', '76', 'Macpherson', 'Kent', 'Washington', '98042');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('262', '53', 'Eastlawn', 'Carol Stream', 'Illinois', '60158');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('263', '11', 'Ludington', 'Miami', 'Florida', '33245');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('264', '4', 'Packers', 'Portsmouth', 'New Hampshire', '03804');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('265', '82', 'Old Shore', 'Bronx', 'New York', '10454');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('266', '19', 'Caliangt', 'Tempe', 'Arizona', '85284');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('267', '71', 'Northridge', 'Boca Raton', 'Florida', '33487');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('268', '47', 'Lighthouse Bay', 'Columbus', 'Ohio', '43204');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('269', '52', 'Emmet', 'Dallas', 'Texas', '75323');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('270', '7', 'Kim', 'Las Vegas', 'Nevada', '89150');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('271', '92', 'Eastwood', 'Philadelphia', 'Pennsylvania', '19172');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('272', '26', 'Little Fleur', 'Fairfax', 'Virginia', '22036');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('273', '40', 'Spaight', 'Milwaukee', 'Wisconsin', '53277');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('274', '98', 'Ohio', 'Cincinnati', 'Ohio', '45208');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('275', '11', 'Swallow', 'Charleston', 'West Virginia', '25326');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('276', '58', 'Lakeland', 'Saint Cloud', 'Minnesota', '56372');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('277', '14', 'Scofield', 'Elizabeth', 'New Jersey', '07208');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('278', '72', 'Luster', 'El Paso', 'Texas', '88574');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('279', '21', 'Monica', 'New York City', 'New York', '10079');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('280', '93', 'Rieder', 'Akron', 'Ohio', '44321');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('281', '81', 'Bowman', 'Louisville', 'Kentucky', '40256');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('282', '52', 'Katie', 'Springfield', 'Illinois', '62776');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('283', '24', 'Sauthoff', 'Murfreesboro', 'Tennessee', '37131');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('284', '34', 'Larry', 'Boise', 'Idaho', '83727');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('285', '26', 'Mitchell', 'Portsmouth', 'New Hampshire', '00214');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('286', '33', 'Scoville', 'Birmingham', 'Alabama', '35279');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('287', '81', 'Hauk', 'Reno', 'Nevada', '89510');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('288', '39', 'Barnett', 'Atlanta', 'Georgia', '30386');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('289', '89', 'Londonderry', 'Louisville', 'Kentucky', '40215');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('290', '20', 'Fair Oaks', 'San Jose', 'California', '95160');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('291', '88', 'Elka', 'Charlotte', 'North Carolina', '28230');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('292', '28', 'Butternut', 'Pompano Beach', 'Florida', '33064');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('293', '48', 'Amoth', 'Youngstown', 'Ohio', '44511');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('294', '18', 'Scofield', 'Ogden', 'Utah', '84403');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('295', '70', 'Dwight', 'Boise', 'Idaho', '83705');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('296', '34', 'Marquette', 'Salt Lake City', 'Utah', '84125');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('297', '48', 'Truax', 'Newton', 'Massachusetts', '02458');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('298', '78', 'Linden', 'Honolulu', 'Hawaii', '96805');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('299', '63', 'Butterfield', 'Charleston', 'West Virginia', '25336');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('300', '17', 'Tony', 'Colorado Springs', 'Colorado', '80920');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('301', '92', 'Spohn', 'Monroe', 'Louisiana', '71208');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('302', '7', 'Hayes', 'Fayetteville', 'North Carolina', '28305');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('303', '13', 'Burning Wood', 'Indianapolis', 'Indiana', '46226');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('304', '17', 'Algoma', 'Tampa', 'Florida', '33680');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('305', '69', 'Browning', 'El Paso', 'Texas', '88553');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('306', '63', 'Garrison', 'Honolulu', 'Hawaii', '96805');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('307', '100', 'Dayton', 'Kansas City', 'Missouri', '64144');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('308', '72', 'Stoughton', 'New York City', 'New York', '10014');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('309', '85', 'Northport', 'Minneapolis', 'Minnesota', '55436');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('310', '59', 'Packers', 'San Bernardino', 'California', '92410');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('311', '96', 'Eastwood', 'Akron', 'Ohio', '44315');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('312', '9', 'Mendota', 'Springfield', 'Missouri', '65810');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('313', '82', 'Mockingbird', 'Indianapolis', 'Indiana', '46226');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('314', '94', 'Burrows', 'Minneapolis', 'Minnesota', '55412');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('315', '23', 'Sunfield', 'Charlotte', 'North Carolina', '28263');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('316', '70', 'Truax', 'Houston', 'Texas', '77025');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('317', '67', 'Esch', 'Tucson', 'Arizona', '85715');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('318', '31', 'Old Shore', 'Great Neck', 'New York', '11024');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('319', '17', 'Carberry', 'San Diego', 'California', '92165');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('320', '68', 'Hoepker', 'Columbus', 'Ohio', '43240');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('321', '77', 'North', 'Scranton', 'Pennsylvania', '18514');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('322', '28', 'Spaight', 'New Orleans', 'Louisiana', '70124');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('323', '75', 'Roxbury', 'Washington', 'District of Columbia', '56944');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('324', '70', 'Fulton', 'Orlando', 'Florida', '32885');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('325', '40', 'Cascade', 'El Paso', 'Texas', '88589');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('326', '82', 'Manufacturers', 'Cincinnati', 'Ohio', '45223');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('327', '94', 'Leroy', 'Punta Gorda', 'Florida', '33982');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('328', '42', 'Kenwood', 'Pittsburgh', 'Pennsylvania', '15266');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('329', '44', 'North', 'Boca Raton', 'Florida', '33499');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('330', '56', 'Alpine', 'Richmond', 'Virginia', '23260');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('331', '98', 'Caliangt', 'Erie', 'Pennsylvania', '16534');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('332', '72', '8th', 'Washington', 'District of Columbia', '20299');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('333', '52', 'Thackeray', 'Durham', 'North Carolina', '27705');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('334', '46', 'Schiller', 'Garden Grove', 'California', '92645');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('335', '68', 'Dunning', 'Norman', 'Oklahoma', '73071');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('336', '29', 'Alpine', 'Cincinnati', 'Ohio', '45264');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('337', '76', '7th', 'Punta Gorda', 'Florida', '33982');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('338', '59', 'Gale', 'Miami', 'Florida', '33261');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('339', '3', 'Bluestem', 'Virginia Beach', 'Virginia', '23464');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('340', '77', 'Tony', 'Mobile', 'Alabama', '36610');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('341', '63', 'Lawn', 'Naperville', 'Illinois', '60567');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('342', '80', 'Onsgard', 'New York City', 'New York', '10004');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('343', '63', 'Arkansas', 'Lubbock', 'Texas', '79452');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('344', '100', 'Farragut', 'Oklahoma City', 'Oklahoma', '73147');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('345', '26', 'Rutledge', 'Austin', 'Texas', '78726');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('346', '17', 'Katie', 'Van Nuys', 'California', '91499');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('347', '89', 'Rutledge', 'Rochester', 'New York', '14683');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('348', '5', 'Kipling', 'Corpus Christi', 'Texas', '78475');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('349', '65', 'Lake View', 'Oklahoma City', 'Oklahoma', '73190');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('350', '93', 'Esch', 'Boise', 'Idaho', '83727');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('351', '58', 'Browning', 'Los Angeles', 'California', '90065');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('352', '36', 'Ohio', 'Pensacola', 'Florida', '32575');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('353', '76', 'Kinsman', 'Dayton', 'Ohio', '45419');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('354', '34', 'Victoria', 'Charleston', 'West Virginia', '25321');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('355', '80', 'Morning', 'Reno', 'Nevada', '89510');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('356', '40', 'Jenna', 'Pittsburgh', 'Pennsylvania', '15215');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('357', '75', 'Mallory', 'Lansing', 'Michigan', '48956');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('358', '76', 'Pine View', 'Portland', 'Oregon', '97240');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('359', '93', 'Barnett', 'Washington', 'District of Columbia', '20557');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('360', '95', 'Warrior', 'Dallas', 'Texas', '75205');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('361', '90', 'Clove', 'Saint Louis', 'Missouri', '63104');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('362', '50', 'Carberry', 'San Francisco', 'California', '94177');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('363', '54', 'Nelson', 'Denver', 'Colorado', '80241');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('364', '58', 'Corry', 'Dallas', 'Texas', '75226');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('365', '32', 'Carberry', 'Naples', 'Florida', '33963');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('366', '19', 'Hoffman', 'Sacramento', 'California', '95838');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('367', '68', 'Everett', 'Cleveland', 'Ohio', '44185');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('368', '68', '1st', 'New Orleans', 'Louisiana', '70187');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('369', '42', 'American', 'Dallas', 'Texas', '75287');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('370', '32', 'Anhalt', 'Dayton', 'Ohio', '45419');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('371', '54', 'Thompson', 'Honolulu', 'Hawaii', '96835');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('372', '16', 'Eagle Crest', 'Pasadena', 'Texas', '77505');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('373', '39', 'Transport', 'Abilene', 'Texas', '79605');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('374', '67', 'Mayfield', 'Harrisburg', 'Pennsylvania', '17140');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('375', '52', 'Jackson', 'Greenville', 'South Carolina', '29605');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('376', '55', 'Monterey', 'Milwaukee', 'Wisconsin', '53234');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('377', '34', 'Truax', 'Tampa', 'Florida', '33686');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('378', '3', 'Surrey', 'Austin', 'Texas', '78789');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('379', '1', 'Melby', 'El Paso', 'Texas', '88574');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('380', '65', 'Parkside', 'Minneapolis', 'Minnesota', '55441');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('381', '14', 'Larry', 'White Plains', 'New York', '10633');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('382', '31', 'Lyons', 'Brockton', 'Massachusetts', '02305');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('383', '86', 'Mayfield', 'Pensacola', 'Florida', '32595');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('384', '55', 'Dorton', 'Des Moines', 'Iowa', '50310');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('385', '77', 'Bobwhite', 'Hialeah', 'Florida', '33013');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('386', '44', 'Norway Maple', 'Lake Worth', 'Florida', '33462');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('387', '32', 'Goodland', 'Columbus', 'Ohio', '43226');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('388', '78', 'Northwestern', 'Las Vegas', 'Nevada', '89135');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('389', '4', 'Ronald Regan', 'Metairie', 'Louisiana', '70005');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('390', '13', 'Bluejay', 'Colorado Springs', 'Colorado', '80951');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('391', '59', 'Eggendart', 'Fresno', 'California', '93726');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('392', '88', 'Lyons', 'Scottsdale', 'Arizona', '85260');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('393', '19', 'Grasskamp', 'Grand Rapids', 'Michigan', '49560');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('394', '2', 'Cascade', 'Dulles', 'Virginia', '20189');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('395', '66', 'Fulton', 'Toledo', 'Ohio', '43699');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('396', '79', 'Westerfield', 'Dallas', 'Texas', '75287');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('397', '26', 'Doe Crossing', 'Albuquerque', 'New Mexico', '87105');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('398', '27', 'Pleasure', 'Kansas City', 'Missouri', '64149');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('399', '73', 'Browning', 'Gainesville', 'Florida', '32610');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('400', '75', 'Mallory', 'Riverside', 'California', '92505');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('401', '51', 'Hoffman', 'Houston', 'Texas', '77228');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('402', '12', 'Namekagon', 'Tacoma', 'Washington', '98464');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('403', '22', 'Spenser', 'Syracuse', 'New York', '13224');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('404', '38', 'Tennyson', 'Lake Worth', 'Florida', '33467');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('405', '36', 'Sutherland', 'Sacramento', 'California', '94273');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('406', '71', 'Longview', 'Waterbury', 'Connecticut', '06721');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('407', '8', 'Charing Cross', 'Muskegon', 'Michigan', '49444');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('408', '16', 'Fallview', 'Marietta', 'Georgia', '30066');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('409', '72', 'Warbler', 'Irvine', 'California', '92619');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('410', '58', 'Redwing', 'Jackson', 'Mississippi', '39236');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('411', '55', 'Roth', 'San Francisco', 'California', '94159');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('412', '51', 'Monica', 'Washington', 'District of Columbia', '20503');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('413', '27', 'Loomis', 'Virginia Beach', 'Virginia', '23454');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('414', '17', 'Heffernan', 'Albany', 'Georgia', '31704');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('415', '79', 'Heath', 'Kansas City', 'Missouri', '64130');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('416', '2', 'Pepper Wood', 'Lexington', 'Kentucky', '40591');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('417', '89', 'Schiller', 'San Diego', 'California', '92153');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('418', '58', 'Miller', 'Paterson', 'New Jersey', '07505');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('419', '89', 'American', 'Charleston', 'West Virginia', '25356');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('420', '40', 'Hermina', 'Jamaica', 'New York', '11431');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('421', '85', 'Delladonna', 'Honolulu', 'Hawaii', '96850');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('422', '97', 'Spaight', 'South Bend', 'Indiana', '46614');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('423', '60', 'Carpenter', 'Brooklyn', 'New York', '11247');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('424', '51', 'Mayfield', 'Oklahoma City', 'Oklahoma', '73109');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('425', '17', 'Manufacturers', 'Lansing', 'Michigan', '48912');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('426', '97', 'Mcbride', 'Des Moines', 'Iowa', '50320');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('427', '91', 'Elmside', 'Clearwater', 'Florida', '34620');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('428', '89', 'Dottie', 'New York City', 'New York', '10175');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('429', '18', 'Annamark', 'Oklahoma City', 'Oklahoma', '73147');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('430', '34', 'Derek', 'Arvada', 'Colorado', '80005');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('431', '51', 'Scott', 'Houston', 'Texas', '77293');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('432', '75', 'Caliangt', 'Topeka', 'Kansas', '66642');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('433', '85', 'Messerschmidt', 'El Paso', 'Texas', '79911');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('434', '50', 'Duke', 'Richmond', 'Virginia', '23242');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('435', '23', 'Loftsgordon', 'Sacramento', 'California', '94250');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('436', '88', 'Bunker Hill', 'Sacramento', 'California', '94273');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('437', '20', 'Bunting', 'Young America', 'Minnesota', '55557');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('438', '81', 'Lindbergh', 'Louisville', 'Kentucky', '40256');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('439', '47', 'Stang', 'Tulsa', 'Oklahoma', '74149');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('440', '34', 'Grasskamp', 'Las Vegas', 'Nevada', '89160');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('441', '16', 'Memorial', 'Columbus', 'Georgia', '31914');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('442', '36', 'Cordelia', 'Raleigh', 'North Carolina', '27690');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('443', '39', 'Crest Line', 'Saint Petersburg', 'Florida', '33705');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('444', '23', 'Memorial', 'Orlando', 'Florida', '32803');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('445', '18', 'Glendale', 'Montgomery', 'Alabama', '36134');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('446', '30', 'Veith', 'Burbank', 'California', '91505');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('447', '10', 'Portage', 'Charlottesville', 'Virginia', '22903');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('448', '20', 'Northwestern', 'Miami', 'Florida', '33134');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('449', '91', 'Fairfield', 'Stockton', 'California', '95219');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('450', '24', 'Fairview', 'Richmond', 'Virginia', '23260');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('451', '48', 'Granby', 'Oakland', 'California', '94611');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('452', '9', 'Ruskin', 'Washington', 'District of Columbia', '20226');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('453', '48', 'Maple Wood', 'Shawnee Mission', 'Kansas', '66215');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('454', '94', 'Lawn', 'Burbank', 'California', '91505');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('455', '97', 'Lerdahl', 'Louisville', 'Kentucky', '40293');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('456', '16', 'Banding', 'Greeley', 'Colorado', '80638');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('457', '64', 'Cardinal', 'Danbury', 'Connecticut', '06816');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('458', '16', 'Clarendon', 'Indianapolis', 'Indiana', '46278');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('459', '10', 'Springs', 'Huntington', 'West Virginia', '25770');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('460', '79', 'Erie', 'Jamaica', 'New York', '11431');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('461', '35', 'Rusk', 'Springfield', 'Illinois', '62756');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('462', '49', 'Clove', 'New York City', 'New York', '10099');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('463', '33', 'Lakewood Gardens', 'Springfield', 'Illinois', '62711');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('464', '22', 'Becker', 'Jacksonville', 'Florida', '32230');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('465', '57', 'Emmet', 'Kansas City', 'Missouri', '64190');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('466', '84', 'Hovde', 'Fort Smith', 'Arkansas', '72916');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('467', '28', 'Ridge Oak', 'Sacramento', 'California', '95828');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('468', '43', 'Atwood', 'Dayton', 'Ohio', '45426');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('469', '58', 'Arizona', 'New York City', 'New York', '10004');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('470', '32', 'Cascade', 'Phoenix', 'Arizona', '85015');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('471', '77', 'Bultman', 'Evansville', 'Indiana', '47705');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('472', '31', 'Barby', 'Washington', 'District of Columbia', '20409');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('473', '43', 'Lyons', 'Peoria', 'Illinois', '61635');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('474', '75', 'Namekagon', 'Petaluma', 'California', '94975');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('475', '80', 'American Ash', 'Austin', 'Texas', '78721');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('476', '94', 'Schiller', 'Lafayette', 'Louisiana', '70505');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('477', '35', 'David', 'Gary', 'Indiana', '46406');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('478', '60', 'Barby', 'Fort Smith', 'Arkansas', '72905');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('479', '19', 'Scofield', 'Fort Worth', 'Texas', '76129');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('480', '66', 'Muir', 'Falls Church', 'Virginia', '22047');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('481', '45', 'International', 'Anchorage', 'Alaska', '99517');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('482', '60', 'Transport', 'Milwaukee', 'Wisconsin', '53263');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('483', '60', 'Oakridge', 'Washington', 'District of Columbia', '20016');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('484', '67', 'Muir', 'Columbus', 'Georgia', '31998');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('485', '77', 'Artisan', 'Houston', 'Texas', '77085');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('486', '37', 'Ridgeway', 'Tacoma', 'Washington', '98447');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('487', '43', 'Columbus', 'New York City', 'New York', '10203');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('488', '60', 'Kinsman', 'Anchorage', 'Alaska', '99512');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('489', '46', 'Melby', 'Raleigh', 'North Carolina', '27615');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('490', '45', 'Prentice', 'Stockton', 'California', '95298');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('491', '93', 'Cherokee', 'San Jose', 'California', '95155');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('492', '63', 'Miller', 'Odessa', 'Texas', '79769');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('493', '73', 'Maywood', 'Houston', 'Texas', '77035');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('494', '48', 'Dexter', 'Springfield', 'Massachusetts', '01105');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('495', '23', 'Scott', 'Kingsport', 'Tennessee', '37665');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('496', '22', 'Fremont', 'Newport News', 'Virginia', '23612');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('497', '2', 'Luster', 'Orlando', 'Florida', '32885');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('498', '95', 'Sauthoff', 'Maple Plain', 'Minnesota', '55572');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('499', '71', 'Calypso', 'Waltham', 'Massachusetts', '02453');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('500', '11', 'Kensington', 'Charlotte', 'North Carolina', '28263');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('501', '89', 'Menomonie', 'Austin', 'Texas', '78754');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('502', '22', 'Northland', 'Rockford', 'Illinois', '61105');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('503', '13', 'Dapin', 'Grand Forks', 'North Dakota', '58207');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('504', '78', 'Morning', 'Myrtle Beach', 'South Carolina', '29579');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('505', '13', 'Wayridge', 'Bakersfield', 'California', '93386');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('506', '59', 'Dryden', 'Atlanta', 'Georgia', '30351');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('507', '56', 'Dennis', 'Hartford', 'Connecticut', '06140');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('508', '3', 'Dovetail', 'Tampa', 'Florida', '33694');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('509', '51', 'Loeprich', 'Long Beach', 'California', '90831');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('510', '72', 'Kim', 'Springfield', 'Ohio', '45505');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('511', '99', 'Moland', 'Grand Rapids', 'Michigan', '49560');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('512', '84', 'Nevada', 'Troy', 'Michigan', '48098');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('513', '82', 'Pearson', 'Tulsa', 'Oklahoma', '74184');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('514', '32', '2nd', 'Salt Lake City', 'Utah', '84170');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('515', '48', 'Mayer', 'Suffolk', 'Virginia', '23436');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('516', '37', 'Meadow Valley', 'Oklahoma City', 'Oklahoma', '73190');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('517', '91', 'Clarendon', 'Las Vegas', 'Nevada', '89135');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('518', '60', 'Di Loreto', 'Kansas City', 'Missouri', '64149');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('519', '50', 'Basil', 'Ashburn', 'Virginia', '22093');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('520', '12', 'Claremont', 'Fort Worth', 'Texas', '76192');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('521', '52', 'Delaware', 'Washington', 'District of Columbia', '20520');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('522', '46', 'Di Loreto', 'San Antonio', 'Texas', '78240');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('523', '80', 'Crescent Oaks', 'Myrtle Beach', 'South Carolina', '29579');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('524', '37', 'Northridge', 'Colorado Springs', 'Colorado', '80945');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('525', '57', 'Arrowood', 'Los Angeles', 'California', '90040');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('526', '77', 'Thierer', 'Little Rock', 'Arkansas', '72231');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('527', '11', 'Little Fleur', 'Olympia', 'Washington', '98516');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('528', '1', 'Sutherland', 'Philadelphia', 'Pennsylvania', '19151');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('529', '1', 'Paget', 'Albany', 'New York', '12255');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('530', '81', 'Kenwood', 'Inglewood', 'California', '90305');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('531', '20', 'Jenna', 'Saint Louis', 'Missouri', '63167');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('532', '1', 'Arapahoe', 'Wilmington', 'North Carolina', '28405');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('533', '100', 'Saint Paul', 'Littleton', 'Colorado', '80126');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('534', '3', 'Starling', 'Alexandria', 'Virginia', '22313');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('535', '89', 'Leroy', 'Nashville', 'Tennessee', '37210');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('536', '32', 'Sutherland', 'New York City', 'New York', '10170');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('537', '4', 'Pennsylvania', 'Lees Summit', 'Missouri', '64082');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('538', '9', 'Alpine', 'Atlanta', 'Georgia', '30316');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('539', '40', 'Loftsgordon', 'Orlando', 'Florida', '32825');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('540', '9', 'Superior', 'Birmingham', 'Alabama', '35254');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('541', '28', 'Morrow', 'Fresno', 'California', '93762');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('542', '12', 'Garrison', 'Daytona Beach', 'Florida', '32128');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('543', '33', 'Golf', 'Phoenix', 'Arizona', '85099');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('544', '56', 'Bayside', 'Dallas', 'Texas', '75387');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('545', '51', 'Rockefeller', 'Jacksonville', 'Florida', '32259');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('546', '2', 'Lien', 'Rochester', 'New York', '14619');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('547', '33', 'Ridge Oak', 'Boston', 'Massachusetts', '02114');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('548', '10', 'Jana', 'Newton', 'Massachusetts', '02162');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('549', '6', 'Alpine', 'San Diego', 'California', '92191');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('550', '95', 'Golf', 'Pittsburgh', 'Pennsylvania', '15210');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('551', '20', 'David', 'Des Moines', 'Iowa', '50305');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('552', '26', 'Melby', 'Houston', 'Texas', '77218');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('553', '39', 'Warner', 'Houston', 'Texas', '77015');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('554', '5', 'Sherman', 'Abilene', 'Texas', '79605');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('555', '9', 'Lake View', 'Louisville', 'Kentucky', '40205');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('556', '13', 'Starling', 'Jacksonville', 'Florida', '32204');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('557', '75', 'Carpenter', 'Arvada', 'Colorado', '80005');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('558', '71', 'Norway Maple', 'Bronx', 'New York', '10464');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('559', '17', 'Vera', 'Phoenix', 'Arizona', '85072');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('560', '99', 'Transport', 'West Palm Beach', 'Florida', '33411');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('561', '98', 'Trailsway', 'Spartanburg', 'South Carolina', '29305');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('562', '90', 'Delladonna', 'San Jose', 'California', '95133');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('563', '19', 'Michigan', 'Houston', 'Texas', '77288');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('564', '88', 'Arizona', 'Lake Charles', 'Louisiana', '70616');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('565', '92', 'Loftsgordon', 'Sacramento', 'California', '95838');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('566', '22', 'Memorial', 'El Paso', 'Texas', '79999');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('567', '16', 'South', 'Fort Myers', 'Florida', '33913');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('568', '77', 'Summerview', 'Johnson City', 'Tennessee', '37605');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('569', '93', 'Raven', 'Knoxville', 'Tennessee', '37914');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('570', '21', 'Schurz', 'Hattiesburg', 'Mississippi', '39404');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('571', '50', 'Porter', 'Bryan', 'Texas', '77806');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('572', '94', 'American Ash', 'Indianapolis', 'Indiana', '46231');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('573', '63', 'Division', 'Tuscaloosa', 'Alabama', '35405');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('574', '50', 'Hooker', 'Pensacola', 'Florida', '32575');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('575', '69', 'Monterey', 'Pompano Beach', 'Florida', '33064');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('576', '49', 'Corscot', 'San Jose', 'California', '95150');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('577', '33', 'Pine View', 'Syracuse', 'New York', '13217');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('578', '98', 'Dunning', 'Los Angeles', 'California', '90040');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('579', '87', 'Browning', 'Amarillo', 'Texas', '79159');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('580', '55', 'Stuart', 'Akron', 'Ohio', '44321');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('581', '64', 'Fordem', 'Greensboro', 'North Carolina', '27499');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('582', '72', 'Maryland', 'Minneapolis', 'Minnesota', '55480');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('583', '8', 'Ludington', 'San Francisco', 'California', '94169');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('584', '53', 'Ludington', 'Santa Rosa', 'California', '95405');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('585', '74', 'Gina', 'El Paso', 'Texas', '79928');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('586', '55', 'Arizona', 'Portland', 'Oregon', '97286');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('587', '75', 'Bashford', 'Lansing', 'Michigan', '48912');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('588', '73', 'Warner', 'El Paso', 'Texas', '88589');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('589', '27', 'Brentwood', 'Independence', 'Missouri', '64054');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('590', '25', 'Brentwood', 'New Orleans', 'Louisiana', '70154');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('591', '66', 'Caliangt', 'Evansville', 'Indiana', '47705');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('592', '29', 'Thompson', 'Washington', 'District of Columbia', '20220');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('593', '56', 'Wayridge', 'Duluth', 'Georgia', '30195');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('594', '54', 'Arkansas', 'Aurora', 'Colorado', '80015');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('595', '25', 'Hanover', 'Boston', 'Massachusetts', '02119');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('596', '88', 'Kings', 'Amarillo', 'Texas', '79165');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('597', '63', 'Linden', 'Washington', 'District of Columbia', '20557');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('598', '78', 'Kenwood', 'Anchorage', 'Alaska', '99512');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('599', '52', 'Lillian', 'Miami', 'Florida', '33142');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('600', '51', 'Springs', 'Tyler', 'Texas', '75705');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('601', '65', 'Dexter', 'Omaha', 'Nebraska', '68144');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('602', '71', 'American', 'Salt Lake City', 'Utah', '84120');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('603', '51', 'Hagan', 'Minneapolis', 'Minnesota', '55470');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('604', '48', 'Buena Vista', 'Washington', 'District of Columbia', '20029');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('605', '12', 'Chive', 'Newark', 'Delaware', '19725');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('606', '99', 'Paget', 'Pompano Beach', 'Florida', '33064');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('607', '3', 'Oxford', 'Carol Stream', 'Illinois', '60351');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('608', '16', 'Browning', 'San Diego', 'California', '92115');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('609', '50', 'Anthes', 'Green Bay', 'Wisconsin', '54305');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('610', '90', 'Southridge', 'Washington', 'District of Columbia', '20414');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('611', '70', 'Dixon', 'Nashville', 'Tennessee', '37245');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('612', '18', 'Burrows', 'Oklahoma City', 'Oklahoma', '73142');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('613', '34', 'Dryden', 'New Orleans', 'Louisiana', '70174');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('614', '29', 'Scoville', 'Pittsburgh', 'Pennsylvania', '15210');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('615', '17', 'Scofield', 'Spring', 'Texas', '77386');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('616', '21', 'Russell', 'Melbourne', 'Florida', '32941');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('617', '85', 'Ruskin', 'Shawnee Mission', 'Kansas', '66286');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('618', '47', 'Mayfield', 'Austin', 'Texas', '78726');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('619', '52', 'Sheridan', 'Monticello', 'Minnesota', '55565');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('620', '67', 'Miller', 'Tulsa', 'Oklahoma', '74184');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('621', '80', 'Westerfield', 'San Francisco', 'California', '94142');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('622', '12', 'Larry', 'Fort Lauderdale', 'Florida', '33355');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('623', '33', 'Reinke', 'Seattle', 'Washington', '98185');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('624', '27', 'Anthes', 'Birmingham', 'Alabama', '35290');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('625', '77', 'Bobwhite', 'Washington', 'District of Columbia', '20260');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('626', '52', 'Dryden', 'Berkeley', 'California', '94712');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('627', '77', 'Surrey', 'Scranton', 'Pennsylvania', '18514');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('628', '72', 'Lindbergh', 'Jackson', 'Mississippi', '39204');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('629', '38', 'Melody', 'Denver', 'Colorado', '80228');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('630', '80', '7th', 'Houston', 'Texas', '77266');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('631', '9', 'Summerview', 'Florence', 'South Carolina', '29505');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('632', '51', 'Westport', 'Saint Louis', 'Missouri', '63169');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('633', '23', 'Ilene', 'San Bernardino', 'California', '92424');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('634', '3', 'Mcbride', 'Amarillo', 'Texas', '79188');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('635', '71', 'Washington', 'Columbus', 'Mississippi', '39705');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('636', '45', 'Shasta', 'Baltimore', 'Maryland', '21216');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('637', '27', 'Johnson', 'Duluth', 'Georgia', '30096');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('638', '38', 'Ridge Oak', 'Des Moines', 'Iowa', '50315');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('639', '21', 'Westport', 'New York City', 'New York', '10009');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('640', '41', 'Judy', 'Birmingham', 'Alabama', '35295');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('641', '4', 'Marquette', 'Valdosta', 'Georgia', '31605');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('642', '73', 'Boyd', 'Kansas City', 'Missouri', '64199');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('643', '20', 'Dixon', 'San Antonio', 'Texas', '78210');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('644', '15', 'Eastlawn', 'Sioux City', 'Iowa', '51105');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('645', '42', 'Algoma', 'Amarillo', 'Texas', '79171');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('646', '34', 'Amoth', 'Anaheim', 'California', '92825');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('647', '42', 'Eastwood', 'Cincinnati', 'Ohio', '45228');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('648', '75', 'American Ash', 'Pittsburgh', 'Pennsylvania', '15210');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('649', '76', 'Service', 'Charlotte', 'North Carolina', '28263');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('650', '43', 'Northfield', 'Dayton', 'Ohio', '45403');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('651', '57', 'Mitchell', 'Atlanta', 'Georgia', '30380');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('652', '2', 'Vidon', 'El Paso', 'Texas', '88584');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('653', '81', 'Jenna', 'Virginia Beach', 'Virginia', '23454');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('654', '73', 'Toban', 'San Diego', 'California', '92186');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('655', '46', 'Del Sol', 'Bonita Springs', 'Florida', '34135');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('656', '96', 'Heffernan', 'Brooklyn', 'New York', '11215');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('657', '29', 'West', 'Washington', 'District of Columbia', '20210');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('658', '87', 'Forster', 'Washington', 'District of Columbia', '20575');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('659', '35', 'Corscot', 'Cincinnati', 'Ohio', '45243');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('660', '40', 'American', 'Lincoln', 'Nebraska', '68517');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('661', '2', 'Spenser', 'Saginaw', 'Michigan', '48604');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('662', '1', 'Trailsway', 'Huntsville', 'Alabama', '35805');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('663', '38', 'Sloan', 'El Paso', 'Texas', '79984');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('664', '12', 'Westridge', 'Indianapolis', 'Indiana', '46226');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('665', '16', 'Barby', 'Schenectady', 'New York', '12325');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('666', '46', 'Melvin', 'Lake Charles', 'Louisiana', '70607');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('667', '79', 'Hoard', 'Oklahoma City', 'Oklahoma', '73114');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('668', '55', 'Fremont', 'Macon', 'Georgia', '31217');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('669', '83', 'Redwing', 'Austin', 'Texas', '78754');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('670', '38', 'Helena', 'Los Angeles', 'California', '90055');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('671', '87', 'Cherokee', 'Oklahoma City', 'Oklahoma', '73114');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('672', '45', 'Derek', 'Fort Wayne', 'Indiana', '46862');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('673', '62', 'Melody', 'Los Angeles', 'California', '90005');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('674', '65', 'Northport', 'Fort Smith', 'Arkansas', '72916');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('675', '79', 'Evergreen', 'San Antonio', 'Texas', '78220');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('676', '65', 'Meadow Vale', 'Spokane', 'Washington', '99210');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('677', '36', 'Melrose', 'Jefferson City', 'Missouri', '65110');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('678', '27', 'Johnson', 'Torrance', 'California', '90505');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('679', '75', 'Pine View', 'Jamaica', 'New York', '11447');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('680', '91', 'Clove', 'Tyler', 'Texas', '75705');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('681', '62', 'Farmco', 'Colorado Springs', 'Colorado', '80905');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('682', '1', 'Tony', 'Albany', 'New York', '12222');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('683', '17', 'Pawling', 'Indianapolis', 'Indiana', '46278');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('684', '64', 'Cambridge', 'Stamford', 'Connecticut', '06922');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('685', '29', 'Express', 'Bradenton', 'Florida', '34282');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('686', '51', 'Delaware', 'Scottsdale', 'Arizona', '85271');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('687', '8', 'Aberg', 'Charlotte', 'North Carolina', '28278');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('688', '6', 'Rieder', 'Palmdale', 'California', '93591');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('689', '84', 'Main', 'Minneapolis', 'Minnesota', '55407');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('690', '68', 'Service', 'Hartford', 'Connecticut', '06160');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('691', '76', 'Maryland', 'Knoxville', 'Tennessee', '37931');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('692', '27', 'Golf', 'Richmond', 'Virginia', '23225');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('693', '66', 'Russell', 'Baltimore', 'Maryland', '21211');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('694', '50', 'Meadow Vale', 'Raleigh', 'North Carolina', '27615');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('695', '3', 'Thackeray', 'Austin', 'Texas', '78783');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('696', '46', 'Village', 'Marietta', 'Georgia', '30066');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('697', '87', 'Holy Cross', 'Washington', 'District of Columbia', '20029');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('698', '93', 'Dapin', 'Albany', 'New York', '12247');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('699', '76', 'Clemons', 'Topeka', 'Kansas', '66617');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('700', '58', 'Moose', 'Young America', 'Minnesota', '55564');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('701', '56', 'Sundown', 'College Station', 'Texas', '77844');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('702', '22', 'Acker', 'Saint Louis', 'Missouri', '63150');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('703', '46', 'Gina', 'San Antonio', 'Texas', '78210');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('704', '50', 'Arizona', 'Dallas', 'Texas', '75379');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('705', '89', 'Kennedy', 'North Las Vegas', 'Nevada', '89087');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('706', '45', 'Merrick', 'Salt Lake City', 'Utah', '84110');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('707', '36', 'Dakota', 'Stockton', 'California', '95298');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('708', '59', 'Waubesa', 'Salt Lake City', 'Utah', '84170');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('709', '69', 'Mayer', 'New York City', 'New York', '10110');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('710', '23', 'Browning', 'Jackson', 'Mississippi', '39282');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('711', '90', 'Eagan', 'Toledo', 'Ohio', '43615');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('712', '65', 'Meadow Vale', 'Abilene', 'Texas', '79605');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('713', '46', 'Homewood', 'Omaha', 'Nebraska', '68197');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('714', '87', 'Northview', 'Indianapolis', 'Indiana', '46239');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('715', '38', 'Scofield', 'Denver', 'Colorado', '80235');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('716', '83', 'Browning', 'Trenton', 'New Jersey', '08638');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('717', '26', 'Blackbird', 'Milwaukee', 'Wisconsin', '53225');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('718', '68', 'Lakewood', 'Reston', 'Virginia', '20195');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('719', '39', 'Village', 'San Jose', 'California', '95155');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('720', '26', 'Quincy', 'Oklahoma City', 'Oklahoma', '73173');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('721', '3', 'Annamark', 'Schaumburg', 'Illinois', '60193');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('722', '66', 'Lakewood', 'Monticello', 'Minnesota', '55565');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('723', '71', 'Kim', 'Birmingham', 'Alabama', '35285');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('724', '49', 'Caliangt', 'Albany', 'Georgia', '31704');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('725', '79', 'Utah', 'Tallahassee', 'Florida', '32314');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('726', '46', 'Gateway', 'Roanoke', 'Virginia', '24048');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('727', '100', 'Carey', 'Kansas City', 'Missouri', '64179');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('728', '3', 'Roxbury', 'Chicago', 'Illinois', '60604');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('729', '48', 'John Wall', 'Tampa', 'Florida', '33633');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('730', '76', '5th', 'Albany', 'Georgia', '31704');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('731', '79', 'Northfield', 'Memphis', 'Tennessee', '38119');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('732', '37', 'Spohn', 'Denver', 'Colorado', '80255');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('733', '58', 'Morrow', 'Terre Haute', 'Indiana', '47805');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('734', '20', 'Sutherland', 'San Bernardino', 'California', '92405');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('735', '100', 'Delladonna', 'Huntington', 'West Virginia', '25711');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('736', '37', 'Graceland', 'Charlotte', 'North Carolina', '28220');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('737', '36', 'Sycamore', 'Los Angeles', 'California', '90025');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('738', '8', 'Talisman', 'Spokane', 'Washington', '99260');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('739', '32', 'South', 'Hagerstown', 'Maryland', '21747');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('740', '45', 'Northfield', 'Los Angeles', 'California', '90189');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('741', '17', 'Crescent Oaks', 'San Antonio', 'Texas', '78296');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('742', '100', 'Vidon', 'Columbus', 'Ohio', '43210');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('743', '3', 'Calypso', 'Louisville', 'Kentucky', '40287');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('744', '57', 'Independence', 'Trenton', 'New Jersey', '08695');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('745', '58', 'Pine View', 'Saint Louis', 'Missouri', '63104');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('746', '25', 'Myrtle', 'Fargo', 'North Dakota', '58122');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('747', '20', 'Rutledge', 'Corpus Christi', 'Texas', '78405');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('748', '50', 'Waubesa', 'Atlanta', 'Georgia', '30358');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('749', '20', 'Carberry', 'Cincinnati', 'Ohio', '45271');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('750', '22', 'Center', 'Humble', 'Texas', '77346');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('751', '17', 'Kennedy', 'Riverside', 'California', '92505');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('752', '43', 'Namekagon', 'Beaverton', 'Oregon', '97075');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('753', '50', 'Petterle', 'Richmond', 'Virginia', '23242');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('754', '51', 'Hooker', 'Louisville', 'Kentucky', '40225');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('755', '7', 'Atwood', 'Newark', 'Delaware', '19725');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('756', '87', 'Artisan', 'Mc Keesport', 'Pennsylvania', '15134');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('757', '85', 'Jana', 'Springfield', 'Missouri', '65810');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('758', '28', 'Grover', 'Fort Worth', 'Texas', '76134');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('759', '21', 'Redwing', 'Anchorage', 'Alaska', '99507');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('760', '49', '7th', 'Hot Springs National Park', 'Arkansas', '71914');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('761', '79', 'Pearson', 'Fort Wayne', 'Indiana', '46896');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('762', '17', 'Southridge', 'Prescott', 'Arizona', '86305');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('763', '51', 'Haas', 'Terre Haute', 'Indiana', '47812');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('764', '49', 'Scoville', 'Albuquerque', 'New Mexico', '87180');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('765', '88', 'Pine View', 'Brooklyn', 'New York', '11236');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('766', '52', 'Eagan', 'Peoria', 'Illinois', '61635');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('767', '81', 'Waubesa', 'Maple Plain', 'Minnesota', '55572');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('768', '13', 'Sugar', 'Lake Charles', 'Louisiana', '70607');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('769', '12', 'Hoepker', 'Des Moines', 'Iowa', '50362');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('770', '50', 'Jana', 'Charlotte', 'North Carolina', '28263');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('771', '93', 'Melrose', 'Seattle', 'Washington', '98115');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('772', '17', 'Emmet', 'Van Nuys', 'California', '91411');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('773', '11', 'Oak Valley', 'Orlando', 'Florida', '32859');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('774', '12', 'Pankratz', 'Los Angeles', 'California', '90010');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('775', '32', 'North', 'Staten Island', 'New York', '10305');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('776', '59', 'Columbus', 'Phoenix', 'Arizona', '85040');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('777', '3', 'Forest Run', 'Jackson', 'Mississippi', '39236');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('778', '67', 'Vidon', 'Charleston', 'West Virginia', '25313');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('779', '84', 'American Ash', 'Paterson', 'New Jersey', '07505');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('780', '45', 'Brown', 'Englewood', 'Colorado', '80150');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('781', '34', 'Hooker', 'Washington', 'District of Columbia', '20337');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('782', '5', 'Mockingbird', 'Norfolk', 'Virginia', '23509');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('783', '49', 'Thierer', 'Louisville', 'Kentucky', '40220');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('784', '69', 'Norway Maple', 'Atlanta', 'Georgia', '31196');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('785', '74', 'Vernon', 'El Paso', 'Texas', '88541');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('786', '49', 'Anniversary', 'Peoria', 'Illinois', '61635');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('787', '9', 'Fairfield', 'Jacksonville', 'Florida', '32225');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('788', '55', 'Fordem', 'Anaheim', 'California', '92805');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('789', '5', 'Coolidge', 'College Station', 'Texas', '77844');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('790', '86', 'Clyde Gallagher', 'Savannah', 'Georgia', '31416');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('791', '93', 'Sullivan', 'Lexington', 'Kentucky', '40546');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('792', '15', 'Quincy', 'Evansville', 'Indiana', '47737');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('793', '79', 'Knutson', 'Boston', 'Massachusetts', '02104');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('794', '24', 'Arkansas', 'Erie', 'Pennsylvania', '16522');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('795', '84', 'Mendota', 'Portsmouth', 'New Hampshire', '00214');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('796', '81', 'Prairieview', 'Cincinnati', 'Ohio', '45223');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('797', '83', 'Lerdahl', 'El Paso', 'Texas', '88574');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('798', '73', 'Troy', 'Chicago', 'Illinois', '60619');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('799', '81', 'Mallard', 'Nashville', 'Tennessee', '37228');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('800', '59', 'Sunfield', 'Largo', 'Florida', '34643');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('801', '1', 'Darwin', 'Huntsville', 'Alabama', '35815');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('802', '33', 'Swallow', 'Fayetteville', 'North Carolina', '28305');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('803', '13', 'Dovetail', 'Wichita', 'Kansas', '67215');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('804', '5', 'Glacier Hill', 'Buffalo', 'New York', '14210');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('805', '3', 'Portage', 'Milwaukee', 'Wisconsin', '53263');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('806', '81', '5th', 'San Jose', 'California', '95128');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('807', '76', 'North', 'Baltimore', 'Maryland', '21290');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('808', '67', 'Spaight', 'Atlanta', 'Georgia', '30340');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('809', '36', 'Esker', 'Charleston', 'West Virginia', '25389');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('810', '75', 'Pine View', 'Memphis', 'Tennessee', '38104');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('811', '29', 'Mayer', 'El Paso', 'Texas', '88574');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('812', '20', 'Northfield', 'Dallas', 'Texas', '75260');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('813', '70', 'Mayfield', 'Trenton', 'New Jersey', '08603');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('814', '53', 'Portage', 'Washington', 'District of Columbia', '20420');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('815', '65', 'Hanson', 'San Diego', 'California', '92165');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('816', '89', 'Green', 'Colorado Springs', 'Colorado', '80995');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('817', '75', 'Marquette', 'Huntsville', 'Texas', '77343');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('818', '50', 'Schlimgen', 'Orlando', 'Florida', '32859');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('819', '50', 'Dorton', 'Lafayette', 'Louisiana', '70593');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('820', '52', 'Ludington', 'Chicago', 'Illinois', '60646');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('821', '31', 'Pearson', 'Longview', 'Texas', '75605');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('822', '87', 'Helena', 'Seattle', 'Washington', '98158');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('823', '14', 'Burning Wood', 'Stamford', 'Connecticut', '06912');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('824', '11', 'Harper', 'Salinas', 'California', '93907');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('825', '52', 'Rockefeller', 'Des Moines', 'Iowa', '50369');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('826', '18', 'Mockingbird', 'Fort Lauderdale', 'Florida', '33325');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('827', '44', 'Michigan', 'Worcester', 'Massachusetts', '01610');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('828', '33', 'Hazelcrest', 'Greensboro', 'North Carolina', '27409');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('829', '34', 'Mifflin', 'Sacramento', 'California', '95838');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('830', '40', 'Thierer', 'Tempe', 'Arizona', '85284');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('831', '91', '3rd', 'Odessa', 'Texas', '79764');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('832', '14', 'Packers', 'Arlington', 'Virginia', '22212');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('833', '65', 'Stone Corner', 'Amarillo', 'Texas', '79182');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('834', '65', 'Harbort', 'Fargo', 'North Dakota', '58106');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('835', '66', 'Hovde', 'Pittsburgh', 'Pennsylvania', '15205');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('836', '7', 'Milwaukee', 'Pensacola', 'Florida', '32505');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('837', '74', 'Mosinee', 'Honolulu', 'Hawaii', '96820');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('838', '61', 'Crownhardt', 'Schenectady', 'New York', '12325');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('839', '70', 'North', 'Lubbock', 'Texas', '79405');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('840', '22', 'Carpenter', 'Durham', 'North Carolina', '27705');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('841', '48', 'Bowman', 'Saint Paul', 'Minnesota', '55114');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('842', '26', 'Mosinee', 'Missoula', 'Montana', '59806');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('843', '15', 'Graceland', 'Dallas', 'Texas', '75353');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('844', '69', 'Karstens', 'Washington', 'District of Columbia', '20067');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('845', '19', 'Oakridge', 'Jackson', 'Mississippi', '39236');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('846', '78', 'Sachtjen', 'Wilmington', 'Delaware', '19892');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('847', '90', 'Hooker', 'Columbia', 'South Carolina', '29225');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('848', '94', 'Bartelt', 'Peoria', 'Arizona', '85383');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('849', '26', 'Cherokee', 'Scranton', 'Pennsylvania', '18505');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('850', '79', 'Sugar', 'Cleveland', 'Ohio', '44130');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('851', '39', 'Hollow Ridge', 'Bryan', 'Texas', '77806');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('852', '70', 'School', 'Norcross', 'Georgia', '30092');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('853', '93', 'Steensland', 'Baltimore', 'Maryland', '21265');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('854', '33', 'Rutledge', 'Manchester', 'New Hampshire', '03105');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('855', '45', 'Holy Cross', 'Mansfield', 'Ohio', '44905');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('856', '79', 'Manufacturers', 'Salt Lake City', 'Utah', '84152');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('857', '78', 'Pierstorff', 'Portland', 'Oregon', '97255');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('858', '74', 'Kennedy', 'Austin', 'Texas', '78726');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('859', '34', 'Holy Cross', 'San Antonio', 'Texas', '78296');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('860', '42', 'Bartelt', 'Panama City', 'Florida', '32405');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('861', '96', 'Oxford', 'Jamaica', 'New York', '11436');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('862', '89', 'Southridge', 'San Jose', 'California', '95118');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('863', '7', 'Bunting', 'Philadelphia', 'Pennsylvania', '19093');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('864', '30', 'Thierer', 'Lansing', 'Michigan', '48901');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('865', '98', 'Sage', 'Lincoln', 'Nebraska', '68517');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('866', '25', 'Mesta', 'Raleigh', 'North Carolina', '27635');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('867', '78', 'Buena Vista', 'Charleston', 'West Virginia', '25321');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('868', '4', 'Gateway', 'Columbus', 'Georgia', '31998');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('869', '88', 'Main', 'Birmingham', 'Alabama', '35279');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('870', '28', 'Blaine', 'New York City', 'New York', '10034');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('871', '48', 'Calypso', 'Savannah', 'Georgia', '31410');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('872', '10', 'Randy', 'Maple Plain', 'Minnesota', '55572');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('873', '14', 'Westend', 'Chandler', 'Arizona', '85246');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('874', '82', 'Oneill', 'Vienna', 'Virginia', '22184');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('875', '5', 'Goodland', 'Santa Fe', 'New Mexico', '87505');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('876', '68', 'Golf Course', 'Birmingham', 'Alabama', '35205');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('877', '61', 'Merrick', 'El Paso', 'Texas', '88563');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('878', '85', 'Stoughton', 'Kansas City', 'Missouri', '64142');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('879', '23', 'Maple', 'Palo Alto', 'California', '94302');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('880', '56', 'Fuller', 'El Paso', 'Texas', '79911');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('881', '60', 'Riverside', 'Kansas City', 'Missouri', '64125');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('882', '55', 'Hayes', 'Plano', 'Texas', '75074');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('883', '98', 'Evergreen', 'Utica', 'New York', '13505');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('884', '74', 'Nobel', 'Fort Wayne', 'Indiana', '46805');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('885', '2', 'Hooker', 'Lexington', 'Kentucky', '40596');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('886', '82', 'Carpenter', 'Madison', 'Wisconsin', '53726');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('887', '49', 'Nelson', 'Jackson', 'Mississippi', '39282');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('888', '90', 'Norway Maple', 'Cedar Rapids', 'Iowa', '52410');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('889', '33', 'Garrison', 'Carol Stream', 'Illinois', '60351');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('890', '100', 'East', 'Alexandria', 'Virginia', '22313');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('891', '55', 'Sheridan', 'Tucson', 'Arizona', '85715');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('892', '84', 'Sugar', 'Birmingham', 'Alabama', '35279');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('893', '99', 'American', 'North Hollywood', 'California', '91616');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('894', '8', 'Hoepker', 'Phoenix', 'Arizona', '85099');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('895', '75', 'Cottonwood', 'San Diego', 'California', '92110');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('896', '55', 'Nancy', 'Santa Rosa', 'California', '95405');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('897', '63', 'Steensland', 'San Antonio', 'Texas', '78278');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('898', '62', 'Gulseth', 'Wilkes Barre', 'Pennsylvania', '18706');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('899', '26', 'Leroy', 'Troy', 'Michigan', '48098');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('900', '60', 'Truax', 'Indianapolis', 'Indiana', '46226');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('901', '17', 'Ramsey', 'Oklahoma City', 'Oklahoma', '73124');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('902', '62', 'Elka', 'Louisville', 'Kentucky', '40215');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('903', '78', 'Burrows', 'Saint Louis', 'Missouri', '63150');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('904', '50', 'Fallview', 'Nashville', 'Tennessee', '37250');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('905', '25', 'Pearson', 'Dulles', 'Virginia', '20189');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('906', '23', 'Mendota', 'Jamaica', 'New York', '11407');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('907', '39', 'Eastlawn', 'Dallas', 'Texas', '75353');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('908', '43', 'Mayfield', 'Galveston', 'Texas', '77554');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('909', '32', 'Jenifer', 'Washington', 'District of Columbia', '20010');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('910', '92', 'Sherman', 'Boston', 'Massachusetts', '02203');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('911', '42', 'Hudson', 'Des Moines', 'Iowa', '50305');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('912', '47', '2nd', 'Los Angeles', 'California', '90101');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('913', '67', 'Buena Vista', 'Hicksville', 'New York', '11854');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('914', '60', 'Vermont', 'Fort Lauderdale', 'Florida', '33315');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('915', '28', 'Amoth', 'Dallas', 'Texas', '75251');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('916', '74', 'Sullivan', 'Atlanta', 'Georgia', '30301');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('917', '95', 'Hudson', 'Las Vegas', 'Nevada', '89140');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('918', '84', 'Oneill', 'West Palm Beach', 'Florida', '33416');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('919', '53', 'Carpenter', 'Los Angeles', 'California', '90055');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('920', '62', 'Eggendart', 'Gastonia', 'North Carolina', '28055');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('921', '27', 'Novick', 'Omaha', 'Nebraska', '68179');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('922', '13', 'Little Fleur', 'Baltimore', 'Maryland', '21265');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('923', '28', 'Buena Vista', 'Birmingham', 'Alabama', '35225');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('924', '57', 'High Crossing', 'Colorado Springs', 'Colorado', '80945');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('925', '61', 'Burning Wood', 'Albany', 'New York', '12255');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('926', '8', 'Bunting', 'Oklahoma City', 'Oklahoma', '73114');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('927', '16', 'Thompson', 'Denver', 'Colorado', '80270');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('928', '70', 'Darwin', 'Chicago', 'Illinois', '60609');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('929', '65', 'Bowman', 'Washington', 'District of Columbia', '20088');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('930', '56', 'Old Gate', 'Omaha', 'Nebraska', '68179');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('931', '87', 'Warbler', 'Chicago', 'Illinois', '60663');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('932', '37', 'Forest', 'Houston', 'Texas', '77095');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('933', '77', 'Pawling', 'Mobile', 'Alabama', '36628');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('934', '25', 'Debs', 'Fairbanks', 'Alaska', '99790');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('935', '50', 'Becker', 'Montgomery', 'Alabama', '36134');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('936', '20', 'Magdeline', 'San Bernardino', 'California', '92424');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('937', '60', 'Katie', 'Knoxville', 'Tennessee', '37931');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('938', '60', 'Tennyson', 'Jamaica', 'New York', '11436');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('939', '71', 'Harbort', 'Fort Myers', 'Florida', '33994');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('940', '61', 'Redwing', 'Atlanta', 'Georgia', '31106');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('941', '84', 'Parkside', 'New York City', 'New York', '10292');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('942', '95', 'Hoepker', 'Pasadena', 'California', '91117');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('943', '60', 'Waywood', 'Lehigh Acres', 'Florida', '33972');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('944', '38', 'Buell', 'Naples', 'Florida', '34108');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('945', '71', 'Knutson', 'Philadelphia', 'Pennsylvania', '19109');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('946', '87', 'Banding', 'Washington', 'District of Columbia', '20260');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('947', '45', 'Arrowood', 'Phoenix', 'Arizona', '85053');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('948', '28', 'Stang', 'Kalamazoo', 'Michigan', '49048');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('949', '26', 'Boyd', 'Reading', 'Pennsylvania', '19605');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('950', '78', 'Lindbergh', 'Sioux Falls', 'South Dakota', '57198');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('951', '14', 'Roth', 'Atlanta', 'Georgia', '31119');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('952', '97', 'Nobel', 'Spokane', 'Washington', '99260');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('953', '74', 'Hudson', 'Saginaw', 'Michigan', '48604');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('954', '2', 'Russell', 'Tulsa', 'Oklahoma', '74184');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('955', '11', 'Ohio', 'Washington', 'District of Columbia', '20078');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('956', '42', 'Almo', 'Albany', 'New York', '12205');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('957', '21', 'Trailsway', 'New York City', 'New York', '10039');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('958', '88', 'Holmberg', 'Atlanta', 'Georgia', '30311');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('959', '63', '7th', 'Jacksonville', 'Florida', '32236');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('960', '27', 'Anzinger', 'Columbus', 'Mississippi', '39705');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('961', '25', 'Muir', 'Boston', 'Massachusetts', '02203');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('962', '85', 'Morrow', 'Newton', 'Massachusetts', '02162');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('963', '3', 'Fieldstone', 'New Orleans', 'Louisiana', '70160');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('964', '28', 'Kensington', 'Yonkers', 'New York', '10705');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('965', '59', 'Merchant', 'Salem', 'Oregon', '97306');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('966', '95', 'American Ash', 'Houston', 'Texas', '77070');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('967', '18', 'Transport', 'Tempe', 'Arizona', '85284');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('968', '66', 'Merchant', 'New York City', 'New York', '10203');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('969', '83', 'Logan', 'Lincoln', 'Nebraska', '68524');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('970', '88', 'Basil', 'Hicksville', 'New York', '11854');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('971', '73', '6th', 'Bloomington', 'Indiana', '47405');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('972', '26', 'Prairieview', 'Atlanta', 'Georgia', '31132');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('973', '58', 'Basil', 'Sacramento', 'California', '95823');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('974', '11', 'Badeau', 'Dayton', 'Ohio', '45414');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('975', '79', 'Charing Cross', 'Milwaukee', 'Wisconsin', '53225');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('976', '14', 'Holmberg', 'Wilkes Barre', 'Pennsylvania', '18706');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('977', '89', '3rd', 'Torrance', 'California', '90505');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('978', '62', 'Debra', 'Chicago', 'Illinois', '60614');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('979', '100', 'Schlimgen', 'Omaha', 'Nebraska', '68179');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('980', '92', 'Ohio', 'Charleston', 'West Virginia', '25326');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('981', '90', 'Bartelt', 'Columbia', 'South Carolina', '29240');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('982', '72', 'Victoria', 'Virginia Beach', 'Virginia', '23471');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('983', '53', 'Becker', 'Waco', 'Texas', '76711');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('984', '98', 'Westerfield', 'Boise', 'Idaho', '83727');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('985', '13', 'Johnson', 'Toledo', 'Ohio', '43615');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('986', '28', 'Hooker', 'Macon', 'Georgia', '31210');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('987', '74', '6th', 'Washington', 'District of Columbia', '20456');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('988', '62', 'Mariners Cove', 'Baltimore', 'Maryland', '21229');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('989', '93', 'West', 'El Paso', 'Texas', '79989');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('990', '43', 'Kennedy', 'Minneapolis', 'Minnesota', '55487');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('991', '90', 'Nelson', 'Laredo', 'Texas', '78044');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('992', '44', 'Dayton', 'Richmond', 'Virginia', '23213');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('993', '10', 'Schlimgen', 'Houston', 'Texas', '77010');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('994', '13', 'Hovde', 'Las Vegas', 'Nevada', '89125');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('995', '17', 'Express', 'Buffalo', 'New York', '14215');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('996', '18', 'Welch', 'Dallas', 'Texas', '75372');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('997', '13', 'Calypso', 'Shawnee Mission', 'Kansas', '66215');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('998', '19', 'Crowley', 'Tulsa', 'Oklahoma', '74156');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('999', '42', 'Debra', 'Phoenix', 'Arizona', '85062');
-INSERT INTO Suppliers (supplier_id, item_number, street, city, state, zip_code) VALUES ('1000', '54', 'Gale', 'Lansing', 'Michigan', '48930');
+INSERT INTO Suppliers(supplier_id,item_number,street,city,state,zip_code) VALUES (1,38,'Burrows','Apache Junction','Arizona',85219);
+INSERT INTO Suppliers(supplier_id,item_number,street,city,state,zip_code) VALUES (2,49,'Fulton','Lake Worth','Florida',33467);
+INSERT INTO Suppliers(supplier_id,item_number,street,city,state,zip_code) VALUES (3,80,'Crest Line','Jacksonville','Florida',32209);
+INSERT INTO Suppliers(supplier_id,item_number,street,city,state,zip_code) VALUES (4,79,'Vahlen','Detroit','Michigan',48275);
+INSERT INTO Suppliers(supplier_id,item_number,street,city,state,zip_code) VALUES (5,1,'Nelson','Charlotte','North Carolina',28235);
+INSERT INTO Suppliers(supplier_id,item_number,street,city,state,zip_code) VALUES (6,82,'Bay','Rochester','Minnesota',55905);
+INSERT INTO Suppliers(supplier_id,item_number,street,city,state,zip_code) VALUES (7,14,'Artisan','Washington','District of Columbia',20436);
+INSERT INTO Suppliers(supplier_id,item_number,street,city,state,zip_code) VALUES (8,93,'Lakeland','Lancaster','Pennsylvania',17622);
+INSERT INTO Suppliers(supplier_id,item_number,street,city,state,zip_code) VALUES (9,39,'Washington','Birmingham','Alabama',35210);
+INSERT INTO Suppliers(supplier_id,item_number,street,city,state,zip_code) VALUES (10,9,'Fallview','Phoenix','Arizona',85077);
+INSERT INTO Suppliers(supplier_id,item_number,street,city,state,zip_code) VALUES (11,51,'Meadow Ridge','Fort Worth','Texas',76192);
+INSERT INTO Suppliers(supplier_id,item_number,street,city,state,zip_code) VALUES (12,29,'Karstens','Cheyenne','Wyoming',82007);
+INSERT INTO Suppliers(supplier_id,item_number,street,city,state,zip_code) VALUES (13,37,'Chive','Kansas City','Missouri',64114);
+INSERT INTO Suppliers(supplier_id,item_number,street,city,state,zip_code) VALUES (14,15,'Shopko','Knoxville','Tennessee',37931);
+INSERT INTO Suppliers(supplier_id,item_number,street,city,state,zip_code) VALUES (15,20,'Del Mar','Tampa','Florida',33673);
+INSERT INTO Suppliers(supplier_id,item_number,street,city,state,zip_code) VALUES (16,26,'Bluestem','Saint Louis','Missouri',63158);
+INSERT INTO Suppliers(supplier_id,item_number,street,city,state,zip_code) VALUES (17,81,'Kipling','Cincinnati','Ohio',45218);
+INSERT INTO Suppliers(supplier_id,item_number,street,city,state,zip_code) VALUES (18,31,'Kropf','San Antonio','Texas',78245);
+INSERT INTO Suppliers(supplier_id,item_number,street,city,state,zip_code) VALUES (19,27,'Troy','Dallas','Texas',75236);
+INSERT INTO Suppliers(supplier_id,item_number,street,city,state,zip_code) VALUES (20,10,'Springs','Palm Bay','Florida',32909);
+INSERT INTO Suppliers(supplier_id,item_number,street,city,state,zip_code) VALUES (21,94,'Kenwood','Migrate','Kentucky',41905);
+INSERT INTO Suppliers(supplier_id,item_number,street,city,state,zip_code) VALUES (22,16,'Hintze','Columbus','Ohio',43284);
+INSERT INTO Suppliers(supplier_id,item_number,street,city,state,zip_code) VALUES (23,26,'Lakeland','Anaheim','California',92825);
+INSERT INTO Suppliers(supplier_id,item_number,street,city,state,zip_code) VALUES (24,45,'Golden Leaf','Fairbanks','Alaska',99790);
+INSERT INTO Suppliers(supplier_id,item_number,street,city,state,zip_code) VALUES (25,85,'Norway Maple','Des Moines','Iowa',50362);
+INSERT INTO Suppliers(supplier_id,item_number,street,city,state,zip_code) VALUES (26,20,'Chive','Rochester','New York',14624);
+INSERT INTO Suppliers(supplier_id,item_number,street,city,state,zip_code) VALUES (27,66,'Myrtle','Dallas','Texas',75246);
+INSERT INTO Suppliers(supplier_id,item_number,street,city,state,zip_code) VALUES (28,3,'Surrey','El Paso','Texas',79984);
+INSERT INTO Suppliers(supplier_id,item_number,street,city,state,zip_code) VALUES (29,12,'Dwight','White Plains','New York',10633);
+INSERT INTO Suppliers(supplier_id,item_number,street,city,state,zip_code) VALUES (30,22,'Mallory','Harrisburg','Pennsylvania',17110);
+INSERT INTO Suppliers(supplier_id,item_number,street,city,state,zip_code) VALUES (31,44,'Loomis','Atlanta','Georgia',31119);
+INSERT INTO Suppliers(supplier_id,item_number,street,city,state,zip_code) VALUES (32,49,'Alpine','Las Vegas','Nevada',89166);
+INSERT INTO Suppliers(supplier_id,item_number,street,city,state,zip_code) VALUES (33,1,'Kim','San Antonio','Texas',78291);
+INSERT INTO Suppliers(supplier_id,item_number,street,city,state,zip_code) VALUES (34,8,'Beilfuss','Juneau','Alaska',99812);
+INSERT INTO Suppliers(supplier_id,item_number,street,city,state,zip_code) VALUES (35,13,'Fuller','Boise','Idaho',83757);
+INSERT INTO Suppliers(supplier_id,item_number,street,city,state,zip_code) VALUES (36,81,'Heffernan','Saint Louis','Missouri',63143);
+INSERT INTO Suppliers(supplier_id,item_number,street,city,state,zip_code) VALUES (37,84,'Harper','Jackson','Tennessee',38308);
+INSERT INTO Suppliers(supplier_id,item_number,street,city,state,zip_code) VALUES (38,3,'Susan','New York City','New York',10090);
+INSERT INTO Suppliers(supplier_id,item_number,street,city,state,zip_code) VALUES (39,36,'Debra','Houston','Texas',77228);
+INSERT INTO Suppliers(supplier_id,item_number,street,city,state,zip_code) VALUES (40,99,'Saint Paul','Laurel','Maryland',20709);
+INSERT INTO Suppliers(supplier_id,item_number,street,city,state,zip_code) VALUES (41,94,'Moulton','Plano','Texas',75074);
+INSERT INTO Suppliers(supplier_id,item_number,street,city,state,zip_code) VALUES (42,78,'Stoughton','Memphis','Tennessee',38104);
+INSERT INTO Suppliers(supplier_id,item_number,street,city,state,zip_code) VALUES (43,99,'Upham','Racine','Wisconsin',53405);
+INSERT INTO Suppliers(supplier_id,item_number,street,city,state,zip_code) VALUES (44,100,'Mallory','Palatine','Illinois',60078);
+INSERT INTO Suppliers(supplier_id,item_number,street,city,state,zip_code) VALUES (45,21,'Sloan','Terre Haute','Indiana',47812);
+INSERT INTO Suppliers(supplier_id,item_number,street,city,state,zip_code) VALUES (46,48,'Merrick','Los Angeles','California',90005);
+INSERT INTO Suppliers(supplier_id,item_number,street,city,state,zip_code) VALUES (47,92,'Marcy','New York City','New York',10079);
+INSERT INTO Suppliers(supplier_id,item_number,street,city,state,zip_code) VALUES (48,61,'Dovetail','Brooklyn','New York',11205);
+INSERT INTO Suppliers(supplier_id,item_number,street,city,state,zip_code) VALUES (49,11,'Johnson','Pittsburgh','Pennsylvania',15210);
+INSERT INTO Suppliers(supplier_id,item_number,street,city,state,zip_code) VALUES (50,14,'Warner','Pasadena','California',91109);
+INSERT INTO Suppliers(supplier_id,item_number,street,city,state,zip_code) VALUES (51,77,'Havey','Houston','Texas',77288);
+INSERT INTO Suppliers(supplier_id,item_number,street,city,state,zip_code) VALUES (52,97,'John Wall','Evansville','Indiana',47719);
+INSERT INTO Suppliers(supplier_id,item_number,street,city,state,zip_code) VALUES (53,58,'Red Cloud','Chico','California',95973);
+INSERT INTO Suppliers(supplier_id,item_number,street,city,state,zip_code) VALUES (54,70,'Muir','Hartford','Connecticut',06183);
+INSERT INTO Suppliers(supplier_id,item_number,street,city,state,zip_code) VALUES (55,80,'Bowman','Bradenton','Florida',34210);
+INSERT INTO Suppliers(supplier_id,item_number,street,city,state,zip_code) VALUES (56,9,'Brown','Richmond','Virginia',23242);
+INSERT INTO Suppliers(supplier_id,item_number,street,city,state,zip_code) VALUES (57,77,'International','Nashville','Tennessee',37215);
+INSERT INTO Suppliers(supplier_id,item_number,street,city,state,zip_code) VALUES (58,54,'Forest Dale','Pasadena','Texas',77505);
+INSERT INTO Suppliers(supplier_id,item_number,street,city,state,zip_code) VALUES (59,78,'Clarendon','Cincinnati','Ohio',45223);
+INSERT INTO Suppliers(supplier_id,item_number,street,city,state,zip_code) VALUES (60,42,'Morningstar','Norman','Oklahoma',73071);
+INSERT INTO Suppliers(supplier_id,item_number,street,city,state,zip_code) VALUES (61,37,'Mockingbird','Chicago','Illinois',60614);
+INSERT INTO Suppliers(supplier_id,item_number,street,city,state,zip_code) VALUES (62,35,'Fallview','Saint Louis','Missouri',63169);
+INSERT INTO Suppliers(supplier_id,item_number,street,city,state,zip_code) VALUES (63,59,'Dapin','Springfield','Illinois',62711);
+INSERT INTO Suppliers(supplier_id,item_number,street,city,state,zip_code) VALUES (64,52,'Lakewood','Columbus','Ohio',43215);
+INSERT INTO Suppliers(supplier_id,item_number,street,city,state,zip_code) VALUES (65,15,'Kinsman','Rochester','New York',14639);
+INSERT INTO Suppliers(supplier_id,item_number,street,city,state,zip_code) VALUES (66,8,'Evergreen','Huntington','West Virginia',25775);
+INSERT INTO Suppliers(supplier_id,item_number,street,city,state,zip_code) VALUES (67,2,'Bayside','Northridge','California',91328);
+INSERT INTO Suppliers(supplier_id,item_number,street,city,state,zip_code) VALUES (68,51,'Autumn Leaf','Austin','Texas',78737);
+INSERT INTO Suppliers(supplier_id,item_number,street,city,state,zip_code) VALUES (69,21,'Toban','San Jose','California',95123);
+INSERT INTO Suppliers(supplier_id,item_number,street,city,state,zip_code) VALUES (70,6,'Cody','Boise','Idaho',83716);
+INSERT INTO Suppliers(supplier_id,item_number,street,city,state,zip_code) VALUES (71,52,'Kropf','Scranton','Pennsylvania',18505);
+INSERT INTO Suppliers(supplier_id,item_number,street,city,state,zip_code) VALUES (72,90,'Nancy','Topeka','Kansas',66699);
+INSERT INTO Suppliers(supplier_id,item_number,street,city,state,zip_code) VALUES (73,85,'Texas','Reading','Pennsylvania',19605);
+INSERT INTO Suppliers(supplier_id,item_number,street,city,state,zip_code) VALUES (74,46,'Golf','Columbia','South Carolina',29240);
+INSERT INTO Suppliers(supplier_id,item_number,street,city,state,zip_code) VALUES (75,100,'Monument','Baltimore','Maryland',21265);
+INSERT INTO Suppliers(supplier_id,item_number,street,city,state,zip_code) VALUES (76,17,'3rd','Oklahoma City','Oklahoma',73167);
+INSERT INTO Suppliers(supplier_id,item_number,street,city,state,zip_code) VALUES (77,26,'Johnson','New York City','New York',10034);
+INSERT INTO Suppliers(supplier_id,item_number,street,city,state,zip_code) VALUES (78,97,'Golf Course','Springfield','Illinois',62776);
+INSERT INTO Suppliers(supplier_id,item_number,street,city,state,zip_code) VALUES (79,25,'Anniversary','Birmingham','Alabama',35220);
+INSERT INTO Suppliers(supplier_id,item_number,street,city,state,zip_code) VALUES (80,42,'Bayside','Roanoke','Virginia',24034);
+INSERT INTO Suppliers(supplier_id,item_number,street,city,state,zip_code) VALUES (81,54,'Onsgard','Montpelier','Vermont',05609);
+INSERT INTO Suppliers(supplier_id,item_number,street,city,state,zip_code) VALUES (82,2,'Moland','Lincoln','Nebraska',68505);
+INSERT INTO Suppliers(supplier_id,item_number,street,city,state,zip_code) VALUES (83,5,'Glacier Hill','Mesa','Arizona',85205);
+INSERT INTO Suppliers(supplier_id,item_number,street,city,state,zip_code) VALUES (84,95,'Northwestern','Akron','Ohio',44310);
+INSERT INTO Suppliers(supplier_id,item_number,street,city,state,zip_code) VALUES (85,80,'Spaight','Houston','Texas',77065);
+INSERT INTO Suppliers(supplier_id,item_number,street,city,state,zip_code) VALUES (86,27,'Manley','San Francisco','California',94147);
+INSERT INTO Suppliers(supplier_id,item_number,street,city,state,zip_code) VALUES (87,56,'Boyd','Washington','District of Columbia',20535);
+INSERT INTO Suppliers(supplier_id,item_number,street,city,state,zip_code) VALUES (88,61,'Fuller','Fort Lauderdale','Florida',33336);
+INSERT INTO Suppliers(supplier_id,item_number,street,city,state,zip_code) VALUES (89,67,'Anniversary','Detroit','Michigan',48217);
+INSERT INTO Suppliers(supplier_id,item_number,street,city,state,zip_code) VALUES (90,17,'Sutteridge','Champaign','Illinois',61825);
+INSERT INTO Suppliers(supplier_id,item_number,street,city,state,zip_code) VALUES (91,85,'Northland','Monroe','Louisiana',71213);
+INSERT INTO Suppliers(supplier_id,item_number,street,city,state,zip_code) VALUES (92,75,'Eagle Crest','Buffalo','New York',14269);
+INSERT INTO Suppliers(supplier_id,item_number,street,city,state,zip_code) VALUES (93,70,'Carey','Lincoln','Nebraska',68505);
+INSERT INTO Suppliers(supplier_id,item_number,street,city,state,zip_code) VALUES (94,98,'Kinsman','Dayton','Ohio',45408);
+INSERT INTO Suppliers(supplier_id,item_number,street,city,state,zip_code) VALUES (95,14,'Kipling','Buffalo','New York',14210);
+INSERT INTO Suppliers(supplier_id,item_number,street,city,state,zip_code) VALUES (96,23,'Melody','Albuquerque','New Mexico',87201);
+INSERT INTO Suppliers(supplier_id,item_number,street,city,state,zip_code) VALUES (97,66,'Mesta','Saint Louis','Missouri',63126);
+INSERT INTO Suppliers(supplier_id,item_number,street,city,state,zip_code) VALUES (98,83,'Ridge Oak','Peoria','Illinois',61656);
+INSERT INTO Suppliers(supplier_id,item_number,street,city,state,zip_code) VALUES (99,16,'Portage','Houston','Texas',77030);
+INSERT INTO Suppliers(supplier_id,item_number,street,city,state,zip_code) VALUES (100,24,'Sunnyside','Gatesville','Texas',76598);
 
---# Users
-INSERT INTO Users (user_id, username, password, date_made, phone_number, first_name, last_name, card_number, cvv, expiration_date, street, city, state, zip_code) VALUES ('1', 'jraubenheimer0', 'dThYC4CutNXm', '2/24/2023', '904-428-4017', 'Florry', 'Janelle', '5007666121573372', '648', '2/19/2023', 'Comanche', 'Saint Augustine', 'Florida', '32092');
-INSERT INTO Users (user_id, username, password, date_made, phone_number, first_name, last_name, card_number, cvv, expiration_date, street, city, state, zip_code) VALUES ('2', 'jmetcalfe1', 'NUV7RZ1yw', '8/31/2022', '302-807-9501', 'Olimpia', 'Jens', '3555318191750941', '668', '11/22/2022', 'Aberg', 'Wilmington', 'Delaware', '19810');
-INSERT INTO Users (user_id, username, password, date_made, phone_number, first_name, last_name, card_number, cvv, expiration_date, street, city, state, zip_code) VALUES ('3', 'bbirds2', 'OlUkF5pg7', '10/9/2022', '313-208-3661', 'Gris', 'Blakeley', '3543131068293613', '556', '8/14/2022', 'Pankratz', 'Detroit', 'Michigan', '48224');
-INSERT INTO Users (user_id, username, password, date_made, phone_number, first_name, last_name, card_number, cvv, expiration_date, street, city, state, zip_code) VALUES ('4', 'mharriss3', 'x2jwCUReeJ', '7/23/2022', '217-922-5785', 'Koren', 'Mart', '3586248833128466', '160', '10/26/2022', 'Browning', 'Springfield', 'Illinois', '62794');
-INSERT INTO Users (user_id, username, password, date_made, phone_number, first_name, last_name, card_number, cvv, expiration_date, street, city, state, zip_code) VALUES ('5', 'gbarkas4', 'f3GXiuQd', '2/26/2023', '303-252-6435', 'Claiborne', 'Giovanna', '201582481338295', '406', '11/7/2022', 'Northridge', 'Boulder', 'Colorado', '80310');
-INSERT INTO Users (user_id, username, password, date_made, phone_number, first_name, last_name, card_number, cvv, expiration_date, street, city, state, zip_code) VALUES ('6', 'aletson5', 'es7TamUid', '6/8/2022', '832-537-5154', 'Karia', 'Algernon', '564182216450088494', '155', '2/3/2023', 'Tomscot', 'Houston', 'Texas', '77266');
-INSERT INTO Users (user_id, username, password, date_made, phone_number, first_name, last_name, card_number, cvv, expiration_date, street, city, state, zip_code) VALUES ('7', 'ldebellis6', 'kHgWCD72s5n', '11/22/2022', '217-535-1545', 'Jess', 'Lulu', '63044779162488105', '260', '7/12/2022', 'Dottie', 'Springfield', 'Illinois', '62723');
-INSERT INTO Users (user_id, username, password, date_made, phone_number, first_name, last_name, card_number, cvv, expiration_date, street, city, state, zip_code) VALUES ('8', 'cgladyer7', 'FH1Lpgj7Ddd', '5/25/2022', '412-843-8324', 'Trixie', 'Camilla', '5641823096253318181', '895', '7/8/2022', 'Hagan', 'Mc Keesport', 'Pennsylvania', '15134');
-INSERT INTO Users (user_id, username, password, date_made, phone_number, first_name, last_name, card_number, cvv, expiration_date, street, city, state, zip_code) VALUES ('9', 'agideon8', 'qGXVfb', '12/15/2022', '559-698-0659', 'Phyllis', 'Amity', '6385536999376796', '350', '5/15/2022', 'Bellgrove', 'Fresno', 'California', '93750');
-INSERT INTO Users (user_id, username, password, date_made, phone_number, first_name, last_name, card_number, cvv, expiration_date, street, city, state, zip_code) VALUES ('10', 'kcurran9', 'BK7il3nap2Kj', '2/11/2023', '915-593-0377', 'Alfredo', 'Kristo', '6333168020420451', '796', '3/16/2023', 'Hagan', 'El Paso', 'Texas', '88589');
-INSERT INTO Users (user_id, username, password, date_made, phone_number, first_name, last_name, card_number, cvv, expiration_date, street, city, state, zip_code) VALUES ('11', 'plefevrea', 'D88ZNOCCOR', '3/5/2023', '423-987-8914', 'Gerladina', 'Pall', '67631433363256966', '314', '1/26/2023', 'Service', 'Chattanooga', 'Tennessee', '37410');
-INSERT INTO Users (user_id, username, password, date_made, phone_number, first_name, last_name, card_number, cvv, expiration_date, street, city, state, zip_code) VALUES ('12', 'alehrahanb', 'Rafo1jE', '7/12/2022', '817-187-2970', 'Lindy', 'Ailee', '3543635235600260', '1', '11/15/2022', 'Thierer', 'Fort Worth', 'Texas', '76129');
-INSERT INTO Users (user_id, username, password, date_made, phone_number, first_name, last_name, card_number, cvv, expiration_date, street, city, state, zip_code) VALUES ('13', 'cadiscotc', '2ntFt1p75', '11/3/2022', '571-514-8635', 'Allina', 'Cart', '3552618455760616', '735', '5/26/2022', 'Northview', 'Fairfax', 'Virginia', '22036');
-INSERT INTO Users (user_id, username, password, date_made, phone_number, first_name, last_name, card_number, cvv, expiration_date, street, city, state, zip_code) VALUES ('14', 'sbolesd', 'tl13Em0ay4EZ', '9/25/2022', '520-593-1055', 'Thatch', 'Say', '564182039262051280', '331', '2/28/2023', 'Declaration', 'Tucson', 'Arizona', '85720');
-INSERT INTO Users (user_id, username, password, date_made, phone_number, first_name, last_name, card_number, cvv, expiration_date, street, city, state, zip_code) VALUES ('15', 'sbudnke', 'Eez59eI', '10/25/2022', '310-935-8545', 'Klement', 'Sabina', '3543018108348988', '251', '6/27/2022', 'Vernon', 'Inglewood', 'California', '90310');
-INSERT INTO Users (user_id, username, password, date_made, phone_number, first_name, last_name, card_number, cvv, expiration_date, street, city, state, zip_code) VALUES ('16', 'pmoutonf', 'd57gtXZ2O4', '7/18/2022', '239-256-7861', 'Maggi', 'Paul', '5195201544535857', '797', '11/18/2022', 'Claremont', 'Fort Myers', 'Florida', '33994');
-INSERT INTO Users (user_id, username, password, date_made, phone_number, first_name, last_name, card_number, cvv, expiration_date, street, city, state, zip_code) VALUES ('17', 'jdurradg', 'QkWBxwJN3M', '3/14/2023', '305-509-8207', 'Jeffie', 'Jordan', '3547517514912101', '35', '12/31/2022', 'Hoepker', 'Hialeah', 'Florida', '33018');
-INSERT INTO Users (user_id, username, password, date_made, phone_number, first_name, last_name, card_number, cvv, expiration_date, street, city, state, zip_code) VALUES ('18', 'chanveyh', 'vLyefqp6Uq', '7/3/2022', '952-401-9017', 'Giacobo', 'Con', '3558122239314398', '776', '12/14/2022', 'Darwin', 'Young America', 'Minnesota', '55557');
-INSERT INTO Users (user_id, username, password, date_made, phone_number, first_name, last_name, card_number, cvv, expiration_date, street, city, state, zip_code) VALUES ('19', 'bdutsoni', 'O7baipPz7L', '10/22/2022', '904-545-7544', 'Bordie', 'Bobinette', '3587930430665789', '81', '4/4/2023', 'Straubel', 'Jacksonville', 'Florida', '32277');
-INSERT INTO Users (user_id, username, password, date_made, phone_number, first_name, last_name, card_number, cvv, expiration_date, street, city, state, zip_code) VALUES ('20', 'dmccrawj', 'kPsy2ybcb1', '10/25/2022', '804-372-9537', 'Bat', 'Daffi', '5602246942596891', '567', '10/13/2022', 'Clarendon', 'Richmond', 'Virginia', '23293');
-INSERT INTO Users (user_id, username, password, date_made, phone_number, first_name, last_name, card_number, cvv, expiration_date, street, city, state, zip_code) VALUES ('21', 'csimonittok', 'ezt7C49VtC3F', '7/4/2022', '210-574-6220', 'Mile', 'Cthrine', '3552501298747901', '33', '3/12/2023', 'Kim', 'San Antonio', 'Texas', '78205');
-INSERT INTO Users (user_id, username, password, date_made, phone_number, first_name, last_name, card_number, cvv, expiration_date, street, city, state, zip_code) VALUES ('22', 'bimlachl', 'kgvGNV5O5VVI', '7/12/2022', '785-182-4265', 'Neall', 'Brigit', '3566442966633392', '726', '6/25/2022', 'Reinke', 'Topeka', 'Kansas', '66622');
-INSERT INTO Users (user_id, username, password, date_made, phone_number, first_name, last_name, card_number, cvv, expiration_date, street, city, state, zip_code) VALUES ('23', 'dmiddism', 'V0rcih', '12/21/2022', '904-675-7607', 'Margaux', 'Delmer', '5108757883330321', '853', '5/30/2022', 'Springview', 'Jacksonville', 'Florida', '32244');
-INSERT INTO Users (user_id, username, password, date_made, phone_number, first_name, last_name, card_number, cvv, expiration_date, street, city, state, zip_code) VALUES ('24', 'jpitmann', 'TCRLZvqu3l', '1/2/2023', '504-431-2863', 'Anna-diana', 'Josh', '3577073125870786', '18', '10/17/2022', 'Bellgrove', 'New Orleans', 'Louisiana', '70179');
-INSERT INTO Users (user_id, username, password, date_made, phone_number, first_name, last_name, card_number, cvv, expiration_date, street, city, state, zip_code) VALUES ('25', 'tdavidsohno', 'bLkYDY11XS', '3/27/2023', '504-677-7057', 'Bunni', 'Tori', '6380920897822082', '544', '3/7/2023', 'Farragut', 'New Orleans', 'Louisiana', '70179');
-INSERT INTO Users (user_id, username, password, date_made, phone_number, first_name, last_name, card_number, cvv, expiration_date, street, city, state, zip_code) VALUES ('26', 'ngilmartinp', 'ld4JKmqG6L0j', '2/9/2023', '402-466-8441', 'Ellary', 'Nap', '3579059658193157', '248', '10/9/2022', 'Fallview', 'Omaha', 'Nebraska', '68110');
-INSERT INTO Users (user_id, username, password, date_made, phone_number, first_name, last_name, card_number, cvv, expiration_date, street, city, state, zip_code) VALUES ('27', 'cpretselq', 'd1db53', '9/12/2022', '406-648-5318', 'Archibold', 'Chrysa', '560225104304735337', '262', '12/16/2022', 'Lukken', 'Bozeman', 'Montana', '59771');
-INSERT INTO Users (user_id, username, password, date_made, phone_number, first_name, last_name, card_number, cvv, expiration_date, street, city, state, zip_code) VALUES ('28', 'gfortyer', '0pll0QXwRNgu', '8/17/2022', '786-400-8145', 'Teddie', 'Gussy', '4026777211719633', '895', '1/24/2023', 'Arapahoe', 'Miami', 'Florida', '33134');
-INSERT INTO Users (user_id, username, password, date_made, phone_number, first_name, last_name, card_number, cvv, expiration_date, street, city, state, zip_code) VALUES ('29', 'bglanderss', 'PP4PoZF', '5/30/2022', '314-807-5385', 'Mathew', 'Burt', '3535319723153773', '277', '3/5/2023', 'Comanche', 'Saint Louis', 'Missouri', '63196');
-INSERT INTO Users (user_id, username, password, date_made, phone_number, first_name, last_name, card_number, cvv, expiration_date, street, city, state, zip_code) VALUES ('30', 'sjoslint', '3g4USKDU7', '11/21/2022', '469-958-3471', 'Lillis', 'Sergeant', '30408371137737', '745', '4/23/2022', 'Oneill', 'Garland', 'Texas', '75044');
-INSERT INTO Users (user_id, username, password, date_made, phone_number, first_name, last_name, card_number, cvv, expiration_date, street, city, state, zip_code) VALUES ('31', 'tdibiasiou', 'l7tnoYD7t', '1/3/2023', '281-983-4661', 'Steffen', 'Tanhya', '6763143415886854', '583', '4/17/2022', 'Forster', 'Houston', 'Texas', '77025');
-INSERT INTO Users (user_id, username, password, date_made, phone_number, first_name, last_name, card_number, cvv, expiration_date, street, city, state, zip_code) VALUES ('32', 'baustinsv', 'ryscPKBKM', '8/22/2022', '570-838-7852', 'Therine', 'Brendan', '3545095355950540', '183', '5/14/2022', 'Clyde Gallagher', 'Scranton', 'Pennsylvania', '18505');
-INSERT INTO Users (user_id, username, password, date_made, phone_number, first_name, last_name, card_number, cvv, expiration_date, street, city, state, zip_code) VALUES ('33', 'hkirkbrightw', 'mJRZ5jC', '2/10/2023', '574-458-5577', 'Ransom', 'Harv', '5602210227190457', '620', '10/27/2022', 'Manitowish', 'South Bend', 'Indiana', '46699');
-INSERT INTO Users (user_id, username, password, date_made, phone_number, first_name, last_name, card_number, cvv, expiration_date, street, city, state, zip_code) VALUES ('34', 'ztembyx', 'rFTBuMF', '10/13/2022', '614-487-0943', 'Evy', 'Zorah', '5409209819032783', '994', '2/20/2023', 'Debs', 'Columbus', 'Ohio', '43220');
-INSERT INTO Users (user_id, username, password, date_made, phone_number, first_name, last_name, card_number, cvv, expiration_date, street, city, state, zip_code) VALUES ('35', 'tyitzowitzy', '3yLolS2pTVW', '12/22/2022', '518-455-5189', 'Billie', 'Thorn', '3589180427911741', '624', '4/17/2022', 'Eastlawn', 'Schenectady', 'New York', '12305');
-INSERT INTO Users (user_id, username, password, date_made, phone_number, first_name, last_name, card_number, cvv, expiration_date, street, city, state, zip_code) VALUES ('36', 'anaptonz', 'KS6tUKa', '4/17/2022', '214-294-1853', 'Sherye', 'Ashla', '36150375293652', '412', '1/19/2023', 'Victoria', 'Plano', 'Texas', '75074');
-INSERT INTO Users (user_id, username, password, date_made, phone_number, first_name, last_name, card_number, cvv, expiration_date, street, city, state, zip_code) VALUES ('37', 'aalliot10', 'iIR6WL', '2/27/2023', '702-138-6104', 'Karen', 'Aleksandr', '5020798588513584238', '800', '1/19/2023', 'Linden', 'Las Vegas', 'Nevada', '89178');
-INSERT INTO Users (user_id, username, password, date_made, phone_number, first_name, last_name, card_number, cvv, expiration_date, street, city, state, zip_code) VALUES ('38', 'vtremain11', 'ykFuw4ZmCEX', '9/15/2022', '419-150-6935', 'Care', 'Vincenz', '3588146804933575', '88', '7/22/2022', 'Mallory', 'Lima', 'Ohio', '45807');
-INSERT INTO Users (user_id, username, password, date_made, phone_number, first_name, last_name, card_number, cvv, expiration_date, street, city, state, zip_code) VALUES ('39', 'mpauley12', 'VdcuH4', '10/8/2022', '616-474-8805', 'Richy', 'Meagan', '6333142327387253060', '399', '7/3/2022', 'Rigney', 'Grand Rapids', 'Michigan', '49544');
-INSERT INTO Users (user_id, username, password, date_made, phone_number, first_name, last_name, card_number, cvv, expiration_date, street, city, state, zip_code) VALUES ('40', 'mmoens13', 'H0UDcGUMI', '9/1/2022', '941-155-6884', 'Sarajane', 'Marthena', '3584080397892894', '623', '12/15/2022', 'Sheridan', 'North Port', 'Florida', '34290');
-INSERT INTO Users (user_id, username, password, date_made, phone_number, first_name, last_name, card_number, cvv, expiration_date, street, city, state, zip_code) VALUES ('41', 'estuckow14', 'zUJAxeEq', '10/3/2022', '850-357-6115', 'Windy', 'Emelia', '4508321379987745', '392', '4/18/2022', 'Forest Dale', 'Pinellas Park', 'Florida', '34665');
-INSERT INTO Users (user_id, username, password, date_made, phone_number, first_name, last_name, card_number, cvv, expiration_date, street, city, state, zip_code) VALUES ('42', 'tcoghlan15', 'Cd6SeiL4', '12/17/2022', '207-633-4578', 'Gard', 'Tymothy', '67630079094630960', '678', '11/17/2022', 'Summit', 'Portland', 'Maine', '04109');
-INSERT INTO Users (user_id, username, password, date_made, phone_number, first_name, last_name, card_number, cvv, expiration_date, street, city, state, zip_code) VALUES ('43', 'gschulkins16', 'zGqQBOe4y', '9/2/2022', '214-691-3943', 'Maurise', 'Gal', '30224046239083', '93', '6/9/2022', 'Hauk', 'Dallas', 'Texas', '75353');
-INSERT INTO Users (user_id, username, password, date_made, phone_number, first_name, last_name, card_number, cvv, expiration_date, street, city, state, zip_code) VALUES ('44', 'arosita17', 'JL4IgKPRK7oz', '6/20/2022', '405-789-6855', 'Antoinette', 'Arney', '5100174574060431', '31', '1/12/2023', 'West', 'Oklahoma City', 'Oklahoma', '73157');
-INSERT INTO Users (user_id, username, password, date_made, phone_number, first_name, last_name, card_number, cvv, expiration_date, street, city, state, zip_code) VALUES ('45', 'dboland18', 'c8enWlqt', '3/3/2023', '303-938-8779', 'Pammie', 'Dewitt', '3544739964463541', '591', '4/23/2022', 'Cottonwood', 'Denver', 'Colorado', '80262');
-INSERT INTO Users (user_id, username, password, date_made, phone_number, first_name, last_name, card_number, cvv, expiration_date, street, city, state, zip_code) VALUES ('46', 'emillins19', 'omN0Ue2', '10/19/2022', '240-956-1807', 'Loydie', 'Edsel', '3550219393237189', '338', '7/5/2022', 'Meadow Ridge', 'Silver Spring', 'Maryland', '20918');
-INSERT INTO Users (user_id, username, password, date_made, phone_number, first_name, last_name, card_number, cvv, expiration_date, street, city, state, zip_code) VALUES ('47', 'bbarmby1a', 'EJe6P44m4aU', '2/5/2023', '505-677-7331', 'Clayton', 'Biron', '3559601958728689', '552', '10/5/2022', 'Calypso', 'Albuquerque', 'New Mexico', '87105');
-INSERT INTO Users (user_id, username, password, date_made, phone_number, first_name, last_name, card_number, cvv, expiration_date, street, city, state, zip_code) VALUES ('48', 'ewaldram1b', 'zu0FuQ', '7/14/2022', '704-734-1374', 'Chrissie', 'Emmet', '5018762598132801885', '192', '6/18/2022', 'Porter', 'Gastonia', 'North Carolina', '28055');
-INSERT INTO Users (user_id, username, password, date_made, phone_number, first_name, last_name, card_number, cvv, expiration_date, street, city, state, zip_code) VALUES ('49', 'tcronkshaw1c', '6ciFYjUf6', '4/14/2023', '757-971-2615', 'Major', 'Tracee', '4596876280390', '764', '2/23/2023', 'Union', 'Herndon', 'Virginia', '22070');
-INSERT INTO Users (user_id, username, password, date_made, phone_number, first_name, last_name, card_number, cvv, expiration_date, street, city, state, zip_code) VALUES ('50', 'dferrarin1d', '48i8gb', '6/1/2022', '713-235-3982', 'Muire', 'Dian', '564182862587736354', '112', '8/1/2022', 'Anthes', 'Houston', 'Texas', '77030');
-INSERT INTO Users (user_id, username, password, date_made, phone_number, first_name, last_name, card_number, cvv, expiration_date, street, city, state, zip_code) VALUES ('51', 'mbarnfather1e', 'hkhb2An9', '7/3/2022', '309-951-6886', 'Didi', 'Minne', '4405237543270319', '452', '9/2/2022', 'Mitchell', 'Peoria', 'Illinois', '61614');
-INSERT INTO Users (user_id, username, password, date_made, phone_number, first_name, last_name, card_number, cvv, expiration_date, street, city, state, zip_code) VALUES ('52', 'rrobley1f', 'K2CUaxqO5MV', '5/1/2022', '402-184-0287', 'Beverie', 'Rudyard', '374283084754019', '87', '2/26/2023', '7th', 'Omaha', 'Nebraska', '68117');
-INSERT INTO Users (user_id, username, password, date_made, phone_number, first_name, last_name, card_number, cvv, expiration_date, street, city, state, zip_code) VALUES ('53', 'bharower1g', 'O9Jtvv2', '12/16/2022', '770-309-6853', 'Cletus', 'Bryce', '30317291095976', '253', '1/26/2023', 'Dixon', 'Marietta', 'Georgia', '30061');
-INSERT INTO Users (user_id, username, password, date_made, phone_number, first_name, last_name, card_number, cvv, expiration_date, street, city, state, zip_code) VALUES ('54', 'llesaunier1h', '5d2EKhbkGtFj', '1/28/2023', '512-480-1252', 'Reid', 'Lee', '5423781109592322', '538', '3/9/2023', 'Pearson', 'Austin', 'Texas', '78721');
-INSERT INTO Users (user_id, username, password, date_made, phone_number, first_name, last_name, card_number, cvv, expiration_date, street, city, state, zip_code) VALUES ('55', 'dorhtmann1i', 'RSqAoTYAag1', '2/11/2023', '334-125-8474', 'Fleming', 'Delmar', '560221191457087438', '541', '4/22/2022', 'Union', 'Montgomery', 'Alabama', '36109');
-INSERT INTO Users (user_id, username, password, date_made, phone_number, first_name, last_name, card_number, cvv, expiration_date, street, city, state, zip_code) VALUES ('56', 'cspring1j', '4eFVIDjM', '6/20/2022', '407-205-6844', 'Olivia', 'Constantia', '3579680811121999', '495', '6/18/2022', 'Riverside', 'Orlando', 'Florida', '32808');
-INSERT INTO Users (user_id, username, password, date_made, phone_number, first_name, last_name, card_number, cvv, expiration_date, street, city, state, zip_code) VALUES ('57', 'aangliss1k', 'QEKdbsB', '12/18/2022', '605-640-4998', 'Archibold', 'Agathe', '4175009415116203', '911', '5/7/2022', 'Esker', 'Sioux Falls', 'South Dakota', '57188');
-INSERT INTO Users (user_id, username, password, date_made, phone_number, first_name, last_name, card_number, cvv, expiration_date, street, city, state, zip_code) VALUES ('58', 'eshrigley1l', '0yERjI5', '5/30/2022', '405-939-7315', 'Leora', 'Em', '201600916112570', '482', '8/6/2022', 'Golf Course', 'Oklahoma City', 'Oklahoma', '73142');
-INSERT INTO Users (user_id, username, password, date_made, phone_number, first_name, last_name, card_number, cvv, expiration_date, street, city, state, zip_code) VALUES ('59', 'adossantos1m', 'ovfVzp46', '8/16/2022', '202-257-5214', 'Sawyer', 'Auberta', '3554734907564411', '940', '1/4/2023', 'Oak', 'Washington', 'District of Columbia', '20551');
-INSERT INTO Users (user_id, username, password, date_made, phone_number, first_name, last_name, card_number, cvv, expiration_date, street, city, state, zip_code) VALUES ('60', 'leadington1n', 'x98xS2aE0UI', '3/25/2023', '504-934-0565', 'Casey', 'Lynnelle', '3559970203606341', '283', '6/25/2022', 'Browning', 'New Orleans', 'Louisiana', '70129');
-INSERT INTO Users (user_id, username, password, date_made, phone_number, first_name, last_name, card_number, cvv, expiration_date, street, city, state, zip_code) VALUES ('61', 'tcarlucci1o', 'whkeHhF7oWt', '10/5/2022', '915-320-4322', 'Rory', 'Tobe', '6767060859229594720', '655', '9/9/2022', 'Carberry', 'El Paso', 'Texas', '79911');
-INSERT INTO Users (user_id, username, password, date_made, phone_number, first_name, last_name, card_number, cvv, expiration_date, street, city, state, zip_code) VALUES ('62', 'mslemmonds1p', 'uRxtgoE7k2W', '1/21/2023', '661-435-9858', 'Yetty', 'Margette', '6761032811115673', '543', '2/13/2023', 'Spohn', 'Bakersfield', 'California', '93311');
-INSERT INTO Users (user_id, username, password, date_made, phone_number, first_name, last_name, card_number, cvv, expiration_date, street, city, state, zip_code) VALUES ('63', 'reckford1q', 'pD8KkNSDaPe', '4/27/2022', '859-257-2441', 'Jessalyn', 'Regen', '3541293545764871', '96', '1/4/2023', 'Kings', 'Lexington', 'Kentucky', '40586');
-INSERT INTO Users (user_id, username, password, date_made, phone_number, first_name, last_name, card_number, cvv, expiration_date, street, city, state, zip_code) VALUES ('64', 'schaudret1r', 'GwrXVUr5', '6/1/2022', '239-499-0907', 'Lauraine', 'Silvano', '30337857411839', '935', '1/17/2023', 'Randy', 'Fort Myers', 'Florida', '33906');
-INSERT INTO Users (user_id, username, password, date_made, phone_number, first_name, last_name, card_number, cvv, expiration_date, street, city, state, zip_code) VALUES ('65', 'iritson1s', 'fLn2MNmSxJAz', '8/21/2022', '918-831-5894', 'Dag', 'Iosep', '5018396368865086', '34', '7/29/2022', 'Ronald Regan', 'Tulsa', 'Oklahoma', '74141');
-INSERT INTO Users (user_id, username, password, date_made, phone_number, first_name, last_name, card_number, cvv, expiration_date, street, city, state, zip_code) VALUES ('66', 'kbynold1t', 'L9sUm0n5F', '5/25/2022', '937-957-7360', 'Cymbre', 'Krispin', '3540789344041081', '475', '9/6/2022', 'Macpherson', 'Dayton', 'Ohio', '45470');
-INSERT INTO Users (user_id, username, password, date_made, phone_number, first_name, last_name, card_number, cvv, expiration_date, street, city, state, zip_code) VALUES ('67', 'gmcguiney1u', 'G4AB6h', '12/15/2022', '509-570-6255', 'Osborne', 'Gipsy', '3570487621922981', '88', '12/26/2022', 'Monument', 'Spokane', 'Washington', '99205');
-INSERT INTO Users (user_id, username, password, date_made, phone_number, first_name, last_name, card_number, cvv, expiration_date, street, city, state, zip_code) VALUES ('68', 'mfarbrace1v', 'WSiJMl', '8/2/2022', '213-619-8211', 'Josefina', 'Margaretta', '5602239351428912', '546', '2/25/2023', 'Cambridge', 'Los Angeles', 'California', '90055');
-INSERT INTO Users (user_id, username, password, date_made, phone_number, first_name, last_name, card_number, cvv, expiration_date, street, city, state, zip_code) VALUES ('69', 'cbengtson1w', 'IIdjADG', '10/14/2022', '719-653-2761', 'Marsiella', 'Callean', '633396109652881292', '773', '9/4/2022', 'Loeprich', 'Colorado Springs', 'Colorado', '80951');
-INSERT INTO Users (user_id, username, password, date_made, phone_number, first_name, last_name, card_number, cvv, expiration_date, street, city, state, zip_code) VALUES ('70', 'rpapez1x', 'E4wKHh', '8/16/2022', '719-780-4048', 'Louisa', 'Roselle', '5518432788852639', '260', '6/9/2022', 'South', 'Denver', 'Colorado', '80209');
-INSERT INTO Users (user_id, username, password, date_made, phone_number, first_name, last_name, card_number, cvv, expiration_date, street, city, state, zip_code) VALUES ('71', 'nmackney1y', 'RIpWS1o', '1/18/2023', '502-843-1214', 'Flossy', 'Niels', '3566490190917172', '110', '4/21/2022', 'Butterfield', 'Louisville', 'Kentucky', '40205');
-INSERT INTO Users (user_id, username, password, date_made, phone_number, first_name, last_name, card_number, cvv, expiration_date, street, city, state, zip_code) VALUES ('72', 'chambers1z', 'e14d7F', '1/13/2023', '845-255-7013', 'Cris', 'Corny', '4041376400248', '248', '7/2/2022', 'Jenifer', 'White Plains', 'New York', '10633');
-INSERT INTO Users (user_id, username, password, date_made, phone_number, first_name, last_name, card_number, cvv, expiration_date, street, city, state, zip_code) VALUES ('73', 'cdengate20', '8fEKQ5rl', '6/24/2022', '217-713-7951', 'Beth', 'Charlotta', '4041598120145', '274', '3/31/2023', 'Buell', 'Champaign', 'Illinois', '61825');
-INSERT INTO Users (user_id, username, password, date_made, phone_number, first_name, last_name, card_number, cvv, expiration_date, street, city, state, zip_code) VALUES ('74', 'bsarjeant21', 'v6hionT', '12/8/2022', '904-335-3797', 'Jennifer', 'Bernadene', '4026194031152948', '176', '1/13/2023', 'Morrow', 'Jacksonville', 'Florida', '32204');
-INSERT INTO Users (user_id, username, password, date_made, phone_number, first_name, last_name, card_number, cvv, expiration_date, street, city, state, zip_code) VALUES ('75', 'dhrinishin22', '7Cw0aRFODK', '9/5/2022', '801-114-9717', 'Cordie', 'Derwin', '3579252367569631', '623', '12/2/2022', 'Melody', 'Salt Lake City', 'Utah', '84199');
-INSERT INTO Users (user_id, username, password, date_made, phone_number, first_name, last_name, card_number, cvv, expiration_date, street, city, state, zip_code) VALUES ('76', 'jwildt23', 't6qulQtM42', '2/17/2023', '609-650-5537', 'Gael', 'Jaquenetta', '6767662205155549', '575', '4/25/2022', 'Daystar', 'Trenton', 'New Jersey', '08638');
-INSERT INTO Users (user_id, username, password, date_made, phone_number, first_name, last_name, card_number, cvv, expiration_date, street, city, state, zip_code) VALUES ('77', 'emoran24', 'SDUANHTC86QB', '12/1/2022', '719-396-3916', 'Rosco', 'Elwira', '5490626190073294', '657', '2/26/2023', 'Texas', 'Colorado Springs', 'Colorado', '80940');
-INSERT INTO Users (user_id, username, password, date_made, phone_number, first_name, last_name, card_number, cvv, expiration_date, street, city, state, zip_code) VALUES ('78', 'uthursfield25', 'nRhu2Vd', '12/26/2022', '804-736-0004', 'Brod', 'Ulysses', '3530343108590974', '936', '6/24/2022', 'Barnett', 'Richmond', 'Virginia', '23260');
-INSERT INTO Users (user_id, username, password, date_made, phone_number, first_name, last_name, card_number, cvv, expiration_date, street, city, state, zip_code) VALUES ('79', 'cmceachern26', 'LbdmGK', '3/2/2023', '540-202-9234', 'Law', 'Crichton', '201862443793716', '132', '1/3/2023', 'Derek', 'Roanoke', 'Virginia', '24004');
-INSERT INTO Users (user_id, username, password, date_made, phone_number, first_name, last_name, card_number, cvv, expiration_date, street, city, state, zip_code) VALUES ('80', 'ccolbourne27', '9R3XPow1RmLF', '6/26/2022', '508-145-4900', 'Glynda', 'Clyve', '50383474989314983', '898', '5/30/2022', 'Ramsey', 'New Bedford', 'Massachusetts', '02745');
-INSERT INTO Users (user_id, username, password, date_made, phone_number, first_name, last_name, card_number, cvv, expiration_date, street, city, state, zip_code) VALUES ('81', 'agate28', 'TekB48D1I', '4/14/2023', '651-542-6168', 'Delmar', 'Avie', '3577124109448253', '675', '3/14/2023', 'Center', 'Saint Paul', 'Minnesota', '55108');
-INSERT INTO Users (user_id, username, password, date_made, phone_number, first_name, last_name, card_number, cvv, expiration_date, street, city, state, zip_code) VALUES ('82', 'dmerrill29', 'tYUpBG52', '6/16/2022', '504-394-0424', 'Carney', 'Darcey', '6759199785801536261', '69', '3/24/2023', 'Kipling', 'Metairie', 'Louisiana', '70005');
-INSERT INTO Users (user_id, username, password, date_made, phone_number, first_name, last_name, card_number, cvv, expiration_date, street, city, state, zip_code) VALUES ('83', 'ncudiff2a', 'NfRIKG1', '1/8/2023', '828-144-5688', 'Wolfy', 'Niall', '3557803769038371', '408', '4/14/2023', 'Elmside', 'Asheville', 'North Carolina', '28805');
-INSERT INTO Users (user_id, username, password, date_made, phone_number, first_name, last_name, card_number, cvv, expiration_date, street, city, state, zip_code) VALUES ('84', 'fcicerone2b', 'AsczIfxfc0jf', '3/1/2023', '254-483-5193', 'Saxe', 'Fletcher', '630427386958269757', '97', '2/13/2023', 'Sommers', 'Gatesville', 'Texas', '76598');
-INSERT INTO Users (user_id, username, password, date_made, phone_number, first_name, last_name, card_number, cvv, expiration_date, street, city, state, zip_code) VALUES ('85', 'afeatherbie2c', 'e7rixn5tqEWA', '11/6/2022', '713-860-2146', 'Natka', 'Aila', '67633196660446345', '790', '4/30/2022', 'Truax', 'Houston', 'Texas', '77260');
-INSERT INTO Users (user_id, username, password, date_made, phone_number, first_name, last_name, card_number, cvv, expiration_date, street, city, state, zip_code) VALUES ('86', 'bhaberfield2d', 'lRoRLtRWzL', '10/22/2022', '612-746-1038', 'Elnore', 'Bobinette', '5214938719296347', '302', '9/15/2022', 'Forest Dale', 'Minneapolis', 'Minnesota', '55480');
-INSERT INTO Users (user_id, username, password, date_made, phone_number, first_name, last_name, card_number, cvv, expiration_date, street, city, state, zip_code) VALUES ('87', 'mgypps2e', 'zIXJ43z', '10/18/2022', '228-106-8616', 'Kerwinn', 'Mathe', '3534509582129747', '243', '9/4/2022', 'Sunfield', 'Gulfport', 'Mississippi', '39505');
-INSERT INTO Users (user_id, username, password, date_made, phone_number, first_name, last_name, card_number, cvv, expiration_date, street, city, state, zip_code) VALUES ('88', 'abinch2f', '3J35Fq', '6/30/2022', '305-133-8224', 'Washington', 'Alfy', '4175008619471315', '456', '1/2/2023', 'Macpherson', 'Miami', 'Florida', '33190');
-INSERT INTO Users (user_id, username, password, date_made, phone_number, first_name, last_name, card_number, cvv, expiration_date, street, city, state, zip_code) VALUES ('89', 'amiddleditch2g', '0aBcyylRsqik', '8/16/2022', '360-971-6764', 'Lynnell', 'Alden', '6378464903602950', '781', '4/1/2023', 'Merchant', 'Vancouver', 'Washington', '98664');
-INSERT INTO Users (user_id, username, password, date_made, phone_number, first_name, last_name, card_number, cvv, expiration_date, street, city, state, zip_code) VALUES ('90', 'srittelmeyer2h', 'jBl9J8c', '3/24/2023', '406-101-7825', 'Melissa', 'Sherlock', '4175000755078822', '370', '2/23/2023', 'Jay', 'Bozeman', 'Montana', '59771');
-INSERT INTO Users (user_id, username, password, date_made, phone_number, first_name, last_name, card_number, cvv, expiration_date, street, city, state, zip_code) VALUES ('91', 'cmacconnal2i', 'eanbGS4Z89Gn', '11/23/2022', '713-381-5459', 'Napoleon', 'Chandler', '3569155411978892', '441', '8/3/2022', 'Anthes', 'Houston', 'Texas', '77228');
-INSERT INTO Users (user_id, username, password, date_made, phone_number, first_name, last_name, card_number, cvv, expiration_date, street, city, state, zip_code) VALUES ('92', 'callnutt2j', 'nWxEjlzhDyAz', '9/12/2022', '786-273-4427', 'Rosemarie', 'Chrysa', '3530764004331595', '7', '8/23/2022', 'Linden', 'Miami', 'Florida', '33190');
-INSERT INTO Users (user_id, username, password, date_made, phone_number, first_name, last_name, card_number, cvv, expiration_date, street, city, state, zip_code) VALUES ('93', 'goxbury2k', 'hV0puODhy', '9/7/2022', '208-752-2663', 'Leola', 'Guendolen', '30276266628320', '348', '8/7/2022', 'Nova', 'Boise', 'Idaho', '83727');
-INSERT INTO Users (user_id, username, password, date_made, phone_number, first_name, last_name, card_number, cvv, expiration_date, street, city, state, zip_code) VALUES ('94', 'itomaszynski2l', 'Vxf1EzP', '1/16/2023', '201-653-2571', 'Felicdad', 'Isaiah', '5500392626987601', '479', '2/21/2023', 'Northwestern', 'Jersey City', 'New Jersey', '07305');
-INSERT INTO Users (user_id, username, password, date_made, phone_number, first_name, last_name, card_number, cvv, expiration_date, street, city, state, zip_code) VALUES ('95', 'syellep2m', 'kgaf08GJh', '12/21/2022', '213-173-0849', 'Jereme', 'Salaidh', '5602256108341966', '986', '1/5/2023', 'Mcguire', 'Los Angeles', 'California', '90101');
-INSERT INTO Users (user_id, username, password, date_made, phone_number, first_name, last_name, card_number, cvv, expiration_date, street, city, state, zip_code) VALUES ('96', 'rwatkiss2n', 'ixjqllXdB', '6/21/2022', '419-723-8116', 'Sonnie', 'Raymund', '3547930163964341', '383', '4/27/2022', 'Dryden', 'Toledo', 'Ohio', '43605');
-INSERT INTO Users (user_id, username, password, date_made, phone_number, first_name, last_name, card_number, cvv, expiration_date, street, city, state, zip_code) VALUES ('97', 'gstrauss2o', 'kMtOp5', '7/16/2022', '863-875-0405', 'Garek', 'Geoffry', '633110223405538615', '829', '11/24/2022', 'Katie', 'Lehigh Acres', 'Florida', '33972');
-INSERT INTO Users (user_id, username, password, date_made, phone_number, first_name, last_name, card_number, cvv, expiration_date, street, city, state, zip_code) VALUES ('98', 'abosward2p', 'Pa9lHcHPyYhb', '9/28/2022', '404-987-5663', 'Eddie', 'Alberta', '5007666612287755', '290', '2/12/2023', 'Prairieview', 'Atlanta', 'Georgia', '31196');
-INSERT INTO Users (user_id, username, password, date_made, phone_number, first_name, last_name, card_number, cvv, expiration_date, street, city, state, zip_code) VALUES ('99', 'aebbutt2q', '21uYrFFfmAGQ', '6/17/2022', '816-115-2312', 'Clio', 'Amber', '6374715920361167', '448', '2/9/2023', 'Erie', 'Kansas City', 'Missouri', '64187');
-INSERT INTO Users (user_id, username, password, date_made, phone_number, first_name, last_name, card_number, cvv, expiration_date, street, city, state, zip_code) VALUES ('100', 'chawkswell2r', 'z4rBQU6ead', '12/26/2022', '205-965-8620', 'Cookie', 'Christye', '3546670947341843', '75', '4/8/2023', 'Manufacturers', 'Birmingham', 'Alabama', '35295');
+INSERT INTO Inventory(total_in_stock,item_number,available_sizes,date_last_restock,date_next_restock) VALUES (8286007,53,'L','2023-06-27 22:51:15','2022-11-14 11:44:55');
+INSERT INTO Inventory(total_in_stock,item_number,available_sizes,date_last_restock,date_next_restock) VALUES (7324910,70,'XS','2022-04-20 07:43:14','2022-08-24 03:10:55');
+INSERT INTO Inventory(total_in_stock,item_number,available_sizes,date_last_restock,date_next_restock) VALUES (3195346,2,'M','2022-03-14 13:25:59','2022-06-07 07:19:43');
+INSERT INTO Inventory(total_in_stock,item_number,available_sizes,date_last_restock,date_next_restock) VALUES (1499358,45,'L','2022-09-26 13:31:32','2022-03-12 00:31:38');
+INSERT INTO Inventory(total_in_stock,item_number,available_sizes,date_last_restock,date_next_restock) VALUES (4174049,13,'L','2022-12-26 23:42:02','2023-02-12 07:41:47');
+INSERT INTO Inventory(total_in_stock,item_number,available_sizes,date_last_restock,date_next_restock) VALUES (8146768,60,'XS','2022-10-01 20:10:11','2022-10-31 13:42:46');
+INSERT INTO Inventory(total_in_stock,item_number,available_sizes,date_last_restock,date_next_restock) VALUES (2561045,41,'3XL','2022-09-16 14:52:30','2022-04-24 02:27:28');
+INSERT INTO Inventory(total_in_stock,item_number,available_sizes,date_last_restock,date_next_restock) VALUES (8225365,65,'M','2023-03-08 01:40:41','2023-04-12 13:23:42');
+INSERT INTO Inventory(total_in_stock,item_number,available_sizes,date_last_restock,date_next_restock) VALUES (1180113,7,'XS','2023-04-26 19:36:25','2022-06-22 14:42:50');
+INSERT INTO Inventory(total_in_stock,item_number,available_sizes,date_last_restock,date_next_restock) VALUES (3126769,20,'M','2022-12-27 09:46:04','2022-08-08 20:54:21');
+INSERT INTO Inventory(total_in_stock,item_number,available_sizes,date_last_restock,date_next_restock) VALUES (3939093,79,'2XL','2023-07-07 00:24:58','2022-05-12 12:17:17');
+INSERT INTO Inventory(total_in_stock,item_number,available_sizes,date_last_restock,date_next_restock) VALUES (5529234,88,'XL','2023-03-15 21:17:36','2022-12-13 11:00:30');
+INSERT INTO Inventory(total_in_stock,item_number,available_sizes,date_last_restock,date_next_restock) VALUES (6546594,11,'3XL','2022-06-12 14:42:49','2022-09-20 14:24:39');
+INSERT INTO Inventory(total_in_stock,item_number,available_sizes,date_last_restock,date_next_restock) VALUES (9628977,28,'L','2023-04-14 00:44:01','2022-06-13 17:20:49');
+INSERT INTO Inventory(total_in_stock,item_number,available_sizes,date_last_restock,date_next_restock) VALUES (1458581,98,'XS','2023-07-26 03:24:27','2023-03-19 16:49:24');
+INSERT INTO Inventory(total_in_stock,item_number,available_sizes,date_last_restock,date_next_restock) VALUES (6498100,55,'L','2023-05-13 21:47:09','2022-04-10 06:57:06');
+INSERT INTO Inventory(total_in_stock,item_number,available_sizes,date_last_restock,date_next_restock) VALUES (3254233,4,'S','2023-06-28 23:00:02','2022-04-23 00:11:01');
+INSERT INTO Inventory(total_in_stock,item_number,available_sizes,date_last_restock,date_next_restock) VALUES (22972,85,'3XL','2023-06-24 15:23:39','2023-07-28 14:49:07');
+INSERT INTO Inventory(total_in_stock,item_number,available_sizes,date_last_restock,date_next_restock) VALUES (7462694,11,'S','2023-06-15 06:44:29','2022-04-20 04:59:05');
+INSERT INTO Inventory(total_in_stock,item_number,available_sizes,date_last_restock,date_next_restock) VALUES (3359300,57,'XL','2022-10-20 22:38:01','2022-04-09 22:20:37');
+INSERT INTO Inventory(total_in_stock,item_number,available_sizes,date_last_restock,date_next_restock) VALUES (7561164,88,'3XL','2022-06-12 06:32:04','2022-03-08 16:44:15');
+INSERT INTO Inventory(total_in_stock,item_number,available_sizes,date_last_restock,date_next_restock) VALUES (8247354,78,'2XL','2022-06-15 19:02:56','2023-03-18 04:39:54');
+INSERT INTO Inventory(total_in_stock,item_number,available_sizes,date_last_restock,date_next_restock) VALUES (9284877,57,'XS','2022-11-06 06:21:57','2022-09-17 09:23:24');
+INSERT INTO Inventory(total_in_stock,item_number,available_sizes,date_last_restock,date_next_restock) VALUES (84739,29,'2XL','2022-04-29 08:42:31','2022-05-05 04:59:42');
+INSERT INTO Inventory(total_in_stock,item_number,available_sizes,date_last_restock,date_next_restock) VALUES (5038642,37,'3XL','2022-11-10 23:41:39','2022-09-08 02:00:30');
+INSERT INTO Inventory(total_in_stock,item_number,available_sizes,date_last_restock,date_next_restock) VALUES (385628,33,'M','2022-05-15 18:47:23','2022-04-22 20:54:51');
+INSERT INTO Inventory(total_in_stock,item_number,available_sizes,date_last_restock,date_next_restock) VALUES (272220,33,'S','2022-08-06 02:05:43','2022-09-10 22:30:54');
+INSERT INTO Inventory(total_in_stock,item_number,available_sizes,date_last_restock,date_next_restock) VALUES (3331165,94,'3XL','2023-02-04 19:11:48','2023-04-11 00:13:27');
+INSERT INTO Inventory(total_in_stock,item_number,available_sizes,date_last_restock,date_next_restock) VALUES (3054366,64,'2XL','2022-04-24 15:01:41','2022-08-10 03:14:33');
+INSERT INTO Inventory(total_in_stock,item_number,available_sizes,date_last_restock,date_next_restock) VALUES (8076173,56,'3XL','2022-10-23 05:16:47','2022-06-18 16:33:56');
+INSERT INTO Inventory(total_in_stock,item_number,available_sizes,date_last_restock,date_next_restock) VALUES (6846686,94,'2XL','2022-08-24 05:32:30','2023-01-17 08:26:12');
+INSERT INTO Inventory(total_in_stock,item_number,available_sizes,date_last_restock,date_next_restock) VALUES (8180350,94,'M','2022-04-14 07:50:30','2022-06-14 20:06:24');
+INSERT INTO Inventory(total_in_stock,item_number,available_sizes,date_last_restock,date_next_restock) VALUES (7776955,7,'M','2022-03-09 13:32:21','2023-05-25 16:46:52');
+INSERT INTO Inventory(total_in_stock,item_number,available_sizes,date_last_restock,date_next_restock) VALUES (6364429,47,'L','2022-07-31 17:11:18','2022-07-20 13:46:46');
+INSERT INTO Inventory(total_in_stock,item_number,available_sizes,date_last_restock,date_next_restock) VALUES (1021082,58,'L','2023-01-15 22:22:50','2022-06-03 08:33:47');
+INSERT INTO Inventory(total_in_stock,item_number,available_sizes,date_last_restock,date_next_restock) VALUES (7609487,11,'2XL','2023-03-12 14:28:56','2022-09-13 09:53:17');
+INSERT INTO Inventory(total_in_stock,item_number,available_sizes,date_last_restock,date_next_restock) VALUES (6539965,91,'2XL','2023-06-10 00:01:12','2022-06-21 15:48:17');
+INSERT INTO Inventory(total_in_stock,item_number,available_sizes,date_last_restock,date_next_restock) VALUES (2420312,55,'L','2023-07-16 18:59:47','2023-07-10 02:14:21');
+INSERT INTO Inventory(total_in_stock,item_number,available_sizes,date_last_restock,date_next_restock) VALUES (9557581,12,'L','2022-12-04 12:43:55','2023-01-13 16:21:22');
+INSERT INTO Inventory(total_in_stock,item_number,available_sizes,date_last_restock,date_next_restock) VALUES (762943,18,'L','2022-12-10 14:06:58','2022-10-17 16:18:03');
+INSERT INTO Inventory(total_in_stock,item_number,available_sizes,date_last_restock,date_next_restock) VALUES (3446358,17,'XL','2023-06-26 05:32:25','2023-03-28 16:38:33');
+INSERT INTO Inventory(total_in_stock,item_number,available_sizes,date_last_restock,date_next_restock) VALUES (8095758,51,'XS','2022-06-11 03:26:12','2022-05-27 09:18:35');
+INSERT INTO Inventory(total_in_stock,item_number,available_sizes,date_last_restock,date_next_restock) VALUES (2098229,61,'XS','2023-06-04 21:20:05','2022-07-25 21:55:08');
+INSERT INTO Inventory(total_in_stock,item_number,available_sizes,date_last_restock,date_next_restock) VALUES (1374648,14,'3XL','2022-11-30 01:36:39','2022-10-08 10:03:31');
+INSERT INTO Inventory(total_in_stock,item_number,available_sizes,date_last_restock,date_next_restock) VALUES (9259670,60,'S','2023-06-02 05:42:26','2022-04-02 01:12:20');
+INSERT INTO Inventory(total_in_stock,item_number,available_sizes,date_last_restock,date_next_restock) VALUES (8765938,78,'L','2023-06-05 20:53:48','2023-03-15 06:04:22');
+INSERT INTO Inventory(total_in_stock,item_number,available_sizes,date_last_restock,date_next_restock) VALUES (5879982,31,'3XL','2022-09-12 17:28:28','2022-06-18 02:00:02');
+INSERT INTO Inventory(total_in_stock,item_number,available_sizes,date_last_restock,date_next_restock) VALUES (9862133,89,'XL','2023-02-07 04:08:50','2022-09-17 04:23:45');
+INSERT INTO Inventory(total_in_stock,item_number,available_sizes,date_last_restock,date_next_restock) VALUES (4663239,16,'M','2023-04-21 03:49:09','2022-11-29 08:11:41');
+INSERT INTO Inventory(total_in_stock,item_number,available_sizes,date_last_restock,date_next_restock) VALUES (4191978,8,'XL','2022-08-27 06:30:53','2023-04-04 12:44:14');
+INSERT INTO Inventory(total_in_stock,item_number,available_sizes,date_last_restock,date_next_restock) VALUES (1558079,96,'2XL','2022-11-11 22:55:07','2022-11-07 06:19:26');
+INSERT INTO Inventory(total_in_stock,item_number,available_sizes,date_last_restock,date_next_restock) VALUES (6795990,39,'XS','2022-07-16 13:55:53','2023-06-24 04:40:04');
+INSERT INTO Inventory(total_in_stock,item_number,available_sizes,date_last_restock,date_next_restock) VALUES (9006731,60,'S','2022-11-04 21:16:42','2022-05-10 13:40:18');
+INSERT INTO Inventory(total_in_stock,item_number,available_sizes,date_last_restock,date_next_restock) VALUES (4249393,20,'S','2022-06-28 12:36:31','2022-06-18 19:09:05');
+INSERT INTO Inventory(total_in_stock,item_number,available_sizes,date_last_restock,date_next_restock) VALUES (4974134,86,'3XL','2022-10-04 10:37:25','2023-07-21 17:21:33');
+INSERT INTO Inventory(total_in_stock,item_number,available_sizes,date_last_restock,date_next_restock) VALUES (6796970,48,'2XL','2023-05-07 03:36:35','2022-10-31 04:21:08');
+INSERT INTO Inventory(total_in_stock,item_number,available_sizes,date_last_restock,date_next_restock) VALUES (7029195,73,'3XL','2022-07-26 22:56:29','2023-01-26 09:42:43');
+INSERT INTO Inventory(total_in_stock,item_number,available_sizes,date_last_restock,date_next_restock) VALUES (1014862,73,'M','2023-04-25 09:45:21','2022-11-01 09:46:36');
+INSERT INTO Inventory(total_in_stock,item_number,available_sizes,date_last_restock,date_next_restock) VALUES (9443645,3,'M','2023-06-10 20:58:53','2023-04-11 17:35:56');
+INSERT INTO Inventory(total_in_stock,item_number,available_sizes,date_last_restock,date_next_restock) VALUES (9947565,8,'3XL','2023-06-28 12:15:50','2022-09-09 08:04:46');
+INSERT INTO Inventory(total_in_stock,item_number,available_sizes,date_last_restock,date_next_restock) VALUES (9044612,100,'M','2022-03-12 02:04:14','2022-09-10 12:18:27');
+INSERT INTO Inventory(total_in_stock,item_number,available_sizes,date_last_restock,date_next_restock) VALUES (224849,77,'S','2022-12-22 17:09:26','2022-10-06 10:54:02');
+INSERT INTO Inventory(total_in_stock,item_number,available_sizes,date_last_restock,date_next_restock) VALUES (2352236,54,'XL','2022-06-04 11:19:34','2022-06-22 05:55:48');
+INSERT INTO Inventory(total_in_stock,item_number,available_sizes,date_last_restock,date_next_restock) VALUES (1836642,53,'3XL','2023-06-24 11:04:49','2022-04-09 23:17:53');
+INSERT INTO Inventory(total_in_stock,item_number,available_sizes,date_last_restock,date_next_restock) VALUES (3846828,8,'S','2022-04-11 11:33:57','2023-07-17 18:16:01');
+INSERT INTO Inventory(total_in_stock,item_number,available_sizes,date_last_restock,date_next_restock) VALUES (9524571,76,'XL','2022-11-25 16:50:53','2023-02-26 23:47:56');
+INSERT INTO Inventory(total_in_stock,item_number,available_sizes,date_last_restock,date_next_restock) VALUES (4414666,74,'XL','2022-03-15 06:55:28','2023-01-06 14:19:29');
+INSERT INTO Inventory(total_in_stock,item_number,available_sizes,date_last_restock,date_next_restock) VALUES (8377631,58,'XL','2022-09-28 02:01:05','2022-04-03 14:59:37');
+INSERT INTO Inventory(total_in_stock,item_number,available_sizes,date_last_restock,date_next_restock) VALUES (954312,22,'L','2022-12-10 20:52:46','2022-04-26 04:39:31');
+INSERT INTO Inventory(total_in_stock,item_number,available_sizes,date_last_restock,date_next_restock) VALUES (8444617,85,'3XL','2022-03-08 14:55:12','2023-03-13 19:34:40');
+INSERT INTO Inventory(total_in_stock,item_number,available_sizes,date_last_restock,date_next_restock) VALUES (7124955,42,'3XL','2022-03-02 00:19:11','2022-11-30 06:19:46');
+INSERT INTO Inventory(total_in_stock,item_number,available_sizes,date_last_restock,date_next_restock) VALUES (8505749,31,'3XL','2022-10-28 20:56:41','2022-11-23 02:47:58');
+INSERT INTO Inventory(total_in_stock,item_number,available_sizes,date_last_restock,date_next_restock) VALUES (7545137,8,'L','2023-06-09 00:46:54','2023-01-27 04:36:51');
+INSERT INTO Inventory(total_in_stock,item_number,available_sizes,date_last_restock,date_next_restock) VALUES (8877730,34,'M','2023-01-13 02:54:45','2023-01-07 14:46:32');
+INSERT INTO Inventory(total_in_stock,item_number,available_sizes,date_last_restock,date_next_restock) VALUES (69514,87,'3XL','2022-09-16 11:11:04','2023-02-01 03:48:37');
+INSERT INTO Inventory(total_in_stock,item_number,available_sizes,date_last_restock,date_next_restock) VALUES (6539695,74,'XS','2023-01-27 00:21:18','2022-03-06 22:43:24');
+INSERT INTO Inventory(total_in_stock,item_number,available_sizes,date_last_restock,date_next_restock) VALUES (1325632,58,'XL','2022-12-01 05:57:23','2023-02-11 19:55:41');
+INSERT INTO Inventory(total_in_stock,item_number,available_sizes,date_last_restock,date_next_restock) VALUES (6104366,1,'XL','2022-07-28 08:54:46','2022-11-17 15:08:47');
+INSERT INTO Inventory(total_in_stock,item_number,available_sizes,date_last_restock,date_next_restock) VALUES (9120370,13,'M','2023-07-15 16:32:29','2022-10-04 19:21:49');
+INSERT INTO Inventory(total_in_stock,item_number,available_sizes,date_last_restock,date_next_restock) VALUES (2506393,23,'M','2022-03-19 18:00:56','2023-06-22 16:10:02');
+INSERT INTO Inventory(total_in_stock,item_number,available_sizes,date_last_restock,date_next_restock) VALUES (1965667,8,'L','2023-01-18 23:52:16','2023-04-06 16:08:44');
+INSERT INTO Inventory(total_in_stock,item_number,available_sizes,date_last_restock,date_next_restock) VALUES (9647872,83,'2XL','2022-03-16 09:59:55','2023-07-15 20:03:51');
+INSERT INTO Inventory(total_in_stock,item_number,available_sizes,date_last_restock,date_next_restock) VALUES (8606939,91,'L','2023-01-21 05:50:12','2023-01-18 14:18:56');
+INSERT INTO Inventory(total_in_stock,item_number,available_sizes,date_last_restock,date_next_restock) VALUES (3910185,59,'XS','2023-04-12 07:59:28','2022-05-16 03:40:05');
+INSERT INTO Inventory(total_in_stock,item_number,available_sizes,date_last_restock,date_next_restock) VALUES (8215552,37,'XS','2022-11-21 07:52:20','2023-02-07 07:46:23');
+INSERT INTO Inventory(total_in_stock,item_number,available_sizes,date_last_restock,date_next_restock) VALUES (9226667,18,'XL','2023-04-30 03:23:29','2023-05-15 00:35:03');
+INSERT INTO Inventory(total_in_stock,item_number,available_sizes,date_last_restock,date_next_restock) VALUES (5756704,8,'2XL','2022-10-20 18:22:04','2022-11-23 06:57:22');
+INSERT INTO Inventory(total_in_stock,item_number,available_sizes,date_last_restock,date_next_restock) VALUES (5092648,66,'3XL','2022-07-26 23:17:33','2022-03-23 00:02:51');
+INSERT INTO Inventory(total_in_stock,item_number,available_sizes,date_last_restock,date_next_restock) VALUES (1695405,50,'XL','2022-03-26 02:04:34','2023-01-10 03:33:28');
+INSERT INTO Inventory(total_in_stock,item_number,available_sizes,date_last_restock,date_next_restock) VALUES (9339508,15,'XL','2023-03-16 15:55:39','2023-02-19 18:34:58');
+INSERT INTO Inventory(total_in_stock,item_number,available_sizes,date_last_restock,date_next_restock) VALUES (2107448,19,'2XL','2023-07-21 02:07:44','2023-02-10 07:19:11');
+INSERT INTO Inventory(total_in_stock,item_number,available_sizes,date_last_restock,date_next_restock) VALUES (967044,54,'2XL','2022-12-07 01:56:26','2022-12-30 10:02:02');
+INSERT INTO Inventory(total_in_stock,item_number,available_sizes,date_last_restock,date_next_restock) VALUES (1605137,43,'S','2023-01-13 09:50:01','2023-06-04 13:24:13');
+INSERT INTO Inventory(total_in_stock,item_number,available_sizes,date_last_restock,date_next_restock) VALUES (4649689,78,'M','2023-06-26 18:38:44','2022-11-12 03:56:10');
+INSERT INTO Inventory(total_in_stock,item_number,available_sizes,date_last_restock,date_next_restock) VALUES (4179048,76,'S','2022-06-23 15:30:17','2023-05-21 07:28:40');
+INSERT INTO Inventory(total_in_stock,item_number,available_sizes,date_last_restock,date_next_restock) VALUES (4917285,96,'3XL','2022-04-19 06:14:43','2022-12-04 04:58:42');
+INSERT INTO Inventory(total_in_stock,item_number,available_sizes,date_last_restock,date_next_restock) VALUES (2373278,55,'S','2022-05-02 05:12:49','2022-10-06 17:26:24');
+INSERT INTO Inventory(total_in_stock,item_number,available_sizes,date_last_restock,date_next_restock) VALUES (1387112,23,'L','2022-09-13 23:41:33','2023-02-19 17:01:39');
+INSERT INTO Inventory(total_in_stock,item_number,available_sizes,date_last_restock,date_next_restock) VALUES (785191,84,'M','2022-08-18 09:21:57','2022-12-11 20:08:22');
+INSERT INTO Inventory(total_in_stock,item_number,available_sizes,date_last_restock,date_next_restock) VALUES (2447448,45,'2XL','2022-09-02 10:20:58','2022-06-05 08:37:26');
+
+INSERT INTO Merchandise(item_number,item_description,available_sizes,date_last_restock,date_next_restock,supplier_state,supplier_street,supplier_city,supplier_zip_code,creator_id,supplier_id,total_in_stock) VALUES (1,'Xavdpywubsxnfp','L','2023-02-20 20:12:12','2022-07-16 17:14:27','Florida','West','Pensacola',32575,71,24,8076173);
+INSERT INTO Merchandise(item_number,item_description,available_sizes,date_last_restock,date_next_restock,supplier_state,supplier_street,supplier_city,supplier_zip_code,creator_id,supplier_id,total_in_stock) VALUES (2,'Uepxccyiurdiwa','S','2023-01-03 20:23:44','2023-03-16 21:58:01','Virginia','Upham','Richmond',23203,73,88,9862133);
+INSERT INTO Merchandise(item_number,item_description,available_sizes,date_last_restock,date_next_restock,supplier_state,supplier_street,supplier_city,supplier_zip_code,creator_id,supplier_id,total_in_stock) VALUES (3,'Ugqkyanjnuqktm','3XL','2023-02-05 11:39:42','2022-12-11 03:28:56','New York','Warbler','Buffalo',14269,50,3,8247354);
+INSERT INTO Merchandise(item_number,item_description,available_sizes,date_last_restock,date_next_restock,supplier_state,supplier_street,supplier_city,supplier_zip_code,creator_id,supplier_id,total_in_stock) VALUES (4,'Qyidfpkawhusxr','L','2022-10-20 02:11:41','2022-12-21 04:33:46','Ohio','Kings','Toledo',43699,62,60,6795990);
+INSERT INTO Merchandise(item_number,item_description,available_sizes,date_last_restock,date_next_restock,supplier_state,supplier_street,supplier_city,supplier_zip_code,creator_id,supplier_id,total_in_stock) VALUES (5,'Fdboefimvrddsw','2XL','2022-05-03 23:14:23','2023-01-13 20:41:45','California','Mallory','Oakland',94622,70,17,4249393);
+INSERT INTO Merchandise(item_number,item_description,available_sizes,date_last_restock,date_next_restock,supplier_state,supplier_street,supplier_city,supplier_zip_code,creator_id,supplier_id,total_in_stock) VALUES (6,'Actugxjyizrruq','2XL','2022-11-28 16:57:07','2022-12-07 02:03:48','Illinois','Walton','Springfield',62711,30,86,762943);
+INSERT INTO Merchandise(item_number,item_description,available_sizes,date_last_restock,date_next_restock,supplier_state,supplier_street,supplier_city,supplier_zip_code,creator_id,supplier_id,total_in_stock) VALUES (7,'Tcvrgeddgesysg','XS','2022-10-07 07:20:04','2023-01-03 15:18:57','Massachusetts','Commercial','Boston',02283,60,89,9524571);
+INSERT INTO Merchandise(item_number,item_description,available_sizes,date_last_restock,date_next_restock,supplier_state,supplier_street,supplier_city,supplier_zip_code,creator_id,supplier_id,total_in_stock) VALUES (8,'Gkktamidrennbz','M','2023-03-10 16:19:22','2022-10-10 23:15:18','District of Columbia','Green','Washington',20268,12,23,8247354);
+INSERT INTO Merchandise(item_number,item_description,available_sizes,date_last_restock,date_next_restock,supplier_state,supplier_street,supplier_city,supplier_zip_code,creator_id,supplier_id,total_in_stock) VALUES (9,'Hpsvehlpphggrs','3XL','2022-07-20 00:52:38','2022-05-21 05:11:40','Florida','Lakewood','Tampa',33686,99,36,6846686);
+INSERT INTO Merchandise(item_number,item_description,available_sizes,date_last_restock,date_next_restock,supplier_state,supplier_street,supplier_city,supplier_zip_code,creator_id,supplier_id,total_in_stock) VALUES (10,'Zpjnrjzgwowduj','L','2022-09-19 16:40:48','2022-06-17 18:05:58','New York','Crownhardt','Utica',13505,34,2,8225365);
+INSERT INTO Merchandise(item_number,item_description,available_sizes,date_last_restock,date_next_restock,supplier_state,supplier_street,supplier_city,supplier_zip_code,creator_id,supplier_id,total_in_stock) VALUES (11,'Lcxnyydrfxtnkg','XL','2022-07-29 02:42:36','2022-12-08 00:54:12','Illinois','Oakridge','Bloomington',61709,9,58,4974134);
+INSERT INTO Merchandise(item_number,item_description,available_sizes,date_last_restock,date_next_restock,supplier_state,supplier_street,supplier_city,supplier_zip_code,creator_id,supplier_id,total_in_stock) VALUES (12,'Oquzmbufifgmwm','XS','2023-02-01 14:21:20','2022-05-17 17:25:05','Louisiana','Thackeray','Alexandria',71307,57,20,1325632);
+INSERT INTO Merchandise(item_number,item_description,available_sizes,date_last_restock,date_next_restock,supplier_state,supplier_street,supplier_city,supplier_zip_code,creator_id,supplier_id,total_in_stock) VALUES (13,'Ybneotnrvwqwfi','S','2022-12-14 15:52:41','2023-01-03 10:29:18','Washington','Vernon','Seattle',98109,76,4,4917285);
+INSERT INTO Merchandise(item_number,item_description,available_sizes,date_last_restock,date_next_restock,supplier_state,supplier_street,supplier_city,supplier_zip_code,creator_id,supplier_id,total_in_stock) VALUES (14,'Khwrehjandbmkl','L','2023-04-13 19:02:02','2023-01-06 19:26:14','Florida','Killdeer','Tallahassee',32304,5,96,7545137);
+INSERT INTO Merchandise(item_number,item_description,available_sizes,date_last_restock,date_next_restock,supplier_state,supplier_street,supplier_city,supplier_zip_code,creator_id,supplier_id,total_in_stock) VALUES (15,'Cveqouclbmhmtf','L','2023-04-05 02:08:19','2022-05-09 10:22:39','Mississippi','Basil','Jackson',39236,39,64,4174049);
+INSERT INTO Merchandise(item_number,item_description,available_sizes,date_last_restock,date_next_restock,supplier_state,supplier_street,supplier_city,supplier_zip_code,creator_id,supplier_id,total_in_stock) VALUES (16,'Eahowpulzumopv','XL','2023-02-24 03:01:21','2023-01-13 14:24:26','Florida','Kinsman','Orlando',32868,14,15,5879982);
+INSERT INTO Merchandise(item_number,item_description,available_sizes,date_last_restock,date_next_restock,supplier_state,supplier_street,supplier_city,supplier_zip_code,creator_id,supplier_id,total_in_stock) VALUES (17,'Wohuwyyozieikm','L','2022-09-30 02:31:50','2022-11-01 07:23:31','California','Meadow Ridge','Van Nuys',91499,67,72,6796970);
+INSERT INTO Merchandise(item_number,item_description,available_sizes,date_last_restock,date_next_restock,supplier_state,supplier_street,supplier_city,supplier_zip_code,creator_id,supplier_id,total_in_stock) VALUES (18,'Cyyhnrjkuwjqlx','S','2023-03-22 22:20:41','2022-06-18 02:08:44','Texas','Calypso','Houston',77065,78,68,3254233);
+INSERT INTO Merchandise(item_number,item_description,available_sizes,date_last_restock,date_next_restock,supplier_state,supplier_street,supplier_city,supplier_zip_code,creator_id,supplier_id,total_in_stock) VALUES (19,'Rkocjcsyrbclef','XS','2023-02-22 19:18:58','2022-11-01 19:59:58','Indiana','Towne','Muncie',47306,11,90,6846686);
+INSERT INTO Merchandise(item_number,item_description,available_sizes,date_last_restock,date_next_restock,supplier_state,supplier_street,supplier_city,supplier_zip_code,creator_id,supplier_id,total_in_stock) VALUES (20,'Lrzjzysjvlfrvc','XL','2022-09-09 04:20:48','2022-08-01 17:07:36','Texas','Golf','Houston',77095,35,4,7561164);
+INSERT INTO Merchandise(item_number,item_description,available_sizes,date_last_restock,date_next_restock,supplier_state,supplier_street,supplier_city,supplier_zip_code,creator_id,supplier_id,total_in_stock) VALUES (21,'Izumxbznqexatu','L','2022-10-14 00:58:10','2022-06-06 08:13:34','West Virginia','Crescent Oaks','Morgantown',26505,73,47,7609487);
+INSERT INTO Merchandise(item_number,item_description,available_sizes,date_last_restock,date_next_restock,supplier_state,supplier_street,supplier_city,supplier_zip_code,creator_id,supplier_id,total_in_stock) VALUES (22,'Zzfwpgawobfqxa','XS','2023-03-07 03:03:53','2022-05-11 18:07:48','New York','Village Green','Brooklyn',11210,86,85,8076173);
+INSERT INTO Merchandise(item_number,item_description,available_sizes,date_last_restock,date_next_restock,supplier_state,supplier_street,supplier_city,supplier_zip_code,creator_id,supplier_id,total_in_stock) VALUES (23,'Xwjvnowmffrpwe','3XL','2022-05-12 07:59:38','2023-01-24 20:55:50','Connecticut','Dexter','Bridgeport',06606,51,65,8606939);
+INSERT INTO Merchandise(item_number,item_description,available_sizes,date_last_restock,date_next_restock,supplier_state,supplier_street,supplier_city,supplier_zip_code,creator_id,supplier_id,total_in_stock) VALUES (24,'Ejwjwtemvegyxk','L','2023-01-08 15:08:21','2022-04-21 05:26:25','North Carolina','Crownhardt','Wilmington',28410,97,22,9524571);
+INSERT INTO Merchandise(item_number,item_description,available_sizes,date_last_restock,date_next_restock,supplier_state,supplier_street,supplier_city,supplier_zip_code,creator_id,supplier_id,total_in_stock) VALUES (25,'Lhnlvwbeqqvrhn','3XL','2022-12-22 07:31:05','2023-03-18 17:23:10','Texas','Debra','Longview',75605,49,48,7324910);
+INSERT INTO Merchandise(item_number,item_description,available_sizes,date_last_restock,date_next_restock,supplier_state,supplier_street,supplier_city,supplier_zip_code,creator_id,supplier_id,total_in_stock) VALUES (26,'Wprpbbnhryblxf','S','2022-06-17 07:03:35','2023-02-05 15:06:38','California','Monica','San Jose',95194,21,62,6104366);
+INSERT INTO Merchandise(item_number,item_description,available_sizes,date_last_restock,date_next_restock,supplier_state,supplier_street,supplier_city,supplier_zip_code,creator_id,supplier_id,total_in_stock) VALUES (27,'Pbidhlnfqgzkro','XL','2023-02-21 02:10:01','2022-10-12 12:29:40','Florida','Melody','Orlando',32803,33,17,7776955);
+INSERT INTO Merchandise(item_number,item_description,available_sizes,date_last_restock,date_next_restock,supplier_state,supplier_street,supplier_city,supplier_zip_code,creator_id,supplier_id,total_in_stock) VALUES (28,'Kqaqyeibwuoyqh','2XL','2023-01-01 16:46:26','2023-01-04 20:07:36','Georgia','3rd','Athens',30605,28,35,1965667);
+INSERT INTO Merchandise(item_number,item_description,available_sizes,date_last_restock,date_next_restock,supplier_state,supplier_street,supplier_city,supplier_zip_code,creator_id,supplier_id,total_in_stock) VALUES (29,'Znglnnhervmxvu','XL','2022-05-15 15:33:42','2022-05-11 01:27:25','Florida','Columbus','Pensacola',32590,59,47,8505749);
+INSERT INTO Merchandise(item_number,item_description,available_sizes,date_last_restock,date_next_restock,supplier_state,supplier_street,supplier_city,supplier_zip_code,creator_id,supplier_id,total_in_stock) VALUES (30,'Svszonetjmvndi','2XL','2023-02-18 16:20:33','2022-10-14 20:08:11','Texas','Darwin','Houston',77245,93,76,2373278);
+INSERT INTO Merchandise(item_number,item_description,available_sizes,date_last_restock,date_next_restock,supplier_state,supplier_street,supplier_city,supplier_zip_code,creator_id,supplier_id,total_in_stock) VALUES (31,'Zextjelhgwfrfr','L','2022-04-20 18:16:07','2023-04-08 16:58:57','Texas','Forest','Garland',75049,35,29,2373278);
+INSERT INTO Merchandise(item_number,item_description,available_sizes,date_last_restock,date_next_restock,supplier_state,supplier_street,supplier_city,supplier_zip_code,creator_id,supplier_id,total_in_stock) VALUES (32,'Pmxrcgzljanikf','M','2022-09-16 21:38:05','2022-05-19 19:25:33','Texas','Mosinee','Dallas',75310,61,2,3195346);
+INSERT INTO Merchandise(item_number,item_description,available_sizes,date_last_restock,date_next_restock,supplier_state,supplier_street,supplier_city,supplier_zip_code,creator_id,supplier_id,total_in_stock) VALUES (33,'Nbwdnivwhxzxqo','S','2023-01-19 22:12:00','2023-02-23 06:13:45','Texas','Calypso','El Paso',79905,56,83,8215552);
+INSERT INTO Merchandise(item_number,item_description,available_sizes,date_last_restock,date_next_restock,supplier_state,supplier_street,supplier_city,supplier_zip_code,creator_id,supplier_id,total_in_stock) VALUES (34,'Sqrruodurssmsf','XS','2022-07-09 08:40:56','2022-08-07 10:03:17','District of Columbia','Ohio','Washington',20299,40,25,7561164);
+INSERT INTO Merchandise(item_number,item_description,available_sizes,date_last_restock,date_next_restock,supplier_state,supplier_street,supplier_city,supplier_zip_code,creator_id,supplier_id,total_in_stock) VALUES (35,'Qbpxktxdlgqfhr','M','2023-02-20 20:45:05','2023-02-28 12:15:50','New York','Bultman','New York City',10090,30,35,4663239);
+INSERT INTO Merchandise(item_number,item_description,available_sizes,date_last_restock,date_next_restock,supplier_state,supplier_street,supplier_city,supplier_zip_code,creator_id,supplier_id,total_in_stock) VALUES (36,'Uvpvrddmkmtfic','L','2022-12-18 04:37:32','2023-04-07 04:56:51','District of Columbia','Dryden','Washington',20508,43,75,6498100);
+INSERT INTO Merchandise(item_number,item_description,available_sizes,date_last_restock,date_next_restock,supplier_state,supplier_street,supplier_city,supplier_zip_code,creator_id,supplier_id,total_in_stock) VALUES (37,'Vzykaeuljbkeur','3XL','2022-06-09 09:49:19','2022-11-09 20:45:05','Texas','Valley Edge','Dallas',75310,81,40,3846828);
+INSERT INTO Merchandise(item_number,item_description,available_sizes,date_last_restock,date_next_restock,supplier_state,supplier_street,supplier_city,supplier_zip_code,creator_id,supplier_id,total_in_stock) VALUES (38,'Zkzcsbaorjsxie','L','2023-04-01 21:18:02','2023-02-04 14:43:09','Mississippi','Rowland','Jackson',39216,92,9,7124955);
+INSERT INTO Merchandise(item_number,item_description,available_sizes,date_last_restock,date_next_restock,supplier_state,supplier_street,supplier_city,supplier_zip_code,creator_id,supplier_id,total_in_stock) VALUES (39,'Mrephvkovcdpun','M','2022-05-11 00:26:13','2022-06-03 03:26:01','Florida','Schurz','Hialeah',33018,48,93,8076173);
+INSERT INTO Merchandise(item_number,item_description,available_sizes,date_last_restock,date_next_restock,supplier_state,supplier_street,supplier_city,supplier_zip_code,creator_id,supplier_id,total_in_stock) VALUES (40,'Gdldtxwmbutksm','3XL','2022-10-12 03:00:48','2023-03-23 08:05:09','California','High Crossing','Bakersfield',93311,91,72,1836642);
+INSERT INTO Merchandise(item_number,item_description,available_sizes,date_last_restock,date_next_restock,supplier_state,supplier_street,supplier_city,supplier_zip_code,creator_id,supplier_id,total_in_stock) VALUES (41,'Qallcckkzxccrp','S','2022-05-17 14:25:04','2022-10-17 14:24:41','California','Daystar','Concord',94522,34,31,4191978);
+INSERT INTO Merchandise(item_number,item_description,available_sizes,date_last_restock,date_next_restock,supplier_state,supplier_street,supplier_city,supplier_zip_code,creator_id,supplier_id,total_in_stock) VALUES (42,'Rplnvkxonsmnsv','L','2022-09-26 04:44:34','2022-06-05 17:01:21','Delaware','Russell','Wilmington',19810,71,41,8095758);
+INSERT INTO Merchandise(item_number,item_description,available_sizes,date_last_restock,date_next_restock,supplier_state,supplier_street,supplier_city,supplier_zip_code,creator_id,supplier_id,total_in_stock) VALUES (43,'Ctummbxvrkukof','M','2022-07-14 02:28:45','2023-03-22 05:44:12','Texas','Riverside','Abilene',79699,38,6,2373278);
+INSERT INTO Merchandise(item_number,item_description,available_sizes,date_last_restock,date_next_restock,supplier_state,supplier_street,supplier_city,supplier_zip_code,creator_id,supplier_id,total_in_stock) VALUES (44,'Sflgedeoznxvyx','XL','2023-03-28 03:43:42','2022-05-12 05:48:42','Florida','Florence','Jacksonville',32215,13,22,2561045);
+INSERT INTO Merchandise(item_number,item_description,available_sizes,date_last_restock,date_next_restock,supplier_state,supplier_street,supplier_city,supplier_zip_code,creator_id,supplier_id,total_in_stock) VALUES (45,'Tnvwpiwggqusxm','3XL','2022-05-12 07:11:37','2023-01-20 20:46:19','North Carolina','Anderson','Charlotte',28205,49,97,7609487);
+INSERT INTO Merchandise(item_number,item_description,available_sizes,date_last_restock,date_next_restock,supplier_state,supplier_street,supplier_city,supplier_zip_code,creator_id,supplier_id,total_in_stock) VALUES (46,'Oabmyncwtgrree','3XL','2023-01-26 22:17:20','2022-12-21 13:38:13','Texas','Stephen','Dallas',75379,42,74,967044);
+INSERT INTO Merchandise(item_number,item_description,available_sizes,date_last_restock,date_next_restock,supplier_state,supplier_street,supplier_city,supplier_zip_code,creator_id,supplier_id,total_in_stock) VALUES (47,'Guzhsrbiiaqkzu','3XL','2022-04-16 04:56:19','2022-04-23 22:23:12','Florida','Quincy','Winter Haven',33884,6,35,9006731);
+INSERT INTO Merchandise(item_number,item_description,available_sizes,date_last_restock,date_next_restock,supplier_state,supplier_street,supplier_city,supplier_zip_code,creator_id,supplier_id,total_in_stock) VALUES (48,'Ddxlxxwjqrxlgx','3XL','2022-10-25 02:28:56','2022-12-06 09:55:37','Florida','Veith','Naples',34102,80,15,6796970);
+INSERT INTO Merchandise(item_number,item_description,available_sizes,date_last_restock,date_next_restock,supplier_state,supplier_street,supplier_city,supplier_zip_code,creator_id,supplier_id,total_in_stock) VALUES (49,'Uiywvlpgsagxor','XS','2022-06-19 08:28:49','2023-02-08 16:08:10','South Carolina','Tomscot','Columbia',29203,70,21,3126769);
+INSERT INTO Merchandise(item_number,item_description,available_sizes,date_last_restock,date_next_restock,supplier_state,supplier_street,supplier_city,supplier_zip_code,creator_id,supplier_id,total_in_stock) VALUES (50,'Ybjthgczdvdcgj','XS','2022-08-19 18:41:44','2022-11-21 16:30:43','Minnesota','Clove','Saint Paul',55172,99,36,1014862);
+INSERT INTO Merchandise(item_number,item_description,available_sizes,date_last_restock,date_next_restock,supplier_state,supplier_street,supplier_city,supplier_zip_code,creator_id,supplier_id,total_in_stock) VALUES (51,'Eplqnalifedbyu','XS','2023-02-12 19:39:56','2022-07-27 16:25:35','Washington','Longview','Spokane',99220,37,92,6104366);
+INSERT INTO Merchandise(item_number,item_description,available_sizes,date_last_restock,date_next_restock,supplier_state,supplier_street,supplier_city,supplier_zip_code,creator_id,supplier_id,total_in_stock) VALUES (52,'Dqtcejhhxcbtoi','XL','2022-07-02 02:07:52','2023-01-01 00:58:35','Missouri','Fieldstone','Saint Louis',63143,85,57,9443645);
+INSERT INTO Merchandise(item_number,item_description,available_sizes,date_last_restock,date_next_restock,supplier_state,supplier_street,supplier_city,supplier_zip_code,creator_id,supplier_id,total_in_stock) VALUES (53,'Qmzwyahjhkecxe','XS','2022-05-13 03:12:14','2023-04-11 06:39:28','Texas','Thierer','San Antonio',78215,24,65,9647872);
+INSERT INTO Merchandise(item_number,item_description,available_sizes,date_last_restock,date_next_restock,supplier_state,supplier_street,supplier_city,supplier_zip_code,creator_id,supplier_id,total_in_stock) VALUES (54,'Zmalqmbyyzajfc','XL','2022-08-25 02:18:23','2022-12-27 01:17:49','Virginia','Rutledge','Sterling',20167,64,88,8225365);
+INSERT INTO Merchandise(item_number,item_description,available_sizes,date_last_restock,date_next_restock,supplier_state,supplier_street,supplier_city,supplier_zip_code,creator_id,supplier_id,total_in_stock) VALUES (55,'Bdtkkvthkaadbx','L','2022-08-22 07:35:30','2023-02-12 14:25:54','Nevada','Mitchell','Las Vegas',89155,55,19,8877730);
+INSERT INTO Merchandise(item_number,item_description,available_sizes,date_last_restock,date_next_restock,supplier_state,supplier_street,supplier_city,supplier_zip_code,creator_id,supplier_id,total_in_stock) VALUES (56,'Exprbgabsbdxsm','3XL','2022-04-28 17:25:26','2022-04-24 18:36:55','New York','Glacier Hill','White Plains',10633,41,88,4414666);
+INSERT INTO Merchandise(item_number,item_description,available_sizes,date_last_restock,date_next_restock,supplier_state,supplier_street,supplier_city,supplier_zip_code,creator_id,supplier_id,total_in_stock) VALUES (57,'Dufzenpzhnwszf','XS','2022-09-17 23:55:06','2023-04-10 22:18:01','Maryland','Morrow','Rockville',20851,44,58,8095758);
+INSERT INTO Merchandise(item_number,item_description,available_sizes,date_last_restock,date_next_restock,supplier_state,supplier_street,supplier_city,supplier_zip_code,creator_id,supplier_id,total_in_stock) VALUES (58,'Beqamsapcdjixc','L','2022-08-27 16:19:37','2023-04-15 21:00:10','Ohio','Dixon','Dayton',45432,23,45,7324910);
+INSERT INTO Merchandise(item_number,item_description,available_sizes,date_last_restock,date_next_restock,supplier_state,supplier_street,supplier_city,supplier_zip_code,creator_id,supplier_id,total_in_stock) VALUES (59,'Qivimidlhrwkzl','S','2022-11-19 04:47:59','2023-04-12 13:19:57','New York','Kim','Jamaica',11447,37,91,2373278);
+INSERT INTO Merchandise(item_number,item_description,available_sizes,date_last_restock,date_next_restock,supplier_state,supplier_street,supplier_city,supplier_zip_code,creator_id,supplier_id,total_in_stock) VALUES (60,'Cvsqrixfvlcmao','L','2022-09-21 15:38:34','2023-03-03 16:37:18','Illinois','West','East Saint Louis',62205,87,70,1387112);
+INSERT INTO Merchandise(item_number,item_description,available_sizes,date_last_restock,date_next_restock,supplier_state,supplier_street,supplier_city,supplier_zip_code,creator_id,supplier_id,total_in_stock) VALUES (61,'Tmhzvhkmkprnry','XL','2022-04-20 02:21:11','2022-09-22 04:03:33','District of Columbia','Eliot','Washington',20210,66,42,1387112);
+INSERT INTO Merchandise(item_number,item_description,available_sizes,date_last_restock,date_next_restock,supplier_state,supplier_street,supplier_city,supplier_zip_code,creator_id,supplier_id,total_in_stock) VALUES (62,'Dhgyljdzpukvfh','M','2022-11-24 09:26:56','2022-06-17 21:52:24','Virginia','Fairview','Fredericksburg',22405,48,96,7029195);
+INSERT INTO Merchandise(item_number,item_description,available_sizes,date_last_restock,date_next_restock,supplier_state,supplier_street,supplier_city,supplier_zip_code,creator_id,supplier_id,total_in_stock) VALUES (63,'Znftnrxqkgkvyj','2XL','2022-11-06 13:20:14','2022-05-09 06:46:58','California','Westridge','Pasadena',91131,61,84,2420312);
+INSERT INTO Merchandise(item_number,item_description,available_sizes,date_last_restock,date_next_restock,supplier_state,supplier_street,supplier_city,supplier_zip_code,creator_id,supplier_id,total_in_stock) VALUES (64,'Yzleifzhzusscl','2XL','2022-12-22 09:53:00','2022-10-25 04:28:40','Arizona','Mariners Cove','Phoenix',85015,58,10,5529234);
+INSERT INTO Merchandise(item_number,item_description,available_sizes,date_last_restock,date_next_restock,supplier_state,supplier_street,supplier_city,supplier_zip_code,creator_id,supplier_id,total_in_stock) VALUES (65,'Wixjilfhlqjymz','2XL','2022-11-08 23:56:42','2022-09-01 08:52:13','California','La Follette','Riverside',92505,5,67,9044612);
+INSERT INTO Merchandise(item_number,item_description,available_sizes,date_last_restock,date_next_restock,supplier_state,supplier_street,supplier_city,supplier_zip_code,creator_id,supplier_id,total_in_stock) VALUES (66,'Vcbkhjfrkaanth','M','2022-09-12 11:32:32','2023-02-24 10:57:41','Massachusetts','Sloan','Waltham',02453,51,19,4414666);
+INSERT INTO Merchandise(item_number,item_description,available_sizes,date_last_restock,date_next_restock,supplier_state,supplier_street,supplier_city,supplier_zip_code,creator_id,supplier_id,total_in_stock) VALUES (67,'Yejwzvcxilbjbp','3XL','2022-09-15 10:05:21','2022-10-23 17:03:39','Mississippi','Dakota','Hattiesburg',39404,56,29,8076173);
+INSERT INTO Merchandise(item_number,item_description,available_sizes,date_last_restock,date_next_restock,supplier_state,supplier_street,supplier_city,supplier_zip_code,creator_id,supplier_id,total_in_stock) VALUES (68,'Daftgaxjovbvef','2XL','2023-01-13 16:56:56','2023-04-05 04:53:49','Texas','La Follette','Dallas',75310,34,91,1374648);
+INSERT INTO Merchandise(item_number,item_description,available_sizes,date_last_restock,date_next_restock,supplier_state,supplier_street,supplier_city,supplier_zip_code,creator_id,supplier_id,total_in_stock) VALUES (69,'Kappdlqzgsfnoy','L','2023-01-03 09:20:52','2022-07-04 11:33:19','Maryland','Wayridge','Gaithersburg',20883,86,71,2098229);
+INSERT INTO Merchandise(item_number,item_description,available_sizes,date_last_restock,date_next_restock,supplier_state,supplier_street,supplier_city,supplier_zip_code,creator_id,supplier_id,total_in_stock) VALUES (70,'Lcaqvolgoyvato','M','2022-10-23 16:29:45','2022-05-04 08:16:21','Texas','Onsgard','El Paso',88574,94,9,7124955);
+INSERT INTO Merchandise(item_number,item_description,available_sizes,date_last_restock,date_next_restock,supplier_state,supplier_street,supplier_city,supplier_zip_code,creator_id,supplier_id,total_in_stock) VALUES (71,'Ejohynfxqiprjn','XS','2022-06-15 21:51:17','2023-03-04 01:15:47','Texas','Blackbird','Austin',78710,81,40,6539965);
+INSERT INTO Merchandise(item_number,item_description,available_sizes,date_last_restock,date_next_restock,supplier_state,supplier_street,supplier_city,supplier_zip_code,creator_id,supplier_id,total_in_stock) VALUES (72,'Noztbeaxqjcvyx','L','2022-12-29 17:47:00','2022-08-18 04:41:52','California','Tomscot','San Francisco',94147,7,43,4649689);
+INSERT INTO Merchandise(item_number,item_description,available_sizes,date_last_restock,date_next_restock,supplier_state,supplier_street,supplier_city,supplier_zip_code,creator_id,supplier_id,total_in_stock) VALUES (73,'Yvzcktowdmtbyi','XS','2022-08-18 02:39:11','2022-06-19 03:52:03','Georgia','Anzinger','Savannah',31405,21,9,8377631);
+INSERT INTO Merchandise(item_number,item_description,available_sizes,date_last_restock,date_next_restock,supplier_state,supplier_street,supplier_city,supplier_zip_code,creator_id,supplier_id,total_in_stock) VALUES (74,'Fwrnbnnagogmqg','2XL','2022-09-19 09:49:15','2022-08-10 14:06:14','Washington','Dixon','Tacoma',98442,53,73,9044612);
+INSERT INTO Merchandise(item_number,item_description,available_sizes,date_last_restock,date_next_restock,supplier_state,supplier_street,supplier_city,supplier_zip_code,creator_id,supplier_id,total_in_stock) VALUES (75,'Hlauowthwhdqsy','2XL','2022-10-17 14:39:44','2022-05-02 09:43:49','Missouri','Anthes','Saint Louis',63131,17,5,6364429);
+INSERT INTO Merchandise(item_number,item_description,available_sizes,date_last_restock,date_next_restock,supplier_state,supplier_street,supplier_city,supplier_zip_code,creator_id,supplier_id,total_in_stock) VALUES (76,'Evipekueikrsko','XS','2023-01-11 20:31:26','2022-08-23 17:49:32','Georgia','Prentice','Norcross',30092,31,25,967044);
+INSERT INTO Merchandise(item_number,item_description,available_sizes,date_last_restock,date_next_restock,supplier_state,supplier_street,supplier_city,supplier_zip_code,creator_id,supplier_id,total_in_stock) VALUES (77,'Mfikxxrnoacwra','2XL','2023-01-24 04:15:27','2022-05-07 06:12:20','California','Trailsway','Los Angeles',90189,79,57,5038642);
+INSERT INTO Merchandise(item_number,item_description,available_sizes,date_last_restock,date_next_restock,supplier_state,supplier_street,supplier_city,supplier_zip_code,creator_id,supplier_id,total_in_stock) VALUES (78,'Dvbczmpocpvdue','XS','2022-12-07 04:18:57','2022-06-11 18:25:16','Georgia','Sloan','Columbus',31914,57,94,8215552);
+INSERT INTO Merchandise(item_number,item_description,available_sizes,date_last_restock,date_next_restock,supplier_state,supplier_street,supplier_city,supplier_zip_code,creator_id,supplier_id,total_in_stock) VALUES (79,'Khqxbsnjgwcrod','XS','2022-08-26 11:25:22','2023-01-07 06:10:43','Louisiana','Brickson Park','New Orleans',70116,95,40,3054366);
+INSERT INTO Merchandise(item_number,item_description,available_sizes,date_last_restock,date_next_restock,supplier_state,supplier_street,supplier_city,supplier_zip_code,creator_id,supplier_id,total_in_stock) VALUES (80,'Qjfypnreonfihy','2XL','2023-02-07 04:54:55','2022-06-07 18:58:11','New York','Basil','Rochester',14604,8,74,4174049);
+INSERT INTO Merchandise(item_number,item_description,available_sizes,date_last_restock,date_next_restock,supplier_state,supplier_street,supplier_city,supplier_zip_code,creator_id,supplier_id,total_in_stock) VALUES (81,'Krfjdlzqbezszy','3XL','2023-02-08 11:51:39','2023-03-04 06:13:59','Massachusetts','Waywood','Springfield',01114,47,83,8146768);
+INSERT INTO Merchandise(item_number,item_description,available_sizes,date_last_restock,date_next_restock,supplier_state,supplier_street,supplier_city,supplier_zip_code,creator_id,supplier_id,total_in_stock) VALUES (82,'Ftyrtbdhdzevmp','XL','2022-05-26 01:54:11','2022-06-25 09:24:36','Ohio','Fisk','Cleveland',44197,8,17,7609487);
+INSERT INTO Merchandise(item_number,item_description,available_sizes,date_last_restock,date_next_restock,supplier_state,supplier_street,supplier_city,supplier_zip_code,creator_id,supplier_id,total_in_stock) VALUES (83,'Fvugbgfwiqlyiw','XS','2022-05-07 13:27:55','2022-10-12 01:14:21','Louisiana','Wayridge','Baton Rouge',70810,2,37,1014862);
+INSERT INTO Merchandise(item_number,item_description,available_sizes,date_last_restock,date_next_restock,supplier_state,supplier_street,supplier_city,supplier_zip_code,creator_id,supplier_id,total_in_stock) VALUES (84,'Iksdwrsyzrjzse','S','2022-08-29 08:10:49','2022-07-02 14:04:19','Pennsylvania','Rusk','Philadelphia',19104,43,93,8877730);
+INSERT INTO Merchandise(item_number,item_description,available_sizes,date_last_restock,date_next_restock,supplier_state,supplier_street,supplier_city,supplier_zip_code,creator_id,supplier_id,total_in_stock) VALUES (85,'Xwqycjidxamdfk','XS','2022-06-10 04:35:43','2022-05-08 03:51:35','Texas','Fairview','El Paso',79916,81,43,7124955);
+INSERT INTO Merchandise(item_number,item_description,available_sizes,date_last_restock,date_next_restock,supplier_state,supplier_street,supplier_city,supplier_zip_code,creator_id,supplier_id,total_in_stock) VALUES (86,'Spbgwfeocptqjp','M','2022-09-20 23:37:38','2022-06-08 08:28:35','Florida','Continental','Miami',33142,75,90,9443645);
+INSERT INTO Merchandise(item_number,item_description,available_sizes,date_last_restock,date_next_restock,supplier_state,supplier_street,supplier_city,supplier_zip_code,creator_id,supplier_id,total_in_stock) VALUES (87,'Rnnwldtauopyxc','XL','2023-03-15 12:21:56','2022-07-26 21:16:49','Virginia','Kinsman','Norfolk',23520,46,7,4249393);
+INSERT INTO Merchandise(item_number,item_description,available_sizes,date_last_restock,date_next_restock,supplier_state,supplier_street,supplier_city,supplier_zip_code,creator_id,supplier_id,total_in_stock) VALUES (88,'Lajgntlhnjwnda','XL','2022-11-21 21:15:32','2023-02-28 05:13:55','New York','Sunfield','New York City',10004,91,32,3446358);
+INSERT INTO Merchandise(item_number,item_description,available_sizes,date_last_restock,date_next_restock,supplier_state,supplier_street,supplier_city,supplier_zip_code,creator_id,supplier_id,total_in_stock) VALUES (89,'Jqnfcgssaugurq','XS','2022-05-10 04:29:02','2022-09-28 12:36:58','California','Hudson','Pasadena',91199,98,41,84739);
+INSERT INTO Merchandise(item_number,item_description,available_sizes,date_last_restock,date_next_restock,supplier_state,supplier_street,supplier_city,supplier_zip_code,creator_id,supplier_id,total_in_stock) VALUES (90,'Xbkzqyzxsdahcg','S','2022-06-18 01:19:12','2022-11-29 03:40:47','California','Debra','Los Angeles',90050,80,52,8606939);
+INSERT INTO Merchandise(item_number,item_description,available_sizes,date_last_restock,date_next_restock,supplier_state,supplier_street,supplier_city,supplier_zip_code,creator_id,supplier_id,total_in_stock) VALUES (91,'Lsznhyyqjtwusa','XS','2022-04-16 20:24:35','2022-07-08 14:57:12','Florida','Crowley','Seminole',34642,91,3,6539965);
+INSERT INTO Merchandise(item_number,item_description,available_sizes,date_last_restock,date_next_restock,supplier_state,supplier_street,supplier_city,supplier_zip_code,creator_id,supplier_id,total_in_stock) VALUES (92,'Lpsgzuuvtbkbkv','S','2022-07-09 00:53:26','2022-06-11 12:52:00','Ohio','Jenifer','Toledo',43699,14,41,4414666);
+INSERT INTO Merchandise(item_number,item_description,available_sizes,date_last_restock,date_next_restock,supplier_state,supplier_street,supplier_city,supplier_zip_code,creator_id,supplier_id,total_in_stock) VALUES (93,'Ofubyotwmjwajj','XL','2022-12-17 23:06:28','2023-04-12 21:01:01','New York','Bellgrove','Staten Island',10305,69,34,385628);
+INSERT INTO Merchandise(item_number,item_description,available_sizes,date_last_restock,date_next_restock,supplier_state,supplier_street,supplier_city,supplier_zip_code,creator_id,supplier_id,total_in_stock) VALUES (94,'Nqijzkcqoawwch','XL','2022-07-06 07:41:13','2022-07-01 16:17:36','Florida','Iowa','Pinellas Park',34665,23,85,1965667);
+INSERT INTO Merchandise(item_number,item_description,available_sizes,date_last_restock,date_next_restock,supplier_state,supplier_street,supplier_city,supplier_zip_code,creator_id,supplier_id,total_in_stock) VALUES (95,'Iqgfpcpgkezaic','M','2022-05-16 05:47:41','2022-09-23 02:13:28','Texas','Erie','Fort Worth',76129,33,65,272220);
+INSERT INTO Merchandise(item_number,item_description,available_sizes,date_last_restock,date_next_restock,supplier_state,supplier_street,supplier_city,supplier_zip_code,creator_id,supplier_id,total_in_stock) VALUES (96,'Hgxureivsycnoh','S','2022-07-23 06:12:10','2023-03-18 08:16:38','District of Columbia','Parkside','Washington',20525,66,88,5879982);
+INSERT INTO Merchandise(item_number,item_description,available_sizes,date_last_restock,date_next_restock,supplier_state,supplier_street,supplier_city,supplier_zip_code,creator_id,supplier_id,total_in_stock) VALUES (97,'Gmdjpzzywmhlgk','XL','2022-09-02 04:54:49','2022-07-29 16:28:10','Texas','Kensington','Dallas',75260,31,15,6796970);
+INSERT INTO Merchandise(item_number,item_description,available_sizes,date_last_restock,date_next_restock,supplier_state,supplier_street,supplier_city,supplier_zip_code,creator_id,supplier_id,total_in_stock) VALUES (98,'Cbubzwdfevwdqk','L','2022-04-16 11:14:34','2023-01-27 08:56:38','Texas','Artisan','El Paso',88546,96,22,22972);
+INSERT INTO Merchandise(item_number,item_description,available_sizes,date_last_restock,date_next_restock,supplier_state,supplier_street,supplier_city,supplier_zip_code,creator_id,supplier_id,total_in_stock) VALUES (99,'Qaziztxjyksqfp','3XL','2023-03-22 11:13:26','2022-07-25 17:48:24','District of Columbia','Dixon','Washington',20337,8,40,4974134);
+INSERT INTO Merchandise(item_number,item_description,available_sizes,date_last_restock,date_next_restock,supplier_state,supplier_street,supplier_city,supplier_zip_code,creator_id,supplier_id,total_in_stock) VALUES (100,'Sufzvdfoxiylna','3XL','2023-02-22 04:43:53','2022-10-05 09:50:52','California','Maryland','Santa Monica',90410,57,81,3359300);
+
+INSERT INTO Orders(order_number,item_number,price,customer_name) VALUES (1,70,42,'Eirena Balmforth');
+INSERT INTO Orders(order_number,item_number,price,customer_name) VALUES (2,69,24,'Verne Shuxsmith');
+INSERT INTO Orders(order_number,item_number,price,customer_name) VALUES (3,54,56,'Osbourne Palser');
+INSERT INTO Orders(order_number,item_number,price,customer_name) VALUES (4,87,95,'Carmencita Ramet');
+INSERT INTO Orders(order_number,item_number,price,customer_name) VALUES (5,12,49,'Tymothy Element');
+INSERT INTO Orders(order_number,item_number,price,customer_name) VALUES (6,6,95,'Carce Green');
+INSERT INTO Orders(order_number,item_number,price,customer_name) VALUES (7,9,49,'Arlie Jacklin');
+INSERT INTO Orders(order_number,item_number,price,customer_name) VALUES (8,89,86,'Leisha Heakey');
+INSERT INTO Orders(order_number,item_number,price,customer_name) VALUES (9,7,78,'Conroy Clingan');
+INSERT INTO Orders(order_number,item_number,price,customer_name) VALUES (10,99,97,'Dorella Dubber');
+INSERT INTO Orders(order_number,item_number,price,customer_name) VALUES (11,31,20,'Cornie Lundberg');
+INSERT INTO Orders(order_number,item_number,price,customer_name) VALUES (12,66,93,'Ginny Harte');
+INSERT INTO Orders(order_number,item_number,price,customer_name) VALUES (13,76,56,'Caroljean Cissell');
+INSERT INTO Orders(order_number,item_number,price,customer_name) VALUES (14,33,43,'Trey Dickman');
+INSERT INTO Orders(order_number,item_number,price,customer_name) VALUES (15,41,4,'Kendal Costard');
+INSERT INTO Orders(order_number,item_number,price,customer_name) VALUES (16,70,4,'Jermayne Boxell');
+INSERT INTO Orders(order_number,item_number,price,customer_name) VALUES (17,62,38,'Mordy Rowney');
+INSERT INTO Orders(order_number,item_number,price,customer_name) VALUES (18,17,60,'Cesar Brewitt');
+INSERT INTO Orders(order_number,item_number,price,customer_name) VALUES (19,15,13,'Shelagh Kewley');
+INSERT INTO Orders(order_number,item_number,price,customer_name) VALUES (20,33,88,'Eyde Speedy');
+INSERT INTO Orders(order_number,item_number,price,customer_name) VALUES (21,51,41,'Shelli Dearlove');
+INSERT INTO Orders(order_number,item_number,price,customer_name) VALUES (22,71,87,'Weber McGarvie');
+INSERT INTO Orders(order_number,item_number,price,customer_name) VALUES (23,6,43,'Aubrey Yvon');
+INSERT INTO Orders(order_number,item_number,price,customer_name) VALUES (24,87,61,'Dynah Twaits');
+INSERT INTO Orders(order_number,item_number,price,customer_name) VALUES (25,79,89,'Cherye Kay');
+INSERT INTO Orders(order_number,item_number,price,customer_name) VALUES (26,59,47,'Steffen Glastonbury');
+INSERT INTO Orders(order_number,item_number,price,customer_name) VALUES (27,93,4,'Sigismondo Golland');
+INSERT INTO Orders(order_number,item_number,price,customer_name) VALUES (28,94,24,'Magdalen Schubbert');
+INSERT INTO Orders(order_number,item_number,price,customer_name) VALUES (29,24,43,'Stu MacCroary');
+INSERT INTO Orders(order_number,item_number,price,customer_name) VALUES (30,51,89,'Shanda Dunkersley');
+INSERT INTO Orders(order_number,item_number,price,customer_name) VALUES (31,74,81,'Joey Dingivan');
+INSERT INTO Orders(order_number,item_number,price,customer_name) VALUES (32,68,20,'Alejoa Whittock');
+INSERT INTO Orders(order_number,item_number,price,customer_name) VALUES (33,25,19,'Foster Houseley');
+INSERT INTO Orders(order_number,item_number,price,customer_name) VALUES (34,3,33,'Marcos Stammers');
+INSERT INTO Orders(order_number,item_number,price,customer_name) VALUES (35,83,27,'Al Pettit');
+INSERT INTO Orders(order_number,item_number,price,customer_name) VALUES (36,50,37,'Gretchen Medcalfe');
+INSERT INTO Orders(order_number,item_number,price,customer_name) VALUES (37,81,90,'Paquito Wych');
+INSERT INTO Orders(order_number,item_number,price,customer_name) VALUES (38,22,95,'Anett Cornes');
+INSERT INTO Orders(order_number,item_number,price,customer_name) VALUES (39,69,24,'Kathleen Waterworth');
+INSERT INTO Orders(order_number,item_number,price,customer_name) VALUES (40,28,45,'Henri Glazebrook');
+INSERT INTO Orders(order_number,item_number,price,customer_name) VALUES (41,7,49,'Cull Fumagallo');
+INSERT INTO Orders(order_number,item_number,price,customer_name) VALUES (42,21,17,'Brande Bedinn');
+INSERT INTO Orders(order_number,item_number,price,customer_name) VALUES (43,22,96,'Gilbertina Putton');
+INSERT INTO Orders(order_number,item_number,price,customer_name) VALUES (44,82,31,'Elsworth Dimbylow');
+INSERT INTO Orders(order_number,item_number,price,customer_name) VALUES (45,99,46,'Timofei Gritsunov');
+INSERT INTO Orders(order_number,item_number,price,customer_name) VALUES (46,50,81,'Arie Volleth');
+INSERT INTO Orders(order_number,item_number,price,customer_name) VALUES (47,49,49,'Grover Tetther');
+INSERT INTO Orders(order_number,item_number,price,customer_name) VALUES (48,60,42,'Alleyn Summerbell');
+INSERT INTO Orders(order_number,item_number,price,customer_name) VALUES (49,46,22,'Dyane Ferschke');
+INSERT INTO Orders(order_number,item_number,price,customer_name) VALUES (50,65,83,'Florri Pitt');
+INSERT INTO Orders(order_number,item_number,price,customer_name) VALUES (51,32,3,'Evania Ipplett');
+INSERT INTO Orders(order_number,item_number,price,customer_name) VALUES (52,62,12,'Orlando Daveridge');
+INSERT INTO Orders(order_number,item_number,price,customer_name) VALUES (53,60,48,'Concettina Meacher');
+INSERT INTO Orders(order_number,item_number,price,customer_name) VALUES (54,69,100,'Ruth Wherton');
+INSERT INTO Orders(order_number,item_number,price,customer_name) VALUES (55,83,10,'Leonard Griffoen');
+INSERT INTO Orders(order_number,item_number,price,customer_name) VALUES (56,94,89,'Lola Cornill');
+INSERT INTO Orders(order_number,item_number,price,customer_name) VALUES (57,29,49,'Catha Choat');
+INSERT INTO Orders(order_number,item_number,price,customer_name) VALUES (58,6,84,'Marigold Norbury');
+INSERT INTO Orders(order_number,item_number,price,customer_name) VALUES (59,10,41,'Gregg Moxstead');
+INSERT INTO Orders(order_number,item_number,price,customer_name) VALUES (60,79,100,'Shanan Fahy');
+INSERT INTO Orders(order_number,item_number,price,customer_name) VALUES (61,40,37,'Brigitta Dionisetto');
+INSERT INTO Orders(order_number,item_number,price,customer_name) VALUES (62,81,36,'Gannie Clewes');
+INSERT INTO Orders(order_number,item_number,price,customer_name) VALUES (63,82,76,'Dierdre Yuill');
+INSERT INTO Orders(order_number,item_number,price,customer_name) VALUES (64,7,43,'Suzi Kibble');
+INSERT INTO Orders(order_number,item_number,price,customer_name) VALUES (65,47,29,'Shena More');
+INSERT INTO Orders(order_number,item_number,price,customer_name) VALUES (66,10,69,'Pepillo Greenside');
+INSERT INTO Orders(order_number,item_number,price,customer_name) VALUES (67,42,66,'Butch Durber');
+INSERT INTO Orders(order_number,item_number,price,customer_name) VALUES (68,1,43,'Domini Cambden');
+INSERT INTO Orders(order_number,item_number,price,customer_name) VALUES (69,36,17,'Benjamen Gavey');
+INSERT INTO Orders(order_number,item_number,price,customer_name) VALUES (70,59,29,'Mavra Bjerkan');
+INSERT INTO Orders(order_number,item_number,price,customer_name) VALUES (71,83,38,'Leonhard Crichten');
+INSERT INTO Orders(order_number,item_number,price,customer_name) VALUES (72,99,76,'Marie-jeanne Balding');
+INSERT INTO Orders(order_number,item_number,price,customer_name) VALUES (73,42,66,'Milt Manwell');
+INSERT INTO Orders(order_number,item_number,price,customer_name) VALUES (74,60,70,'Martha Longthorne');
+INSERT INTO Orders(order_number,item_number,price,customer_name) VALUES (75,11,41,'Carolee Eyeington');
+INSERT INTO Orders(order_number,item_number,price,customer_name) VALUES (76,53,98,'Callida Frend');
+INSERT INTO Orders(order_number,item_number,price,customer_name) VALUES (77,98,40,'Mellisa Howett');
+INSERT INTO Orders(order_number,item_number,price,customer_name) VALUES (78,4,71,'Noe Handrek');
+INSERT INTO Orders(order_number,item_number,price,customer_name) VALUES (79,11,21,'Eugen Szymanzyk');
+INSERT INTO Orders(order_number,item_number,price,customer_name) VALUES (80,96,32,'Hendrik Gai');
+INSERT INTO Orders(order_number,item_number,price,customer_name) VALUES (81,35,45,'Benny Huniwall');
+INSERT INTO Orders(order_number,item_number,price,customer_name) VALUES (82,31,32,'Ethelin Landis');
+INSERT INTO Orders(order_number,item_number,price,customer_name) VALUES (83,4,62,'Dorey Paeckmeyer');
+INSERT INTO Orders(order_number,item_number,price,customer_name) VALUES (84,5,74,'Malvin Daniello');
+INSERT INTO Orders(order_number,item_number,price,customer_name) VALUES (85,41,77,'Julissa Holwell');
+INSERT INTO Orders(order_number,item_number,price,customer_name) VALUES (86,6,29,'Hali Toor');
+INSERT INTO Orders(order_number,item_number,price,customer_name) VALUES (87,10,96,'Kimbra Stable');
+INSERT INTO Orders(order_number,item_number,price,customer_name) VALUES (88,86,15,'Fedora Atwool');
+INSERT INTO Orders(order_number,item_number,price,customer_name) VALUES (89,67,92,'Tiebold Pahlsson');
+INSERT INTO Orders(order_number,item_number,price,customer_name) VALUES (90,24,100,'Niall Rimer');
+INSERT INTO Orders(order_number,item_number,price,customer_name) VALUES (91,99,1,'Maxy Spinks');
+INSERT INTO Orders(order_number,item_number,price,customer_name) VALUES (92,33,34,'Hannis Sevier');
+INSERT INTO Orders(order_number,item_number,price,customer_name) VALUES (93,36,3,'Augustina Goodread');
+INSERT INTO Orders(order_number,item_number,price,customer_name) VALUES (94,63,91,'Alyss Janse');
+INSERT INTO Orders(order_number,item_number,price,customer_name) VALUES (95,93,3,'Fedora Armour');
+INSERT INTO Orders(order_number,item_number,price,customer_name) VALUES (96,17,22,'Rockwell Wais');
+INSERT INTO Orders(order_number,item_number,price,customer_name) VALUES (97,21,76,'Alverta Bosanko');
+INSERT INTO Orders(order_number,item_number,price,customer_name) VALUES (98,6,63,'Kristina Bish');
+INSERT INTO Orders(order_number,item_number,price,customer_name) VALUES (99,68,92,'Madeline Luis');
+INSERT INTO Orders(order_number,item_number,price,customer_name) VALUES (100,25,29,'Phillie Brandenberg');
