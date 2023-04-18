@@ -101,7 +101,7 @@
     "_id": "944620a4-b171-4159-b97d-74339a6e129d",
     "colId": "754979bc-d3e5-410e-9291-d74a020ef2d4",
     "containerId": "",
-    "name": "GetPodcastFromCreator Copy",
+    "name": "GetPodcastFromCreator2",
     "url": "localhost:8001/l/podcasts/10",
     "method": "GET",
     "sortNum": 50000,
@@ -333,6 +333,82 @@
     "body": {
       "type": "json",
       "raw": "{\n  \"total_in_stock\": 45678,\n  \"item_number\": 33,\n  \"available_sizes\": \"XD\",\n  \"date_last_restock\": \"2022-06-04 20:20:20\",\n  \"date_next_restock\": \"2022-07-01 20:20:20\"\n}",
+      "form": []
+    },
+    "tests": []
+  },
+  {
+    "_id": "2b455226-aa04-4fac-ad70-e058b9827114",
+    "colId": "754979bc-d3e5-410e-9291-d74a020ef2d4",
+    "containerId": "",
+    "name": "PutEpisodeInPlaylist",
+    "url": "localhost:8001/l/episodes/2",
+    "method": "PUT",
+    "sortNum": 70000,
+    "created": "2023-04-18T16:00:13.070Z",
+    "modified": "2023-04-18T17:12:00.591Z",
+    "headers": [],
+    "params": [],
+    "body": {
+      "type": "json",
+      "raw": "{\n  \"episode_number\": 2, \n  \"duration\": 100, \n  \"listens\": 67676, \n  \"season_number\": 2, \n  \"episode_name\": \"Episodeabcde\", \n  \"podcast_name\": \"Podcastabc\", \n  \"playlist_name\": \"Playlistabcde\"\n}",
+      "form": []
+    },
+    "tests": []
+  },
+  {
+    "_id": "5a56f7c2-142a-440c-8029-1dd8fce2d093",
+    "colId": "754979bc-d3e5-410e-9291-d74a020ef2d4",
+    "containerId": "",
+    "name": "DeleteEpisode",
+    "url": "localhost:8001/l/playlists/68",
+    "method": "DELETE",
+    "sortNum": 80000,
+    "created": "2023-04-18T17:05:48.635Z",
+    "modified": "2023-04-18T17:11:46.825Z",
+    "headers": [],
+    "params": [],
+    "body": {
+      "type": "json",
+      "raw": "{\n  \"episode_number\": 68\n}",
+      "form": []
+    },
+    "tests": []
+  },
+  {
+    "_id": "89d68919-f088-4be2-90fd-a33467affd80",
+    "colId": "754979bc-d3e5-410e-9291-d74a020ef2d4",
+    "containerId": "",
+    "name": "PutEpisodeInPlaylist2",
+    "url": "localhost:8001/l/episodes/1",
+    "method": "PUT",
+    "sortNum": 75000,
+    "created": "2023-04-18T17:11:50.282Z",
+    "modified": "2023-04-18T17:11:50.282Z",
+    "headers": [],
+    "params": [],
+    "body": {
+      "type": "json",
+      "raw": "{\n  \"episode_number\": 1, \n  \"duration\": 120, \n  \"listens\": 123456, \n  \"season_number\": 1, \n  \"episode_name\": \"Episodeabcde\", \n  \"podcast_name\": \"Podcastabc\", \n  \"playlist_name\": \"Playlistabcde\"\n}",
+      "form": []
+    },
+    "tests": []
+  },
+  {
+    "_id": "f769457a-f97d-4ea4-8c99-55ae69456fc6",
+    "colId": "754979bc-d3e5-410e-9291-d74a020ef2d4",
+    "containerId": "",
+    "name": "DeleteEpisode2",
+    "url": "localhost:8001/l/playlists/44",
+    "method": "DELETE",
+    "sortNum": 90000,
+    "created": "2023-04-18T17:12:13.466Z",
+    "modified": "2023-04-18T17:12:48.631Z",
+    "headers": [],
+    "params": [],
+    "body": {
+      "type": "json",
+      "raw": "{\n  \"episode_number\": 44\n}",
       "form": []
     },
     "tests": []

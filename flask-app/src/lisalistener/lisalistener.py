@@ -40,10 +40,10 @@ def add_new_playlist():
 
     return 'Success!'
 
-# PUT episode info into playlists (update an episode in a playlist)
+# PUT episode info (update an episode)
 # TO DO 
-@lisalistener.route('/playlists', methods=['PUT']) 
-def update_episode(): 
+@lisalistener.route('/episodes/<episode_number>', methods=['PUT']) 
+def update_episode(episode_number): 
     
     # collecting data from the request object 
     the_data = request.json 
@@ -59,27 +59,28 @@ def update_episode():
     playlist_name = the_data['playlist_name']
 
     # constructing the query 
-    query = 'update Playlists set episode_number = ' 
-    query+= str(episode_number) + '", duration = '
-    query+= str(duration) + '", listens = '
-    query+= str(listens) + '", season_number'
-    query+= str(season_number) + '", episode_name = "'
+    query = 'update Episodes set episode_number = ' 
+    query+= str(episode_number) + ', duration = '
+    query+= str(duration) + ', listens = '
+    query+= str(listens) + ', season_number = '
+    query+= str(season_number) + ', episode_name = "'
     query+= episode_name + '", podcast_name = "'
     query+= podcast_name + '", playlist_name = "'
-    query+= playlist_name + ' where '
-    # FIX HERE query+= str(episode_number) + {0}'.format(episode_number)
+    query+= playlist_name + '" where episode_number = '
+    query+= str(episode_number) 
+    current_app.logger.info(query)
 
     # executing and committing the put statement 
     cursor = db.get_db().cursor() 
     cursor.execute(query) 
-    db.get_db.commit() 
+    db.get_db().commit() 
 
     return 'Success!'
 
 # DELETE episode from playlist 
 # TO DO 
-@lisalistener.route('/playlists', methods=['DELETE']) 
-def delete_episode(): 
+@lisalistener.route('/playlists/<episode_number>', methods=['DELETE']) 
+def delete_episode(episode_number): 
     
     # collecting data from the request object 
     the_data = request.json 
@@ -90,12 +91,12 @@ def delete_episode():
 
     # constructing the query 
     query = 'delete from Playlists where episode_number = ' 
-    query+= str(episode_number) + ')'
+    query+= str(episode_number) 
 
     # executing and committing the put statement 
     cursor = db.get_db().cursor() 
     cursor.execute(query) 
-    db.get_db.commit() 
+    db.get_db().commit() 
 
     return 'Success!'
 
