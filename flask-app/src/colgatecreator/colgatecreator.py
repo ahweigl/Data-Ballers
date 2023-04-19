@@ -76,7 +76,7 @@ def delete_podcast_from_creator(creator_id):
 
     return 'Success!' 
 
-# GET a creator's info with particular creator id from the DB
+# GET a creator's statistics info with particular creator id from the DB
 @colgatecreator.route('/statistics/<creator_id>', methods=['GET'])
 def get_statistics(creator_id):
     cursor = db.get_db().cursor()
